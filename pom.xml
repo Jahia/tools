@@ -79,16 +79,17 @@
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
         <version>7.1.0.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
-    <artifactId>digital-factory-tools</artifactId>
+    <artifactId>tools</artifactId>
     <version>7.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Factory Support Tools</description>
     <scm>
-        <connection>scm:git:git@github.com:Jahia/digital-factory-tools.git</connection>
-        <developerConnection>scm:git:git@github.com:Jahia/digital-factory-tools.git</developerConnection>
-        <url>scm:git:git@github.com:Jahia/digital-factory-tools.git</url>
+        <connection>scm:git:git@github.com:Jahia/tools.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/tools.git</developerConnection>
+        <url>scm:git:git@github.com:Jahia/tools.git</url>
     </scm>
 
     <properties>
@@ -118,7 +119,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <!--
                         <Bundle-Activator>org.jahia.modules.tools.Activator</Bundle-Activator>
+                        -->
                         <Import-Package>
                             javax.jcr,
                             javax.jcr.lock,
