@@ -13,7 +13,7 @@ response.setHeader("Content-Disposition", "attachment; filename=\"thread-dump-"
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>Thread State Information</title>
 </head>
 <body>

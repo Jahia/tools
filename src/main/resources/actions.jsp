@@ -10,7 +10,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Actions</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
 </head>
 <%
     pageContext.setAttribute("actions", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getActions().values());
@@ -42,9 +42,5 @@
     </tbody>
 </table>
 
-<p>
-    <img src="<c:url value='/engines/images/icons/home_on.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-    <a href="<c:url value='/tools/index.jsp'/>">to Jahia Tools overview</a>
-</p>
 </body>
 </html>

@@ -12,7 +12,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/tools/tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>Jahia Text Extraction Service</title>
 <script type="text/javascript">
     function go(form, id1, value1, id2, value2, id3, value3) {
@@ -79,7 +79,7 @@ try {
 </c:if>
 </fieldset>
 </c:if>
-<form id="navigateForm" action="${pageContext.request.contextPath}/tools/textExtractor.jsp" method="get">
+<form id="navigateForm" action="textExtractor.jsp" method="get">
     <input type="hidden" name="action" id="action" value=""/>
 <c:choose>
   <c:when test="${extractionCheckRunning}">
@@ -106,7 +106,7 @@ try {
         </select>
         <c:set var="fileTypes" value="<%= JCRContentUtils.getInstance().getMimeTypes() %>"/>
         <p><label class="left" for="fileType">File type: </label>
-        <select name="fileType"}>
+        <select name="fileType">
           <option value="">any</option>
           <c:forEach items="${fileTypes}" var="type">
             <c:if test="${type.key != 'image' && type.key != 'video' && type.key != 'archive'}">
@@ -126,7 +126,7 @@ try {
 </c:choose>
 </form>
 <p>
-<form id="extraction" action="${pageContext.request.contextPath}/cms/text-extract" enctype="multipart/form-data" method="post">
+<form id="extraction" action="<c:url value='/cms/text-extract'/>" enctype="multipart/form-data" method="post">
 <fieldset>
 <legend>Check text extraction of a local file</legend>
 <label for="file">Choose a file to upload:&nbsp;</label><input name="file" id="file" type="file" />

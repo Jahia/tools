@@ -86,6 +86,7 @@
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Factory Support Tools</description>
+    
     <scm>
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/tools.git</developerConnection>
@@ -94,6 +95,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
+        <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
     </properties>
 
     <repositories>

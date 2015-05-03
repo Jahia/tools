@@ -27,15 +27,15 @@
 <html>
 <head>
     <style type="text/css" title="currentStyle">
-        @import "../resources/css/demo_page.css";
-        @import "../resources/css/demo_table_jui.css";
-        @import "../resources/css/TableTools_JUI.css";
-        @import "../resources/css/le-frog/jquery-ui-1.8.13.custom.css";
+        @import "../css/demo_page.css";
+        @import "../css/demo_table_jui.css";
+        @import "../css/TableTools_JUI.css";
+        @import "../css/le-frog/jquery-ui-1.8.13.custom.css";
     </style>
-    <script type="text/javascript" src="../resources/jquery.min.js"></script>
-    <script type="text/javascript" src="../resources/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="../resources/ZeroClipboard.js"></script>
-    <script type="text/javascript" src="../resources/TableTools.js"></script>
+    <script type="text/javascript" src="../javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../javascript/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../javascript/ZeroClipboard.js"></script>
+    <script type="text/javascript" src="../javascript/TableTools.js"></script>
     <title>Display content of module output cache</title>
     <script type="text/javascript">
         var myTable = $(document).ready(function () {
@@ -54,7 +54,7 @@
                 ],
                 "sDom": '<"H"Tlfr>t<"F"p>',
                 "oTableTools": {
-                    "sSwfPath": "../resources/swf/copy_cvs_xls.swf",
+                    "sSwfPath": "../swf/copy_cvs_xls.swf",
                     "aButtons": [
                         "copy", "csv", "xls",
                         {

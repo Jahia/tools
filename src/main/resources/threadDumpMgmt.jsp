@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>Thread Dump Management</title>
 </head>
 <body>
@@ -27,8 +27,8 @@ Thread dump task started<c:if test="${not empty outputFile}">. The output fill b
 </p>
 </c:if>
 <ul>
-    <li><img src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='/tools/threadDump.jsp'/>" target="_blank">Perform thread dump (view in a new browser window)</a></li>
-	<li><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='/tools/threadDump.jsp?file=true'/>" target="_blank">Perform thread dump (download as a file)</a></li>
+    <li><img src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='threadDump.jsp'/>" target="_blank">Perform thread dump (view in a new browser window)</a></li>
+	<li><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='threadDump.jsp?file=true'/>" target="_blank">Perform thread dump (download as a file)</a></li>
     <li><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=sysout">Perform thread dump (System.out)</a></li>
     <li><img src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=file">Perform thread dump (File)</a>&nbsp;*</li>
     <li>

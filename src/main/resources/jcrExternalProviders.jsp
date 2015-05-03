@@ -16,7 +16,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>JCR Providers</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
 </head>
 
 <%
@@ -41,7 +41,7 @@
         <td align="center"><span style="font-size: 0.8em;">${status.index + 1}</span></td>
         <td>${provider.key}</td>
         <td>${provider.value.mountPoint}</td>
-        <c:url var="browseUrl" value="/tools/jcrBrowser.jsp">
+        <c:url var="browseUrl" value="jcrBrowser.jsp">
             <c:param name="path" value="${provider.value.mountPoint}"/>
         </c:url>
         <td align="center"><a href="${browseUrl}" title="Browse with the JCR Browser"><img src="<c:url value='/icons/search.png'/>" height="16" width="16" title="Browse with the JCR Browser" border="0" style="vertical-align: middle;"/></a></td>

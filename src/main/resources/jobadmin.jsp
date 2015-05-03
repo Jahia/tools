@@ -15,7 +15,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
     <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
     <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
@@ -238,7 +238,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
                                 <c:forEach items="${job.jobDataMap}" var="data">
                                 <tr>
                                     <td><strong>${data.key}:</strong></td>
-                                    <td><c:if test="${data.key == 'node'}"><a title="Open in JCR Browser" href="<c:url value='/tools/jcrBrowser.jsp?uuid=${data.value}&workspace=live'/>" target="_blank">${fn:escapeXml(data.value)}</a></c:if><c:if test="${data.key != 'node'}">${fn:escapeXml(data.value)}</c:if></td>
+                                    <td><c:if test="${data.key == 'node'}"><a title="Open in JCR Browser" href="<c:url value='jcrBrowser.jsp?uuid=${data.value}&workspace=live'/>" target="_blank">${fn:escapeXml(data.value)}</a></c:if><c:if test="${data.key != 'node'}">${fn:escapeXml(data.value)}</c:if></td>
                                 </tr>
                                 </c:forEach>
                             </tbody>

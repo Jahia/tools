@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>Jahia Tools</title>
 </head>
 <body>
@@ -44,7 +44,7 @@
         <li><a href="workflows.jsp">Workflow monitoring</a></li>
     </ul>
 </fieldset>
-<% if (Jahia.isEnterpriseEdition()) { %>
+<% if (false && Jahia.isEnterpriseEdition()) { %>
 <jsp:include page="indexEnterprise.jsp" />
 <% } %>
         </td>
@@ -97,6 +97,6 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-2014 Jahia Solutions Group SA - All rights reserved.</p>
+<p>&copy; Copyright 2002-2015 Jahia Solutions Group SA - All rights reserved.</p>
 </body>
 </html>

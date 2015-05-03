@@ -43,7 +43,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Render Filters</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
 </head>
 <%
     pageContext.setAttribute("filters", RenderService.getInstance().getRenderChainInstance().getFilters());

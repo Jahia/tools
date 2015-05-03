@@ -28,15 +28,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Installed Modules Browser</title>
-    <link type="text/css" href="resources/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
+    <link type="text/css" href="css/jquery.fancybox-1.3.4.css" rel="stylesheet"/>
     <style type="text/css" title="currentStyle">
-        @import "resources/css/demo_page.css";
-        @import "resources/css/demo_table_jui.css";
-        @import "resources/css/le-frog/jquery-ui-1.8.13.custom.css";
+        @import "css/demo_page.css";
+        @import "css/demo_table_jui.css";
+        @import "css/le-frog/jquery-ui-1.8.13.custom.css";
     </style>
-    <script type="text/javascript" src="resources/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="resources/jquery.fancybox-1.3.4.js"></script>
+    <script type="text/javascript" src="javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="javascript/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="javascript/jquery.fancybox-1.3.4.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.defFileLink').fancybox({
