@@ -121,9 +121,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <!--
                         <Bundle-Activator>org.jahia.modules.tools.Activator</Bundle-Activator>
-                        -->
                         <Import-Package>
                             javax.jcr,
                             javax.jcr.lock,
