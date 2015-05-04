@@ -5,11 +5,19 @@
 <urlrewrite>
 
     <rule enabled="true">
+        <name>Digital Factory Tools (legacy) with query string</name>
+        <note>Redirects to new location</note>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/tools/osgi/console(/.*)?</condition>
+        <condition type="query-string" operator="notequal">^$</condition>
+        <from>^/tools(/.*)?$</from>
+        <to type="redirect" last="true">%{context-path}/modules/tools$1?%{query-string}</to>
+    </rule>
+    <rule enabled="true">
         <name>Digital Factory Tools (legacy)</name>
         <note>Redirects to new location</note>
         <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/tools/osgi/console(/.*)?</condition>
         <from>^/tools(/.*)?$</from>
-        <to type="redirect">%{context-path}/modules/tools$1</to>
+        <to type="redirect" last="true">%{context-path}/modules/tools$1</to>
     </rule>
 
     <rule enabled="true">
