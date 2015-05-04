@@ -9,10 +9,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <%@ include file="css.jspf" %>
-<title>Jahia Tools</title>
+<title>Digital Factory Support Tools</title>
 </head>
 <body>
-<h1>Jahia Tools Area <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
+<h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">
