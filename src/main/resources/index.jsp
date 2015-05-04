@@ -36,7 +36,7 @@
 <fieldset>
     <legend>Administration and Guidance</legend>
     <ul>
-        <li><a href="osgi/console/">OSGi console</a></li>
+        <li><a href="<c:url value='/tools/osgi/console/'/>">OSGi console</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>
