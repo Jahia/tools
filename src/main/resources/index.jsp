@@ -47,7 +47,7 @@
     </ul>
 </fieldset>
 <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) { %>
-<jsp:include page="indexEnterprise.jsp" />
+<jsp:include page="/modules/tools/indexEnterprise.jsp" />
 <% } %>
         </td>
 
