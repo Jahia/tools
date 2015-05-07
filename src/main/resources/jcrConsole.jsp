@@ -20,7 +20,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>JCR Console</title>
 </head>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>

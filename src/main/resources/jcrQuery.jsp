@@ -33,7 +33,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>JCR Query Tool</title>
-    <link rel="stylesheet" href="tools.css" type="text/css"/>
+    <%@ include file="css.jspf" %>
     <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
     <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
@@ -373,7 +373,7 @@
                                    end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
                             <li>
                                 <a title="Open in JCR Browser"
-                                   href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
+                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
                                    target="_blank"><strong>${node.name}</strong></a>
                                 <strong>${node.name}</strong>
                                 <c:forEach items="${node.mixinNodeTypes}" var="mixin">
@@ -394,7 +394,7 @@
                                         pageContext.setAttribute("node",((JoinRow)pageContext.getAttribute("row")).getNode(((String)pageContext.getAttribute("selectorName"))));
                                     %>
                                     <a title="Open in JCR Browser"
-                                       href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
+                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
                                        target="_blank"><strong>${node.name}</strong></a>
                                     <c:forEach items="${node.mixinNodeTypes}" var="mixin">
                                         ${mixin.name}
@@ -414,7 +414,7 @@
                                    end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
                             <li>
                                 <a title="Open in JCR Browser"
-                                   href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
+                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
                                    target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a>
                                 (${fn:escapeXml(node.nodeTypes)})
                                 <a title="Open in Repository Explorer"
@@ -459,7 +459,7 @@
                                     <c:otherwise>                                
                                     <c:set var="node" value="${row.nodes[selectorName]}"/>
                                     <a title="Open in JCR Browser"
-                                       href="<c:url value='/tools/jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
+                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
                                        target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
                                     <a title="Open in Repository Explorer"
                                        href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>"

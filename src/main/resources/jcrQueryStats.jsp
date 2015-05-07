@@ -15,7 +15,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
     <title>JCR Query statistics</title>
 </head>
 <body>
@@ -55,7 +55,7 @@ pageContext.setAttribute("queryStat", queryStat);
 		<li>
 			${fn:escapeXml(q.statement)}
 			<br/>
-			<c:url var="executeUrl" value="/tools/jcrQuery.jsp">
+			<c:url var="executeUrl" value="jcrQuery.jsp">
 				<c:param name="lang" value="${q.language}"/>
 				<c:param name="query" value="${q.statement}"/>
 			</c:url>
@@ -83,7 +83,7 @@ pageContext.setAttribute("queryStat", queryStat);
 		<li>
 			${fn:escapeXml(q.statement)}
 			<br/>
-			<c:url var="executeUrl" value="/tools/jcrQuery.jsp">
+			<c:url var="executeUrl" value="jcrQuery.jsp">
 				<c:param name="lang" value="${q.language}"/>
 				<c:param name="query" value="${q.statement}"/>
 			</c:url>

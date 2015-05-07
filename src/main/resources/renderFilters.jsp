@@ -43,7 +43,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Render Filters</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
 </head>
 <%
     pageContext.setAttribute("filters", RenderService.getInstance().getRenderChainInstance().getFilters());
@@ -88,9 +88,9 @@
             <td><c:if test="${!empty aFilter}">${aFilter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</c:if></td>
             <td>
                 <c:if test="${!empty aFilter}">
-                    <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}">${aFilter.disabled?"enable":"disable"}</a>
+                    <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}">${aFilter.disabled ? "enable" : "disable"}</a>
                 </c:if>
-                <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority?previousPriority:filter.priority) -1}">down</a>
+                <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}">down</a>
             </td>
         </tr>
         <c:set var="previousPriority" value="${filter.priority}"/>

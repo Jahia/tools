@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+
+<urlrewrite>
+
+    <rule enabled="true">
+        <name>Digital Factory Tools (legacy) with query string</name>
+        <note>Redirects to new location</note>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/tools/osgi/console(/.*)?</condition>
+        <condition type="query-string" operator="notequal">^$</condition>
+        <from>^/tools(/.*)?$</from>
+        <to type="redirect" last="true">%{context-path}/modules/tools$1?%{query-string}</to>
+    </rule>
+    <rule enabled="true">
+        <name>Digital Factory Tools (legacy)</name>
+        <note>Redirects to new location</note>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/tools/osgi/console(/.*)?</condition>
+        <from>^/tools(/.*)?$</from>
+        <to type="redirect" last="true">%{context-path}/modules/tools$1</to>
+    </rule>
+
+    <rule enabled="true">
+        <name>Digital Factory Tools</name>
+        <note>Redirects to Tools overview page</note>
+        <from>^/modules/tools(/)?$</from>
+        <to type="redirect">%{context-path}/modules/tools/index.jsp</to>
+    </rule>
+
+    <!-- Client-side caching -->
+    <rule>
+        <name>Set no cache headers</name>
+        <note>Resources that should not be cached</note>
+        <condition type="attribute" name="jahiaCacheControlSet" operator="equal">^$</condition>
+        <from>^/modules/tools/.*$</from>
+        <set type="response-header" name="Expires">Wed, 09 May 1979 05:30:00 GMT</set>
+        <set type="response-header" name="Cache-Control">no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0</set> 
+        <set type="response-header" name="Pragma">no-cache</set>
+        <set type="request" name="jahiaCacheControlSet">done</set>         
+    </rule>
+    
+</urlrewrite>

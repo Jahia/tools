@@ -43,7 +43,7 @@ ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begi
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Completed Job Info</title>
-    <link rel="stylesheet" href="tools.css" type="text/css" />
+    <%@ include file="css.jspf" %>
 </head>
 <body>
 	<h1>Completed Job Info</h1>

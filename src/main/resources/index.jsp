@@ -3,14 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import="org.jahia.bin.Jahia"%>
+<%@page import="org.jahia.osgi.BundleUtils"%>
+<%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
-<title>Jahia Tools</title>
+<%@ include file="css.jspf" %>
+<title>Digital Factory Support Tools</title>
 </head>
 <body>
-<h1>Jahia Tools Area <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
+<h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">
@@ -36,7 +38,7 @@
 <fieldset>
     <legend>Administration and Guidance</legend>
     <ul>
-        <li><a href="osgi/console/">OSGi console</a></li>
+        <li><a href="<c:url value='/tools/osgi/console/'/>">OSGi console</a></li>
         <li><a href="jobadmin.jsp">Background job administration</a></li>
         <li><a href="search.jsp">Search engine management</a></li>
         <li><a href="dbQuery.jsp">DB query tool</a></li>
@@ -44,8 +46,8 @@
         <li><a href="workflows.jsp">Workflow monitoring</a></li>
     </ul>
 </fieldset>
-<% if (Jahia.isEnterpriseEdition()) { %>
-<jsp:include page="indexEnterprise.jsp" />
+<% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) { %>
+<jsp:include page="/modules/tools/indexEnterprise.jsp" />
 <% } %>
         </td>
 
@@ -97,6 +99,6 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-2014 Jahia Solutions Group SA - All rights reserved.</p>
+<p>&copy; Copyright 2002-2015 Jahia Solutions Group SA - All rights reserved.</p>
 </body>
 </html>

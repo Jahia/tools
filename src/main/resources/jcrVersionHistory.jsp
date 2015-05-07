@@ -10,7 +10,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="tools.css" type="text/css" />
+<%@ include file="css.jspf" %>
 <title>JCR Version History Management</title>
 <script type="text/javascript">
     function go(form, id1, value1, id2, value2, id3, value3) {

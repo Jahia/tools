@@ -78,7 +78,7 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>7.0.0.6-SNAPSHOT</version>
+        <version>7.0.0.7-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <artifactId>tools</artifactId>
@@ -92,11 +92,6 @@
         <developerConnection>scm:git:git@github.com:Jahia/tools.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/tools.git</url>
     </scm>
-
-    <properties>
-        <jahia-module-type>system</jahia-module-type>
-        <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
-    </properties>
 
     <repositories>
         <repository>
@@ -121,9 +116,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                    <!--
                         <Bundle-Activator>org.jahia.modules.tools.Activator</Bundle-Activator>
-                        -->
+                        <Jahia-Module-Type>system</Jahia-Module-Type>
+                        <Jahia-Static-Resources>/css,/images,/javascript,/swf</Jahia-Static-Resources>
                         <Import-Package>
                             javax.jcr,
                             javax.jcr.lock,
