@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@ page import="org.jahia.utils.DatabaseUtils" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -40,10 +41,13 @@
 
 <c:if test="${not empty param.query}">
     <c:catch var="dbError">
-        <% long actionTime = System.currentTimeMillis(); %>
+        <% 
+        	long actionTime = System.currentTimeMillis();
+        	pageContext.setAttribute("jahiaDS", DatabaseUtils.getDatasource());
+        %>
         <c:choose>
             <c:when test="${param.action == 'Execute update' || !fn:startsWith(fn:trim(fn:toLowerCase(param.query)), 'select')}">
-                <sql:update dataSource="jdbc/jahia" sql="${param.query}" var="affected"/>
+                <sql:update dataSource="${jahiaDS}" sql="${param.query}" var="affected"/>
                 <% pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));  %>
                 <fieldset>
                     <legend>Update executed in ${took} ms</legend>
@@ -51,7 +55,7 @@
                 </fieldset>
             </c:when>
             <c:otherwise>
-                <sql:query dataSource="jdbc/jahia" sql="${param.query}" var="results" maxRows="${not empty param.maxRows ? param.maxRows : '-1'}" startRow="${not empty param.offset ? param.offset : '0'}"/>
+                <sql:query dataSource="${jahiaDS}" sql="${param.query}" var="results" maxRows="${not empty param.maxRows ? param.maxRows : '-1'}" startRow="${not empty param.offset ? param.offset : '0'}"/>
                 <% pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime));  %>
                 <fieldset>
                     <legend>Displaying <strong>${results.rowCount} rows</strong> (query took ${took} ms)</legend>
