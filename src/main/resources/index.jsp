@@ -3,8 +3,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import="org.jahia.bin.Jahia"%>
+<%@page import="org.jahia.bin.listeners.JahiaContextLoaderListener"%>
 <%@page import="org.jahia.osgi.BundleUtils"%>
 <%@page import="org.jahia.registries.ServicesRegistry"%>
+<%@page import="org.jahia.utils.DateUtils"%>
+<%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -13,6 +16,7 @@
 </head>
 <body>
 <h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
+<div style="position: absolute; right: 20px; top: 20px; font-size:1.0em;">Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></div>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">
