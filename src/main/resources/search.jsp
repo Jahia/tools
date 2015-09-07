@@ -36,15 +36,15 @@
 		</c:when>
         <c:when test="${param.action == 'reindex'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "reindex")); %>
-            <p style="color: blue">Re-indexing of the repository content will be done on next Jahia startup</p>
+            <p style="color: blue">Re-indexing of the repository content will be done on next Digital Factory startup</p>
         </c:when>
         <c:when test="${param.action == 'index-fix'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix")); %>
-            <p style="color: blue">Repository indexes check and fix will be done on next Jahia startup</p>
+            <p style="color: blue">Repository indexes check and fix will be done on next Digital Factory startup</p>
         </c:when>
         <c:when test="${param.action == 'index-check'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-check")); %>
-            <p style="color: blue">Repository indexes check (no repair) will be done on next Jahia startup</p>
+            <p style="color: blue">Repository indexes check (no repair) will be done on next Digital Factory startup</p>
         </c:when>
         <c:when test="${param.action == 'index-check-physical'}">
             <% long actionTime = System.currentTimeMillis(); %>
@@ -64,11 +64,11 @@
 	</c:choose>
 </c:if>
 <fieldset>
-<legend>On next Jahia startup</legend>
+<legend>On next Digital Factory startup</legend>
 <ul>
-    <li><a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Jahia start</li>
-    <li><a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Jahia start</li>
-    <li><a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Jahia start</li>
+    <li><a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Digital Factory start</li>
+    <li><a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Digital Factory start</li>
+    <li><a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Digital Factory start</li>
 </ul>
 </fieldset>
 <fieldset>
