@@ -71,19 +71,15 @@
             <p style="color: blue">Repository indexes check (no repair) undone</p>
         </c:when>
         <c:when test="${param.action == 'index-check-physical'}">
-        	<c:url var="indexCheckJspUrl" value="/modules/tools/searchIndexCheck.jsp"/>
-            <%
-            long actionTime = System.currentTimeMillis();
-            String indexCheckJspUrl = (String) pageContext.getAttribute("indexCheckJspUrl"); 
-            %>
+            <% long actionTime = System.currentTimeMillis(); %>
             <p style="color: blue">Start checking indexes for repository home <%= SettingsBean.getInstance().getRepositoryHome() %> (<%= org.jahia.utils.FileUtils.humanReadableByteCount(FileUtils.sizeOfDirectory(SettingsBean.getInstance().getRepositoryHome())) %>)</p>
-            <jsp:include page="<%= indexCheckJspUrl %>">
+            <jsp:include page="/modules/tools/searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="index"/>
             </jsp:include>
-            <jsp:include page="<%= indexCheckJspUrl %>">
+            <jsp:include page="/modules/tools/searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/default/index"/>
             </jsp:include>
-            <jsp:include page="<%= indexCheckJspUrl %>">
+            <jsp:include page="/modules/tools/searchIndexCheck.jsp">
                 <jsp:param name="indexPath" value="workspaces/live/index"/>
             </jsp:include>
             <%  pageContext.setAttribute("took", Long.valueOf(System.currentTimeMillis() - actionTime)); %>
