@@ -113,11 +113,13 @@
                     final Element element1 = cache.getQuiet(pageContext.getAttribute("key"));
                 %>
 
-                <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
-                        element1.getExpirationTime()))%>
+                <td><%= element1 != null ? SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
+                        element1.getExpirationTime())) : "Element not found in cache or just expired"%>
                 </td>
                 <%
-                    cacheSize += element1.getSerializedSize();
+                    if(element1 != null) {
+                        cacheSize += element1.getSerializedSize();
+                    }
                 %>
                 <td>
                     <div style="text-align: center;">
@@ -127,7 +129,7 @@
                             <c:param name="cache" value="${param.cache}"/>
                         </c:url>
                         <a href="${flushUrl}">flush</a>
-                        <br/>[<%= FileUtils.byteCountToDisplaySize(element1.getSerializedSize()).replace(" ", "&nbsp;") %>
+                        <br/>[<%= element1 != null ? FileUtils.byteCountToDisplaySize(element1.getSerializedSize()).replace(" ", "&nbsp;") : "-" %>
                         ]
                     </div>
                 </td>
