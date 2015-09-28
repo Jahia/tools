@@ -39,13 +39,6 @@ Thread dump task started<c:if test="${not empty outputFile}">. The output fill b
         &nbsp;&nbsp;
         <label for="threadDumpInterval">interval:&nbsp;</label><input type="text" id="threadDumpInterval" name="threadDumpInterval" size="2" value="${not empty param.threadDumpInterval ? param.threadDumpInterval : '10'}"/>&nbsp;seconds
     </li>
-    <li>
-       <img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" " align="top" />&nbsp;
-       <a
-        href="http://java.net/projects/tda/downloads/download/webstart/tda.jnlp"
-        title="Launch the current TDA 2.2 release from the browser (requires Java Webstart). Disclaimer: this is an external program from http://java.net/projects/tda/"
-        target="_blank" onclick="return confirm('This will launch the current TDA 2.2 release from the browser (requires Java Webstart).\nDisclaimer: this is an external program from http://java.net/projects/tda/\nWould you like to continue?');">Launch Thread Dump Analyzer</a>
-    </li>
 </ul>
 <p>------------------------------------------------------------------------------------------------------------------------------------<br/>
 * - The thread dumps are performed into a folder:
