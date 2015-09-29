@@ -313,8 +313,8 @@
         bindings.put("log", new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"),
                 "org.jahia.tools.groovyConsole", ctx.getWriter()));
         ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        engine.eval(code.toString(), ctx);
-        pageContext.setAttribute("result", ((StringWriter) ctx.getWriter()).getBuffer().toString());
+        Object result = engine.eval(code.toString(), ctx);
+        pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
         pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     }
 %>
