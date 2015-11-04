@@ -322,7 +322,6 @@ public class JspPrecompileServlet extends HttpServlet {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 System.out.println(" ERROR.");
-                e.printStackTrace();
                 buggyJsps.add(jspPath);
             }
             aResponse.resetBuffer();

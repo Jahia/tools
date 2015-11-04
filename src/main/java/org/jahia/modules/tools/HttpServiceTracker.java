@@ -73,6 +73,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service tracker for the HttpService to register the {@link JspPrecompileServlet}.
@@ -80,6 +82,8 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Sergiy Shyrkov
  */
 public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService> {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpServiceTracker.class);
 
     public HttpServiceTracker(BundleContext context) {
         super(context, HttpService.class.getName(), null);
@@ -94,7 +98,7 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
         try {
             httpService.registerServlet("/tools/precompileServlet", new JspPrecompileServlet(), null, null);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Cannot register Servlet",e);
         }
 
         return httpService;
