@@ -12,7 +12,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <%@ include file="css.jspf" %>
-<title>Digital Factory Support Tools</title>
+<title>Digital Experience Manager Support Tools</title>
 </head>
 <body>
 <h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>

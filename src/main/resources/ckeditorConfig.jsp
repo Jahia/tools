@@ -44,7 +44,7 @@ FileUtils.deleteQuietly(cfgFile);
 %>
 <p style="color: blue;">
 CKEditor configuration bundle created and deployed to: <%= targetFile %><br/>
-Please, wait for the Digital Factory server to deploy the bundle for changes to be effective. 
+Please, wait for the Digital Experience Manager server to deploy the bundle for changes to be effective.
 </p>
 </c:if>
 <form id="cke" action="ckeditorConfig.jsp" method="post">

@@ -39,7 +39,7 @@
 		</c:when>
         <c:when test="${param.action == 'reindex'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "reindex")); %>
-            <p style="color: blue">Re-indexing of the repository content will be done on next Digital Factory startup</p>
+            <p style="color: blue">Re-indexing of the repository content will be done on next Digital Experience Manager startup</p>
         </c:when>
         <c:when test="${param.action == 'reindex-undo'}">
             <% new File(SettingsBean.getInstance().getRepositoryHome(), "reindex").delete(); %>
@@ -56,7 +56,7 @@
         </c:when>
         <c:when test="${param.action == 'index-fix'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix")); %>
-            <p style="color: blue">Repository indexes check and fix will be done on next Digital Factory startup</p>
+            <p style="color: blue">Repository indexes check and fix will be done on next Digital Experience Manager startup</p>
         </c:when>
         <c:when test="${param.action == 'index-fix-undo'}">
             <% new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix").delete(); %>
@@ -64,7 +64,7 @@
         </c:when>
         <c:when test="${param.action == 'index-check'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-check")); %>
-            <p style="color: blue">Repository indexes check (no repair) will be done on next Digital Factory startup</p>
+            <p style="color: blue">Repository indexes check (no repair) will be done on next Digital Experience Manager startup</p>
         </c:when>
         <c:when test="${param.action == 'index-check-undo'}">
             <% new File(SettingsBean.getInstance().getRepositoryHome(), "index-check").delete(); %>
@@ -98,33 +98,33 @@
 </ul>
 </fieldset>
 <fieldset>
-<legend>On next Digital Factory startup</legend>
+<legend>On next Digital Experience Manager startup</legend>
 <ul>
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "reindex").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=reindex-undo">Undo repository re-indexing</a> - Remove marker file to skip repository re-indexing on the next Digital Factory start
+    	<a href="?action=reindex-undo">Undo repository re-indexing</a> - Remove marker file to skip repository re-indexing on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Digital Factory start
+    	<a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Digital Experience Manager start
     </c:if>
     </li>
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=index-fix-undo">Undo repository index check and fix</a> - Remove marker file to skip repository search indexes logical check and fix inconsistencies on the next Digital Factory start
+    	<a href="?action=index-fix-undo">Undo repository index check and fix</a> - Remove marker file to skip repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Digital Factory start
+    	<a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
     </c:if>
     </li>
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "index-check").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=index-check-undo">Undo repository index check (no repair)</a> - Remove marker file to skip repository search indexes logical check just reporting inconsistencies in the log on the next Digital Factory start
+    	<a href="?action=index-check-undo">Undo repository index check (no repair)</a> - Remove marker file to skip repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Digital Factory start
+    	<a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
     </c:if>
     </li>
 </ul>
