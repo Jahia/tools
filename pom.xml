@@ -84,7 +84,7 @@
     <version>3.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
-    <description>Digital Factory Support Tools</description>
+    <description>Digital Experience Manager Support Tools</description>
     
     <scm>
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
