@@ -5,10 +5,13 @@
 <%@ page import="javax.jcr.nodetype.NodeType"%>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
 <%@ page import="org.apache.commons.collections.IteratorUtils" %>
-<%@ page import="org.jahia.services.content.JCRContentUtils" %>
 <%@ page import="java.util.Comparator"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
+<%@ page import="org.jahia.services.content.*" %>
+<%@ page import="javax.jcr.RepositoryException" %>
+<%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
+<%@ page import="javax.jcr.query.Query" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -55,11 +58,66 @@
         });
     </script>
 </head>
+
+<form id="navigateForm" action="#" method="post">
+    <input type="hidden" id="action" name="action"/>
+    <input type="hidden" id="module" name="module"/>
+    <input type="hidden" id="nodetype" name="nodetype"/>
+</form>
+
 <%
     final NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
     List<String> systemIds = nodeTypeRegistry.getSystemIds();
     Collections.sort(systemIds);
     pageContext.setAttribute("systemIds", systemIds);
+
+    if ("deleteModule".equals(request.getParameter("action"))) {
+        final String moduleName = request.getParameter("module");
+
+        JCRCallback<Object> callback = new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+                java.util.Iterator it = NodeTypeRegistry.getInstance().getNodeTypes(moduleName);
+                while (it.hasNext()) {
+                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+                    JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType + "']", Query.JCR_SQL2).execute().getNodes();
+                    while (nodes.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+                        next.remove();
+                    }
+                }
+                jcrSessionWrapper.save();
+                return null;
+            }
+        };
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",callback);
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",callback);
+
+        NodeTypeRegistry.getInstance().unregisterNodeTypes(moduleName);
+        JCRStoreService.getInstance().undeployDefinitions(moduleName);
+    } else if ("deleteNodeType".equals(request.getParameter("action"))) {
+        final String moduleName = request.getParameter("module");
+        final String nodeType = request.getParameter("nodetype");
+
+        JCRCallback<Object> callback = new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+                JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType + "']", Query.JCR_SQL2).execute().getNodes();
+                while (nodes.hasNext()) {
+                    JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+                    next.remove();
+                }
+                jcrSessionWrapper.save();
+                return null;
+            }
+        };
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",callback);
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",callback);
+
+        NodeTypeRegistry.getInstance().unregisterNodeType(nodeType);
+        JCRStoreService.getInstance().deployDefinitions(moduleName);
+        // todo : uregister node type from jackrabbit
+    }
 %>
 <body id="dt_example">
 <%@ include file="gotoIndex.jspf" %>
@@ -81,7 +139,9 @@
         %>
         <tr class="gradeA">
             <td align="center">${pstatus.count}</td>
-            <td><a name="${pkg}" href="modulesBrowser.jsp?#${pkg}">${pkg}</a></td>
+            <td><a name="${pkg}" href="modulesBrowser.jsp?#${pkg}">${pkg}</a>
+                &nbsp;<a href="#delete" onclick="if (!confirm('You are about to delete all nodetypes from module ${pkg} and all associated content. Continue?')) return false; $('#action').val('deleteModule');$('#module').val('${pkg}'); $('#navigateForm').submit();" title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
+            </td>
                 <%--<td>${pkg.description}</td>--%>
                 <%--<td>${pkg.rootFolderPath}</td>--%>
                 <%--<td>${pkg.moduleType}</td>--%>
@@ -89,7 +149,9 @@
                 <ol>
                     <c:forEach items="${nodeTypes}" var="dep">
                         <c:set var="defFileName" value="${fn:replace(dep.name,':','_')}"/>
-                        <li><a href="#${defFileName}" class="defFileLink">${dep.name}</a></li>
+                        <li><a href="#${defFileName}" class="defFileLink">${dep.name}</a>
+                            &nbsp;<a href="#delete" onclick="if (!confirm('You are about to delete the nodetype ${dep.name} and all associated content. Continue?')) return false;  $('#action').val('deleteNodeType');$('#module').val('${pkg}'); $('#nodetype').val('${dep.name}'); $('#navigateForm').submit();" title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0" style="vertical-align: middle;"/></a>
+                        </li>
                         <div style="display:none;">
                             <div id="${defFileName}">
                                 <h3>${dep.name}</h3>
