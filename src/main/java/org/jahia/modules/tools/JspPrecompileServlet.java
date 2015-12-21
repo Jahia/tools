@@ -293,7 +293,6 @@ public class JspPrecompileServlet extends HttpServlet {
                 System.out.println(" OK.");
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                System.out.println(" ERROR.");
                 buggyJsps.add(jspPath);
             }
             aResponse.resetBuffer();
