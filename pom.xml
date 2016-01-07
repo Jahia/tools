@@ -106,7 +106,6 @@
                             org.apache.jackrabbit.commons,
                             org.apache.jackrabbit.core.stats,
                             org.jahia.tools,
-                            org.hibernate.engine.jdbc,
                             org.quartz.utils,
                             org.slf4j.ext,
                             org.springframework.beans,
