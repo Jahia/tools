@@ -2,14 +2,214 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<%@ page import="org.apache.log4j.Level" %>
-<%@ page import="org.apache.log4j.LogManager" %>
-<%@ page import="org.apache.log4j.Logger" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.Enumeration" %>
-<%@ page import="java.util.Set" %>
-<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.lang.reflect.Method" %>
+<%@ page import="java.lang.reflect.InvocationTargetException" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%!
+
+    private ClassLoader webappClassLoader = this.getClass().getClassLoader().getParent().getParent().getParent().getParent();
+    private Class logManagerClass = null;
+    private Class levelClass = null;
+    private Method toLevelMethod = null;
+
+    public Class getLogManager() {
+        if (logManagerClass != null) {
+            return logManagerClass;
+        }
+        try {
+            logManagerClass = webappClassLoader.loadClass("org.apache.log4j.LogManager");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return logManagerClass;
+    }
+
+    public Class getLevelClass() {
+        if (levelClass != null) {
+            return levelClass;
+        }
+        try {
+            levelClass = webappClassLoader.loadClass("org.apache.log4j.Level");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return levelClass;
+    }
+
+    public Object toLevel(String levelName) {
+        Object level = null;
+        try {
+            if (toLevelMethod == null) {
+                toLevelMethod = levelClass.getMethod("toLevel", String.class);
+            }
+            level = toLevelMethod.invoke(null, levelName);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return level;
+    }
+
+    public boolean setLoggerLevel(String loggerName, String loggerLevel) {
+        Object logger = getLogger(loggerName);
+        if (logger == null) {
+            return false;
+        }
+        try {
+            Method setLevelMethod = logger.getClass().getMethod("setLevel", getLevelClass());
+            setLevelMethod.invoke(logger, toLevel(loggerLevel));
+            return true;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Map<String,String>> getLoggers() {
+        List<Map<String,String>> loggers = new ArrayList<Map<String,String>>();
+        return loggers;
+    }
+
+    public String getLoggerName(Object logger) {
+        String loggerName = null;
+        try {
+            Method method = logger.getClass().getMethod("getName");
+            loggerName = (String) method.invoke(logger);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return loggerName;
+    }
+
+    public Object getLoggerEffectiveLevel(Object logger) {
+        Object effectiveLevel = null;
+        try {
+            Method method = logger.getClass().getMethod("getEffectiveLevel");
+            effectiveLevel = method.invoke(logger);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return effectiveLevel;
+    }
+
+    public Object getLoggerLevel(Object logger) {
+        Object level = null;
+        try {
+            Method method = logger.getClass().getMethod("getLevel");
+            level = method.invoke(logger);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return level;
+    }
+
+    public Object getLoggerParent(Object logger) {
+        Object parent = null;
+        try {
+            Method method = logger.getClass().getMethod("getParent");
+            parent = method.invoke(logger);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return parent;
+    }
+
+    public void setLoggerLevel(Object logger, Object level) {
+        try {
+            Method method = logger.getClass().getMethod("setLevel", getLevelClass());
+            method.invoke(logger, level);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Object getRootLogger() {
+        Class logManagerClass = getLogManager();
+        Object rootLogger = null;
+        try {
+            Method getRootLoggerMethod = logManagerClass.getMethod("getRootLogger");
+            rootLogger = getRootLoggerMethod.invoke(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return rootLogger;
+
+    }
+
+    public Object getLogger(String loggerName) {
+        Class logManagerClass = getLogManager();
+        Object logger = null;
+        try {
+            Method getRootLoggerMethod = logManagerClass.getMethod("getLogger", String.class);
+            logger = getRootLoggerMethod.invoke(null, loggerName);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return logger;
+    }
+
+    public String getRootLoggerName() {
+            Object rootLogger = getRootLogger();
+        if (rootLogger == null) {
+            return null;
+        }
+        return getLoggerName(rootLogger);
+    }
+
+    public Enumeration getCurrentLoggers() {
+        Enumeration currentLoggers = null;
+        Class logManagerClass = getLogManager();
+        try {
+            Method getCurrentLoggersMethod = logManagerClass.getMethod("getCurrentLoggers");
+            currentLoggers = (Enumeration) getCurrentLoggersMethod.invoke(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return currentLoggers;
+    }
+
+%>
 <% long beginPageLoadTime = System.currentTimeMillis();%>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -137,6 +337,7 @@
 <%@ include file="gotoIndex.jspf" %>
 
 <%
+
     String containsFilter = "Contains";
     String beginsWithFilter = "Begins With";
 
@@ -189,38 +390,40 @@
 
     <c:if test="${param.operation == 'Add' && not empty param.logger}">
         <%
-        LogManager.getLogger(targetLogger).setLevel(Level.toLevel(targetLogLevel));
+            setLoggerLevel(targetLogger, targetLogLevel);
         %>
     </c:if>
     <%
-        Enumeration loggers = LogManager.getCurrentLoggers();
+        Enumeration loggers = getCurrentLoggers();
 
-        HashMap loggersMap = new HashMap(128);
-        Logger rootLogger = LogManager.getRootLogger();
+        Map<String,Object> loggersMap = new LinkedHashMap<String,Object>();
+        Object rootLogger = getRootLogger();
+        String rootLoggerName = getLoggerName(rootLogger);
 
-        if (!loggersMap.containsKey(rootLogger.getName())) {
+        if (!loggersMap.containsKey(rootLoggerName)) {
 
-            loggersMap.put(rootLogger.getName(), rootLogger);
+            loggersMap.put(rootLoggerName, rootLogger);
         }
 
         while (loggers.hasMoreElements()) {
-            Logger logger = (Logger) loggers.nextElement();
+            Object logger = loggers.nextElement();
+            String loggerName = getLoggerName(logger);
 
             if (logNameFilter == null || logNameFilter.trim().length() == 0) {
 
-                loggersMap.put(logger.getName(), logger);
+                loggersMap.put(loggerName, logger);
             } else if (containsFilter.equals(logNameFilterType)) {
 
-                if (logger.getName().toUpperCase().indexOf(logNameFilter.toUpperCase()) >= 0) {
+                if (loggerName.toUpperCase().indexOf(logNameFilter.toUpperCase()) >= 0) {
 
-                    loggersMap.put(logger.getName(), logger);
+                    loggersMap.put(loggerName, logger);
                 }
 
             } else {
 // Either was no filter in IF, contains filter in ELSE IF, or begins with in ELSE
-                if (logger.getName().startsWith(logNameFilter)) {
+                if (loggerName.startsWith(logNameFilter)) {
 
-                    loggersMap.put(logger.getName(), logger);
+                    loggersMap.put(loggerName, logger);
                 }
 
             }
@@ -234,25 +437,25 @@
         Arrays.sort(keys, String.CASE_INSENSITIVE_ORDER);
         for (int i = 0; i < keys.length; i++) {
 
-            Logger logger = (Logger) loggersMap.get(keys[i]);
+            String loggerName = keys[i];
+            Object logger = loggersMap.get(loggerName);
 
 // MUST CHANGE THE LOG LEVEL ON LOGGER BEFORE GENERATING THE LINKS AND THE
 // CURRENT LOG LEVEL OR DISABLED LINK WON'T MATCH THE NEWLY CHANGED VALUES
-            if ("changeLogLevel".equals(targetOperation) && targetLogger.equals(logger.getName())) {
+            if ("changeLogLevel".equals(targetOperation) && targetLogger.equals(loggerName)) {
 
-                Logger selectedLogger = (Logger) loggersMap.get(targetLogger);
+                Object selectedLogger = loggersMap.get(targetLogger);
 
-                selectedLogger.setLevel(Level.toLevel(targetLogLevel));
+                setLoggerLevel(selectedLogger, toLevel(targetLogLevel));
             }
 
-            String loggerName = null;
+            loggerName = null;
             String loggerEffectiveLevel = null;
             String loggerParent = null;
             if (logger != null) {
-                loggerName = logger.getName();
-                loggerEffectiveLevel = String.valueOf(logger.getEffectiveLevel());
-                loggerParent = (logger.getParent() == null ? "-" : logger.getParent().getName());
-
+                loggerName = getLoggerName(logger);
+                loggerEffectiveLevel = String.valueOf(getLoggerEffectiveLevel(logger));
+                loggerParent = (getLoggerParent(logger) == null ? "-" : getLoggerName(getLoggerParent(logger)));
             }
     %>
     <tr>
@@ -271,7 +474,8 @@
 
                     String url = "?operation=changeLogLevel&logger=" + loggerName + "&newLogLevel=" + logLevels[cnt] + "&logNameFilter=" + (logNameFilter != null ? logNameFilter : "") + "&logNameFilterType=" + (logNameFilterType != null ? logNameFilterType : "");
 
-                    if (logger.getLevel() == Level.toLevel(logLevels[cnt]) || logger.getEffectiveLevel() == Level.toLevel(logLevels[cnt])) {
+                    if (getLoggerLevel(logger) == toLevel(logLevels[cnt]) ||
+                            getLoggerEffectiveLevel(logger) == toLevel(logLevels[cnt])) {
 
             %>
             <span class="active-level">[<%=logLevels[cnt].toUpperCase()%>]</span>&nbsp;

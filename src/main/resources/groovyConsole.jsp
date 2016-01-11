@@ -4,7 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ page import="org.apache.commons.io.FileUtils" %>
-<%@ page import="org.jahia.tools.patches.LoggerWrapper" %>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="javax.script.*" %>
@@ -18,6 +17,7 @@
 <%@ page import="org.jahia.services.scheduler.SchedulerService" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.quartz.SchedulerException" %>
+<%@ page import="org.jahia.modules.tools.LoggerWrapper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
