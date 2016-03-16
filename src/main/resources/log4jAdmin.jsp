@@ -41,7 +41,7 @@
         Object level = null;
         try {
             if (toLevelMethod == null) {
-                toLevelMethod = levelClass.getMethod("toLevel", String.class);
+                toLevelMethod = getLevelClass().getMethod("toLevel", String.class);
             }
             level = toLevelMethod.invoke(null, levelName);
         } catch (NoSuchMethodException e) {
