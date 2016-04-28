@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="javax.jcr.nodetype.PropertyDefinition"%>
 <%@page import="javax.jcr.version.Version" %>
+<%@page import="org.apache.commons.collections.IteratorUtils"%>
 <%@page import="org.apache.commons.lang.StringUtils" %>
 <%@page import="javax.jcr.version.VersionIterator" %>
 <%@page import="java.util.*" %>
@@ -24,12 +25,24 @@
 <c:set var="showProperties" value="${functions:default(fn:escapeXml(param.showProperties), 'false')}"/>
 <c:set var="showReferences" value="${functions:default(fn:escapeXml(param.showReferences), 'false')}"/>
 <c:set var="showNodes" value="${functions:default(fn:escapeXml(param.showNodes), 'true')}"/>
+<c:set var="sortNodes" value="${functions:default(fn:escapeXml(param.sortNodes), 'false')}"/>
 <c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <c:set var="showVersions" value="${functions:default(param.showVersions, 'false')}"/>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="nodeId" value="${not empty param.uuid ? fn:trim(fn:escapeXml(param.uuid)) : 'cafebabe-cafe-babe-cafe-babecafebabe'}"/>
 <c:set var="showJCRNodes" value="${not empty param.showJCRNodes ? fn:trim(fn:escapeXml(param.showJCRNodes)) : 'false'}"/>
 <%!
+	private static Comparator<Item> BY_NAME_COMPARATOR = new Comparator<Item>() {
+	    public int compare(Item o1, Item o2) {
+	        try {
+	        	return o1.getName().compareTo(o2.getName());
+	        } catch (Exception e) {
+	            // ignore
+	        }
+	        return 0;
+	    }
+	};
+	
     private void traceVersionTree(Version v, List<StringBuffer> lines, Map<String, int[]> m, int currentLine, int col) throws Exception {
         m.put(v.getName(), new int[]{currentLine,col});
         while (lines.size() <= currentLine) {
@@ -157,6 +170,7 @@
         <input type="hidden" id="showProperties" name="showProperties" value="${showProperties}"/>
         <input type="hidden" id="showReferences" name="showReferences" value="${showReferences}"/>
         <input type="hidden" id="showNodes" name="showNodes" value="${showNodes}"/>
+        <input type="hidden" id="sortNodes" name="sortNodes" value="${sortNodes}"/>
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
         <input type="hidden" id="showVersions" name="showVersions" value="${showVersions}"/>
         <input type="hidden" id="workspace" name="workspace" value="${workspace}"/>
@@ -184,7 +198,7 @@
 <c:url value="/icons/${showActions ? 'preview' : 'editContent'}.png" var="iconActions"/>
 <c:set var="anotherWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<img src="${iconWorkspace}" width="16" height="16" alt=" "/>&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="#switchWorkspace" onclick="go('workspace', '${anotherWorkspace}'); return false;">switch to ${anotherWorkspace} <img src="${iconSwitchWorkspace}" width="16" height="16" alt=" "/></a>)
-    &nbsp; browse as ${showJCRNodes?"<span style='color:red;font-weight:bold'>jcr</span>":"jahia"} session (<a href="#showJCRNodes" onclick="go('showJCRNodes','${showJCRNodes?"false":"true"}','uuid','cafebabe-cafe-babe-cafe-babecafebabe'); return false;">switch to ${!showJCRNodes?"jcr":"jahia"}</a>) )
+    &nbsp; browse as ${showJCRNodes?"<span style='color:red;font-weight:bold'>jcr</span>":"jahia"} session (<a href="#showJCRNodes" onclick="go('showJCRNodes','${showJCRNodes?"false":"true"}'); return false;">switch to ${!showJCRNodes?"jcr":"jahia"}</a>) )
     &nbsp;
     <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px;"/>repository explorer</a>
 </legend>
@@ -198,6 +212,8 @@
                onchange="go('showProperties', '${!showProperties}')"/>&nbsp;<label for="cbProperties">Show properties</label><br/>
         <input id="cbNodes" type="checkbox" ${showNodes ? 'checked="checked"' : ''}
                onchange="go('showNodes', '${!showNodes}')"/>&nbsp;<label for="cbNodes">Show child nodes</label><br/>
+        <input id="cbSortNodes" type="checkbox" ${sortNodes ? 'checked="checked"' : ''}
+               onchange="go('sortNodes', '${!sortNodes}')"/>&nbsp;<label for="cbSortNodes">Sort child nodes</label><br/>
         <input id="cbReferences" type="checkbox" ${showReferences ? 'checked="checked"' : ''}
                onchange="go('showReferences', '${!showReferences}')"/>&nbsp;<label for="cbReferences">Show references</label><br/>
         <input id="cbVersions" type="checkbox" ${showVersions ? 'checked="checked"' : ''}
@@ -404,6 +420,12 @@
         <c:set var="propCount" value="${fn:length(node.properties)}"/>
         <c:if test="${propCount == 0}"><li>No properties present</li></c:if>
         <c:if test="${propCount > 0}">
+        	<%
+        	// sort properties
+        	List sortedProperties = IteratorUtils.toList((Iterator) pageContext.getAttribute("properties"));
+        	Collections.sort(sortedProperties, BY_NAME_COMPARATOR);
+        	pageContext.setAttribute("properties", sortedProperties);
+        	%>
             <c:forEach items="${properties}" var="property">
                 <li>
                     <strong>${fn:escapeXml(property.name)}:&nbsp;</strong>
@@ -457,8 +479,9 @@
     </ul>
 </c:if>
 
-<p><strong>Child nodes:&nbsp;</strong><a href="#nodes" onclick="go('showNodes', ${showNodes ? 'false' : 'true'}); return false;">${showNodes ? 'hide' : 'show'}</a>
+<p><strong>Child nodes:&nbsp;</strong><a href="#nodes" onclick="go('showNodes', '${!showNodes}'); return false;">${showNodes ? 'hide' : 'show'}</a>
     <c:if test="${showNodes}">
+    / <a href="#sortNodes" onclick="go('sortNodes', '${!sortNodes}'); return false;">${sortNodes ? 'no sort' : 'sort'}</a>
     <c:set var="nodes" value="${node.nodes}"/>
     <c:set var="childrenCount" value="${functions:length(nodes)}"/>
     <c:if test="${childrenCount > 0}">- ${childrenCount} nodes found</c:if>
@@ -469,7 +492,15 @@
     </c:if>
     <c:if test="${childrenCount == 0}"><li>No child nodes present</li></c:if>
     <c:if test="${childrenCount > 0}">
-        <c:forEach items="${nodes}" var="child">
+    	<c:if test="${sortNodes && childrenCount > 1}">
+        	<%
+        	// sort properties
+        	List sortedNodes = IteratorUtils.toList((Iterator) pageContext.getAttribute("nodes"));
+        	Collections.sort(sortedNodes, BY_NAME_COMPARATOR);
+        	pageContext.setAttribute("sortedNodes", sortedNodes);
+        	%>
+        </c:if>
+        <c:forEach items="${not empty sortedNodes ? sortedNodes : nodes}" var="child">
             <%
                 pageContext.setAttribute("childNodeTypes",getNodeTypes((Node) pageContext.getAttribute("child")));
             %>
