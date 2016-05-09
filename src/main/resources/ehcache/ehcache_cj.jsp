@@ -5,7 +5,6 @@
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
 <%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
-<%@ page import="org.jahia.services.render.filter.cache.AggregateCacheFilter" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -92,7 +91,7 @@
             depCache.flush();
             depCache.removeAll();
             ((AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls")).flushUsersGroupsKey();
-            AggregateCacheFilter.flushNotCacheableFragment();
+            ModuleCacheProvider.getInstance().flushNonCacheableFragments();
         }
         List keys = cache.getKeys();
         pageContext.setAttribute("keys", keys);
