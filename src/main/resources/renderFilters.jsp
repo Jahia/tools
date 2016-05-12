@@ -12,8 +12,8 @@
 <%
     String beanName = request.getParameter("bean");
     String s= request.getParameter("switch");
-    long p= request.getParameter("priority") == null ? 0 : (long) Double.parseDouble(request.getParameter("priority"));
-    long pp= request.getParameter("previousPriority") == null ? 0 : (long)
+    float p= request.getParameter("priority") == null ? 0 : (float) Double.parseDouble(request.getParameter("priority"));
+    float pp= request.getParameter("previousPriority") == null ? 0 : (float)
             Double.parseDouble(request.getParameter("previousPriority"));
 
     if (beanName != null) {
