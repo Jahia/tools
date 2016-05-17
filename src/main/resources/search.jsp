@@ -93,7 +93,7 @@
     <li><a href="?action=reindex-now&ws=all" onclick="return confirm('This will schedule a background task for re-indexing content of the whole repository. Would you like to continue?')">Whole repository re-indexing</a> - Do whole repository (live, default and system indexes + spellchecker) re-indexing now</li>
     <li><a href="?action=reindex-now&ws=live" onclick="return confirm('This will schedule a background task for re-indexing content of the live repository workspace. Would you like to continue?')">Live repository re-indexing</a> - Do repository re-indexing now</li>
     <li><a href="?action=reindex-now&ws=default" onclick="return confirm('This will schedule a background task for re-indexing content of the default repository workspace. Would you like to continue?')">Default repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=reindex-now" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing system</a> - Do repository re-indexing now</li>
+    <li><a href="?action=reindex-now" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing</a> - Do repository re-indexing now</li>
     <li><a href="?action=updateSpellCheckerIndex" onclick="return confirm('This will schedule a background task for updating the spellchecker index for live and default workspaces. Would you like to continue?')">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
 </ul>
 </fieldset>
