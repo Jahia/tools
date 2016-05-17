@@ -353,7 +353,7 @@
 %>
 <form id="groovyForm" action="?" method="post">
     <input type="checkbox" value="background" name="background">Background</input>
-    <p>Paste here the Groovy code you would like to execute against Jahia:</p>
+    <p>Paste here the Groovy code you would like to execute against DX:</p>
 
     <p>
         <textarea rows="25" style="width: 100%" id="text" name="script"
