@@ -159,7 +159,6 @@
                                 <a href="${detailsUrl}" target="_blank">view</a>
                                 <a href="${flushUrl}">flush</a>
                                 <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ", "&nbsp;") %>]<br/>
-                                <%=((CacheEntry) element.getObjectValue()).getExtendedProperties().get("allPaths")%>
                             </div>
                         </c:if>
                     </td>
