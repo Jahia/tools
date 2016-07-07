@@ -12,6 +12,9 @@
 <%@ page import="javax.jcr.RepositoryException" %>
 <%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
 <%@ page import="javax.jcr.query.Query" %>
+<%@ page import="javax.jcr.nodetype.ConstraintViolationException" %>
+<%@ page import="javax.jcr.nodetype.NodeTypeManager" %>
+<%@ page import="javax.jcr.ItemNotFoundException" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -65,6 +68,46 @@
     <input type="hidden" id="nodetype" name="nodetype"/>
 </form>
 
+<%!
+    private void deleteNodeTypes(final java.util.Iterator it, boolean unregister, final JspWriter out) throws java.io.IOException, RepositoryException {
+        while (it.hasNext()) {
+            final ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+
+            JCRCallback<Object> callback = new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+                    JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType.getName() + "']", Query.JCR_SQL2).execute().getNodes();
+                    while (nodes.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+                        if (nodeType.isMixin() && !next.getPrimaryNodeType().isNodeType(nodeType.getName())) {
+                            System.out.println("removed mixin " +nodeType.getName() +" for "+next.getName());
+                            next.removeMixin(nodeType.getName());
+                        } else {
+                            System.out.println("removed node " +nodeType.getName() +" for "+next.getName());
+                            next.remove();
+                        }
+                    }
+                    jcrSessionWrapper.save();
+                    return null;
+                }
+            };
+            out.println("delete "+nodeType + "...");
+            try {
+                out.println("delete nodes for "+nodeType + "...");
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",callback);
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",callback);
+                if (unregister) {
+                    out.println("unregister "+nodeType + "...");
+                    NodeTypeRegistry.getInstance().unregisterNodeType(nodeType.getName());
+                }
+            } catch (Exception e) {
+                out.print("<b>"+e.getMessage()+"</b>");
+            }
+            out.println("</br>");
+        }
+    }
+
+%>
 <%
     final NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
     List<String> systemIds = nodeTypeRegistry.getSystemIds();
@@ -73,48 +116,25 @@
 
     if ("deleteModule".equals(request.getParameter("action"))) {
         final String moduleName = request.getParameter("module");
+        java.util.Iterator it =  NodeTypeRegistry.getInstance().getNodeTypes(moduleName);
 
-        JCRCallback<Object> callback = new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                java.util.Iterator it = NodeTypeRegistry.getInstance().getNodeTypes(moduleName);
-                while (it.hasNext()) {
-                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
-                    JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType + "']", Query.JCR_SQL2).execute().getNodes();
-                    while (nodes.hasNext()) {
-                        JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-                        next.remove();
-                    }
-                }
-                jcrSessionWrapper.save();
-                return null;
-            }
-        };
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",callback);
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",callback);
+        deleteNodeTypes(it, false, out);
 
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(moduleName);
-        JCRStoreService.getInstance().undeployDefinitions(moduleName);
+        try {
+            out.println("unregister all nodetypes for "+moduleName);
+
+            NodeTypeRegistry.getInstance().unregisterNodeTypes(moduleName);
+            JCRStoreService.getInstance().undeployDefinitions(moduleName);
+        } catch (java.lang.Exception exception) {
+            exception.printStackTrace();
+        }
     } else if ("deleteNodeType".equals(request.getParameter("action"))) {
         final String moduleName = request.getParameter("module");
-        final String nodeType = request.getParameter("nodetype");
 
-        JCRCallback<Object> callback = new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType + "']", Query.JCR_SQL2).execute().getNodes();
-                while (nodes.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-                    next.remove();
-                }
-                jcrSessionWrapper.save();
-                return null;
-            }
-        };
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"default",callback);
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",callback);
+        final List<ExtendedNodeType> nodeType = new java.util.ArrayList<ExtendedNodeType>();
+        nodeType.add(NodeTypeRegistry.getInstance().getNodeType(request.getParameter("nodetype")));
+        deleteNodeTypes(nodeType.iterator(), true, out);
 
-        NodeTypeRegistry.getInstance().unregisterNodeType(nodeType);
         JCRStoreService.getInstance().deployDefinitions(moduleName);
         // todo : uregister node type from jackrabbit
     }
