@@ -111,10 +111,15 @@
                 <td>${key}</td>
                 <%
                     final Element element1 = cache.getQuiet(pageContext.getAttribute("key"));
+                    final long expirationTime = element1.getExpirationTime();
                 %>
 
-                <td><%= element1 != null ? SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
-                        element1.getExpirationTime())) : "Element not found in cache or just expired"%>
+                <td><%= element1 != null
+                        ? (expirationTime == Long.MAX_VALUE
+                            ? "Never expires"
+                            : SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(expirationTime))
+                        )
+                        : "Element not found in cache or just expired" %>
                 </td>
                 <%
                     if(element1 != null) {
