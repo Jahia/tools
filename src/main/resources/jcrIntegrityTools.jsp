@@ -67,7 +67,10 @@
 
 <h2>Integrity checks</h2>
 <%@ include file="functions.jspf" %>
+
 <%!
+    private static SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
+
     private void runJCRTest(final JspWriter out, HttpServletRequest request, JspContext pageContext, final boolean fix) throws IOException {
 
         if (running) {
@@ -117,17 +120,24 @@
 
             printTestName(out, "JCR Integrity Check " + (exclusions.length() > 0 ? "(" + exclusions.toString() + ")" : ""));
         }
+
         try {
+
             String chosenWorkspace = request.getParameter("workspace");
             final Map<String, Long> results = new HashMap<String, Long>();
             results.put("bytesRead", 0L);
             results.put("nodesRead", 0L);
             bytesRead = 0;
             startTime = System.currentTimeMillis();
+
             for (String workspaceName : workspaces) {
                 if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
+
                     JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspaceName, null, new JCRCallback<Object>() {
+
+                        @Override
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
+
                             JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
                             Node jcrRootNode = jahiaRootNode.getRealNode();
                             Session jcrSession = jcrRootNode.getSession();
@@ -135,7 +145,7 @@
                             Workspace workspace = jcrSession.getWorkspace();
                             try {
                                 println(out, "Traversing " + workspace.getName() + " workspace ...");
-                                processNode(out, jcrRootNode, results, fix, referencesCheck, binaryCheck);
+                                processNode(out, sessionWrapper, jcrRootNode, results, fix, referencesCheck, binaryCheck);
                             } catch (IOException e) {
                                 throw new RepositoryException("IOException while running", e);
                             }
@@ -144,6 +154,7 @@
                     });
                 }
             }
+
             if (fix) {
                 CacheHelper cacheHelper = (CacheHelper) SpringContextSingleton.getInstance().getContext().getBean("CacheHelper");
                 if (cacheHelper != null) {
@@ -153,6 +164,7 @@
                     println(out, "Couldn't find cache helper, please flush all caches manually.");
                 }
             }
+
             bytesRead = results.get("bytesRead");
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
@@ -167,12 +179,9 @@
             running = false;
             mustStop = false;
         }
-
     }
 
-    private static SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
-
-    protected boolean processPropertyValue(JspWriter out, Node node, Property property, Value propertyValue, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws RepositoryException, IOException {
+    protected boolean processPropertyValue(JspWriter out, Session session, Node node, Property property, Value propertyValue, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws RepositoryException, IOException {
         int propertyType = propertyValue.getType();
         switch (propertyType) {
             case PropertyType.BINARY:
@@ -204,11 +213,11 @@
                 }
                 String uuid = propertyValue.getString();
                 try {
-                    Node referencedNode = node.getSession().getNodeByIdentifier(uuid);
+                    Node referencedNode = session.getNodeByIdentifier(uuid);
                 } catch (ItemNotFoundException infe) {
                     if (Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()) && isNodeUnderSiteTemplates(node.getPath())) {
                         try {
-                            JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE).getNodeByIdentifier(uuid);
+                            JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, null, null).getNodeByIdentifier(uuid);
                             // node found in default -> ignore this case
                             break;
                         } catch (ItemNotFoundException infeDefault) {
@@ -226,14 +235,14 @@
                             } catch (PathNotFoundException pnfe) {
                                 originalLastModificationDate = null;
                             }
-                            Session session = node.getSession();
+                            Session nodeSession = node.getSession();
                             if (!parentNode.isCheckedOut()) {
-                                session.getWorkspace().getVersionManager().checkout(parentNode.getPath());
+                                nodeSession.getWorkspace().getVersionManager().checkout(parentNode.getPath());
                             }
                             node.remove();
-                            session.save();
+                            nodeSession.save();
                             // let's reload the node to make sure we don't have any cache issues.
-                            parentNode = session.getNodeByIdentifier(parentNode.getIdentifier());
+                            parentNode = nodeSession.getNodeByIdentifier(parentNode.getIdentifier());
                             Calendar newLastModificationDate = null;
                             try {
                                 newLastModificationDate = parentNode.getProperty(Constants.JCR_LASTMODIFIED).getDate();
@@ -247,7 +256,7 @@
                                     (!newLastModificationDate.equals(originalLastModificationDate))) {
                                 println(out, "Last modification date ("+originalLastModificationDate.getTime().toString()+") was changed by save operation (to "+newLastModificationDate.getTime().toString()+"), must reset to old value !");
                                 parentNode.setProperty(Constants.JCR_LASTMODIFIED, originalLastModificationDate);
-                                session.save();
+                                nodeSession.save();
                             }
                             return false;
                         } else {
@@ -270,10 +279,10 @@
                             } else {
                                 property.setValue((Value) null);
                             }
-                            Session session = node.getSession();
-                            session.save();
+                            Session nodeSession = node.getSession();
+                            nodeSession.save();
                             // let's reload the node to make sure we don't have any cache issues.
-                            node = session.getNodeByIdentifier(node.getIdentifier());
+                            node = nodeSession.getNodeByIdentifier(node.getIdentifier());
                             Calendar newLastModificationDate = null;
                             try {
                                 newLastModificationDate = node.getProperty(Constants.JCR_LASTMODIFIED).getDate();
@@ -287,7 +296,7 @@
                                     (!newLastModificationDate.equals(originalLastModificationDate))) {
                                 println(out, "Last modification date ("+originalLastModificationDate.getTime().toString()+") was changed by save operation (to "+newLastModificationDate.getTime().toString()+"), must reset to old value !");
                                 node.setProperty(Constants.JCR_LASTMODIFIED, originalLastModificationDate);
-                                session.save();
+                                nodeSession.save();
                             }
                         }
                     }
@@ -297,7 +306,7 @@
         }
         return true;
     }
-    
+
     private boolean isNodeUnderSiteTemplates(String pathToCheck) {
         boolean isUnder = false;
         if (pathToCheck.startsWith("/sites/") && pathToCheck.length() > "/sites/".length()) {
@@ -305,7 +314,6 @@
             int ix = pathToCheck.indexOf("/templates/");
             isUnder = ix != -1 && ix == pathToCheck.indexOf('/');
         }
-        
         return isUnder;
     }
 
@@ -318,7 +326,7 @@
         return false;
     }
 
-    protected void processNode(JspWriter out, Node node, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws IOException, RepositoryException {
+    protected void processNode(JspWriter out, Session session, Node node, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws IOException, RepositoryException {
         long nodesRead = results.get("nodesRead");
         // first let's try to read all the properties
         try {
@@ -335,18 +343,18 @@
                     int propertyType = property.getType();
                     if (property.isMultiple()) {
                         try {
-                        	Value[] values = property.getValues();
-                        	for (int i = 0; i < values.length; i++) {
-                            	if (!processPropertyValue(out, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
-                                	return;
-                            	}
-                        	}
+                            Value[] values = property.getValues();
+                            for (int i = 0; i < values.length; i++) {
+                                if (!processPropertyValue(out, session, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
+                                    return;
+                                }
+                            }
                         }catch(javax.jcr.nodetype.ConstraintViolationException x) {
                              //Definition was changed, property is missing
                             System.out.println("Warning: Property definition for node " + node.getPath() + " is missing:" + x.getMessage());
                         }
                     } else {
-                        if (!processPropertyValue(out, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {
+                        if (!processPropertyValue(out, session, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {
                             return;
                         }
                     }
@@ -358,7 +366,7 @@
                 if (childNode.getName().equals("jcr:system")) {
                     println(out, "Ignoring jcr:system node and it's child objects");
                 } else {
-                    processNode(out, childNode, results, fix, referencesCheck, binaryCheck);
+                    processNode(out, session, childNode, results, fix, referencesCheck, binaryCheck);
                 }
             }
         } catch (ValueFormatException vfe) {
@@ -381,6 +389,7 @@
     static boolean running = false;
     static boolean mustStop = false;
 %>
+
 <%
     if (request.getParameterMap().size() > 0) {
         long timer = System.currentTimeMillis();
@@ -415,8 +424,8 @@
             out.println("</form>");
         }
     }
-
 %>
+
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>
