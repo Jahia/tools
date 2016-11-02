@@ -81,11 +81,9 @@
             <td align="center"><strong>${filter.priority}</strong></td>
             <td title="${filterClassName}"><c:set var="parts" value="${fn:split(filterClassName, '.')}"/>${parts[fn:length(parts) - 1]}</td>
             <td>
-                <% if (pageContext.getAttribute("filter") instanceof AbstractFilter) {%>
-                    ${fn:escapeXml(filter.description)}
-                <% } %>
+                ${!empty aFilter ? fn:escapeXml(aFilter.description) : ''}
             </td>
-            <td>${fn:escapeXml(filter.conditionsSummary)}</td>
+            <td>${!empty aFilter ? fn:escapeXml(aFilter.conditionsSummary) : ''}</td>
             <td><c:if test="${!empty aFilter}">${aFilter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</c:if></td>
             <td>
                 <c:if test="${!empty aFilter}">
