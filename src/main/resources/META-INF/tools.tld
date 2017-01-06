@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <description>Provides functions for the Groovy Console</description>
+    <display-name>DX Tools</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>tools</short-name>
+    <uri>http://www.jahia.org/tags/tools</uri>
+    <function>
+        <description>Returns a collection of BundleResource, representing scripts, which are found in all active module bundles.</description>
+        <name>getGroovyConsoleScripts</name>
+        <function-class>org.jahia.modules.tools.taglibs.GroovyConsoleHelper</function-class>
+        <function-signature>java.util.Collection getGroovyConsoleScripts()</function-signature>
+    </function>
+    <function>
+        <description>Returns a generated HTML with form elements for the script parameters.</description>
+        <name>getScriptCustomFormElements</name>
+        <function-class>org.jahia.modules.tools.taglibs.GroovyConsoleHelper</function-class>
+        <function-signature>java.lang.String getScriptCustomFormElements(java.lang.String,javax.servlet.http.HttpServletRequest))</function-signature>
+    </function>
+
+
+</taglib>

@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"
-        %>
-<?xml version="1.0" encoding="UTF-8" ?>
+%><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ page import="org.apache.commons.io.FileUtils" %>
@@ -14,289 +13,74 @@
 <%@ page import="org.jahia.services.scheduler.BackgroundJob" %>
 <%@ page import="org.quartz.JobDetail" %>
 <%@ page import="org.quartz.JobDataMap" %>
-<%@ page import="org.jahia.services.scheduler.SchedulerService" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.quartz.SchedulerException" %>
+<%@ page import="org.springframework.core.io.UrlResource" %>
+<%@ page import="java.io.InputStream" %>
+<%@ page import="org.apache.commons.io.IOUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.jahia.modules.tools.LoggerWrapper" %>
+<%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
     <title>Groovy Console</title>
+    <%@ include file="css.jspf" %>
+    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
+    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('a.fancybox-link').fancybox({
+                'hideOnContentClick': false,
+                'titleShow': false,
+                'transitionOut': 'none'
+            });
+        });
+    </script>
 </head>
 <body>
-<h1>Groovy Console</h1>
+<h1>Groovy Console&nbsp;<a class="fancybox-link" title="Help" href="#helpArea"><img
+        src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></h1>
 <%
     long timer = System.currentTimeMillis();
     ScriptEngine engine = null;
     try {
         engine = ScriptEngineUtils.getInstance().scriptEngine("groovy");
 %>
-<c:if test="${not empty param.script}">
+<c:if test="${not empty param.scriptURI && param.scriptURI != 'custom'}">
 <%
-    StringBuilder code = new StringBuilder(512);
-    code.append("import com.google.common.collect.*\n");
-    code.append("import com.google.common.io.*\n");
-    code.append("import com.sun.enterprise.web.connector.grizzly.comet.*\n");
-    code.append("import com.sun.grizzly.comet.*\n");
-    code.append("import com.sun.grizzly.tcp.*\n");
-    code.append("import com.sun.grizzly.websockets.*\n");
-    code.append("import com.sun.image.codec.jpeg.*\n");
-    code.append("import com.sun.medialib.mlib.*\n");
-    code.append("import com.sun.net.httpserver.*\n");
-    code.append("import com.sun.syndication.feed.synd.*\n");
-    code.append("import com.sun.syndication.fetcher.*\n");
-    code.append("import com.sun.syndication.fetcher.impl.*\n");
-    code.append("import com.sun.syndication.io.*\n");
-    code.append("import eu.infomas.annotation.*\n");
-    code.append("import groovy.lang.*\n");
-    code.append("import groovy.util.*\n");
-    code.append("import groovy.util.slurpersupport.*\n");
-    code.append("import groovy.xml.*\n");
-    code.append("import javax.annotation.security.*\n");
-    code.append("import javax.ejb.*\n");
-    code.append("import javax.enterprise.context.*\n");
-    code.append("import javax.enterprise.context.spi.*\n");
-    code.append("import javax.enterprise.event.*\n");
-    code.append("import javax.enterprise.inject.*\n");
-    code.append("import javax.enterprise.inject.spi.*\n");
-    code.append("import javax.enterprise.util.*\n");
-    code.append("import javax.inject.*\n");
-    code.append("import javax.interceptor.*\n");
-    code.append("import javax.jcr.*\n");
-    code.append("import javax.jcr.nodetype.*\n");
-    code.append("import javax.jcr.observation.*\n");
-    code.append("import javax.jcr.query.*\n");
-    code.append("import javax.jcr.query.qom.*\n");
-    code.append("import javax.jcr.version.*\n");
-    code.append("import javax.mail.*\n");
-    code.append("import javax.mail.internet.*\n");
-    code.append("import javax.mail.util.*\n");
-    code.append("import javax.persistence.*\n");
-    code.append("import javax.servlet.*\n");
-    code.append("import javax.servlet.annotation.*\n");
-    code.append("import javax.servlet.http.*\n");
-    code.append("import javax.servlet.resources.*\n");
-    code.append("import javax.validation.*\n");
-    code.append("import name.fraser.neil.plaintext.*\n");
-    code.append("import net.htmlparser.jericho.*\n");
-    code.append("import nu.xom.*\n");
-    code.append("import oauth.signpost.*\n");
-    code.append("import oauth.signpost.basic.*\n");
-    code.append("import oauth.signpost.commonshttp.*\n");
-    code.append("import oauth.signpost.exception.*\n");
-    code.append("import oauth.signpost.http.*\n");
-    code.append("import oracle.xml.parser.*\n");
-    code.append("import oracle.xml.parser.v2.*\n");
-    code.append("import org.aopalliance.aop.*\n");
-    code.append("import org.aopalliance.intercept.*\n");
-    code.append("import org.apache.camel.*\n");
-    code.append("import org.apache.camel.builder.*\n");
-    code.append("import org.apache.camel.component.mail.*\n");
-    code.append("import org.apache.camel.impl.*\n");
-    code.append("import org.apache.camel.model.*\n");
-    code.append("import org.apache.camel.spring.*\n");
-    code.append("import org.apache.camel.util.*\n");
-    code.append("import org.apache.catalina.connector.*\n");
-    code.append("import org.apache.catalina.util.*\n");
-    code.append("import org.apache.catalina.websocket.*\n");
-    code.append("import org.apache.commons.beanutils.*\n");
-    code.append("import org.apache.commons.codec.binary.*\n");
-    code.append("import org.apache.commons.codec.digest.*\n");
-    code.append("import org.apache.commons.collections.*\n");
-    code.append("import org.apache.commons.collections.iterators.*\n");
-    code.append("import org.apache.commons.collections.keyvalue.*\n");
-    code.append("import org.apache.commons.collections.list.*\n");
-    code.append("import org.apache.commons.collections.map.*\n");
-    code.append("import org.apache.commons.httpclient.*\n");
-    code.append("import org.apache.commons.httpclient.auth.*\n");
-    code.append("import org.apache.commons.httpclient.methods.*\n");
-    code.append("import org.apache.commons.httpclient.methods.multipart.*\n");
-    code.append("import org.apache.commons.httpclient.params.*\n");
-    code.append("import org.apache.commons.httpclient.protocol.*\n");
-    code.append("import org.apache.commons.id.*\n");
-    code.append("import org.apache.commons.lang.*\n");
-    code.append("import org.apache.commons.lang.builder.*\n");
-    code.append("import org.apache.commons.lang.exception.*\n");
-    code.append("import org.apache.commons.lang.math.*\n");
-    code.append("import org.apache.commons.lang.time.*\n");
-    code.append("import org.apache.commons.logging.*\n");
-    code.append("import org.apache.coyote.http11.upgrade.*\n");
-    code.append("import org.apache.jackrabbit.commons.query.*\n");
-    code.append("import org.apache.jackrabbit.util.*\n");
-    code.append("import org.apache.jackrabbit.value.*\n");
-    code.append("import org.apache.log4j.*\n");
-    code.append("import org.apache.oro.text.regex.*\n");
-    code.append("import org.apache.pdfbox.pdmodel.*\n");
-    code.append("import org.apache.pluto.container.*\n");
-    code.append("import org.apache.regexp.*\n");
-    code.append("import org.apache.solr.client.solrj.response.*\n");
-    code.append("import org.apache.tika.io.*\n");
-    code.append("import org.apache.tomcat.util.http.mapper.*\n");
-    code.append("import org.apache.tools.ant.*\n");
-    code.append("import org.apache.velocity.tools.generic.*\n");
-    code.append("import org.apache.xerces.dom.*\n");
-    code.append("import org.apache.xerces.jaxp.*\n");
-    code.append("import org.apache.xerces.parsers.*\n");
-    code.append("import org.artofsolving.jodconverter.document.*\n");
-    code.append("import org.artofsolving.jodconverter.office.*\n");
-    code.append("import org.codehaus.groovy.runtime.*\n");
-    code.append("import org.codehaus.groovy.runtime.typehandling.*\n");
-    code.append("import org.cyberneko.html.parsers.*\n");
-    code.append("import org.dom4j.*\n");
-    code.append("import org.dom4j.io.*\n");
-    code.append("import org.dom4j.tree.*\n");
-    code.append("import org.drools.*\n");
-    code.append("import org.drools.spi.*\n");
-    code.append("import org.drools.util.*\n");
-    code.append("import org.eclipse.jetty.continuation.*\n");
-    code.append("import org.eclipse.jetty.websocket.*\n");
-    code.append("import org.glassfish.grizzly.*\n");
-    code.append("import org.glassfish.grizzly.comet.*\n");
-    code.append("import org.glassfish.grizzly.filterchain.*\n");
-    code.append("import org.glassfish.grizzly.http.*\n");
-    code.append("import org.glassfish.grizzly.http.server.*\n");
-    code.append("import org.glassfish.grizzly.http.server.util.*\n");
-    code.append("import org.glassfish.grizzly.http.util.*\n");
-    code.append("import org.glassfish.grizzly.servlet.*\n");
-    code.append("import org.glassfish.grizzly.utils.*\n");
-    code.append("import org.glassfish.grizzly.websockets.*\n");
-    code.append("import org.hibernate.*\n");
-    code.append("import org.hibernate.cfg.*\n");
-    code.append("import org.hibernate.classic.*\n");
-    code.append("import org.hibernate.criterion.*\n");
-    code.append("import org.jahia.admin.*\n");
-    code.append("import org.jahia.admin.sites.*\n");
-    code.append("import org.jahia.ajax.gwt.client.widget.contentengine.*\n");
-    code.append("import org.jahia.ajax.gwt.client.widget.edit.sidepanel.*\n");
-    code.append("import org.jahia.ajax.gwt.client.widget.publication.*\n");
-    code.append("import org.jahia.ajax.gwt.client.widget.subscription.*\n");
-    code.append("import org.jahia.ajax.gwt.client.widget.toolbar.action.*\n");
-    code.append("import org.jahia.ajax.gwt.helper.*\n");
-    code.append("import org.jahia.ajax.gwt.utils.*\n");
-    code.append("import org.jahia.api.*\n");
-    code.append("import org.jahia.bin.*\n");
-    code.append("import org.jahia.bin.errors.*\n");
-    code.append("import org.jahia.data.*\n");
-    code.append("import org.jahia.data.applications.*\n");
-    code.append("import org.jahia.data.beans.portlets.*\n");
-    code.append("import org.jahia.data.templates.*\n");
-    code.append("import org.jahia.data.viewhelper.principal.*\n");
-    code.append("import org.jahia.defaults.config.spring.*\n");
-    code.append("import org.jahia.engines.*\n");
-    code.append("import org.jahia.exceptions.*\n");
-    code.append("import org.jahia.modules.visibility.rules.*\n");
-    code.append("import org.jahia.params.*\n");
-    code.append("import org.jahia.params.valves.*\n");
-    code.append("import org.jahia.pipelines.*\n");
-    code.append("import org.jahia.pipelines.valves.*\n");
-    code.append("import org.jahia.registries.*\n");
-    code.append("import org.jahia.security.license.*\n");
-    code.append("import org.jahia.services.*\n");
-    code.append("import org.jahia.services.applications.*\n");
-    code.append("import org.jahia.services.atmosphere.*\n");
-    code.append("import org.jahia.services.cache.*\n");
-    code.append("import org.jahia.services.channels.*\n");
-    code.append("import org.jahia.services.channels.providers.*\n");
-    code.append("import org.jahia.services.content.*\n");
-    code.append("import org.jahia.services.content.decorator.*\n");
-    code.append("import org.jahia.services.content.nodetypes.*\n");
-    code.append("import org.jahia.services.content.nodetypes.initializers.*\n");
-    code.append("import org.jahia.services.content.nodetypes.renderer.*\n");
-    code.append("import org.jahia.services.content.rules.*\n");
-    code.append("import org.jahia.services.image.*\n");
-    code.append("import org.jahia.services.importexport.*\n");
-    code.append("import org.jahia.services.logging.*\n");
-    code.append("import org.jahia.services.mail.*\n");
-    code.append("import org.jahia.services.notification.*\n");
-    code.append("import org.jahia.services.preferences.user.*\n");
-    code.append("import org.jahia.services.pwdpolicy.*\n");
-    code.append("import org.jahia.services.query.*\n");
-    code.append("import org.jahia.services.render.*\n");
-    code.append("import org.jahia.services.render.filter.*\n");
-    code.append("import org.jahia.services.render.filter.cache.*\n");
-    code.append("import org.jahia.services.render.scripting.*\n");
-    code.append("import org.jahia.services.scheduler.*\n");
-    code.append("import org.jahia.services.search.*\n");
-    code.append("import org.jahia.services.seo.*\n");
-    code.append("import org.jahia.services.seo.jcr.*\n");
-    code.append("import org.jahia.services.seo.urlrewrite.*\n");
-    code.append("import org.jahia.services.sites.*\n");
-    code.append("import org.jahia.services.tags.*\n");
-    code.append("import org.jahia.services.tasks.*\n");
-    code.append("import org.jahia.services.templates.*\n");
-    code.append("import org.jahia.services.transform.*\n");
-    code.append("import org.jahia.services.translation.*\n");
-    code.append("import org.jahia.services.uicomponents.bean.*\n");
-    code.append("import org.jahia.services.uicomponents.bean.contentmanager.*\n");
-    code.append("import org.jahia.services.uicomponents.bean.editmode.*\n");
-    code.append("import org.jahia.services.uicomponents.bean.toolbar.*\n");
-    code.append("import org.jahia.services.usermanager.*\n");
-    code.append("import org.jahia.services.usermanager.jcr.*\n");
-    code.append("import org.jahia.services.visibility.*\n");
-    code.append("import org.jahia.services.workflow.*\n");
-    code.append("import org.jahia.settings.*\n");
-    code.append("import org.jahia.tools.files.*\n");
-    code.append("import org.jahia.tools.jvm.*\n");
-    code.append("import org.jahia.utils.*\n");
-    code.append("import org.jahia.utils.comparator.*\n");
-    code.append("import org.jahia.utils.i18n.*\n");
-    code.append("import org.jahia.utils.zip.*\n");
-    code.append("import org.jaxen.*\n");
-    code.append("import org.jaxen.jdom.*\n");
-    code.append("import org.jbpm.api.activity.*\n");
-    code.append("import org.jbpm.api.model.*\n");
-    code.append("import org.jbpm.api.task.*\n");
-    code.append("import org.joda.time.*\n");
-    code.append("import org.joda.time.format.*\n");
-    code.append("import org.mortbay.util.ajax.*\n");
-    code.append("import org.quartz.*\n");
-    code.append("import org.springframework.aop.*\n");
-    code.append("import org.springframework.aop.framework.*\n");
-    code.append("import org.springframework.aop.support.*\n");
-    code.append("import org.springframework.beans.*\n");
-    code.append("import org.springframework.beans.factory.*\n");
-    code.append("import org.springframework.beans.factory.annotation.*\n");
-    code.append("import org.springframework.beans.factory.config.*\n");
-    code.append("import org.springframework.beans.factory.support.*\n");
-    code.append("import org.springframework.beans.factory.xml.*\n");
-    code.append("import org.springframework.beans.propertyeditors.*\n");
-    code.append("import org.springframework.context.*\n");
-    code.append("import org.springframework.context.event.*\n");
-    code.append("import org.springframework.context.support.*\n");
-    code.append("import org.springframework.core.*\n");
-    code.append("import org.springframework.core.enums.*\n");
-    code.append("import org.springframework.core.io.*\n");
-    code.append("import org.springframework.core.io.support.*\n");
-    code.append("import org.springframework.dao.*\n");
-    code.append("import org.springframework.jdbc.core.*\n");
-    code.append("import org.springframework.orm.*\n");
-    code.append("import org.springframework.orm.hibernate3.*\n");
-    code.append("import org.springframework.orm.hibernate3.annotation.*\n");
-    code.append("import org.springframework.orm.hibernate3.support.*\n");
-    code.append("import org.springframework.scheduling.quartz.*\n");
-    code.append("import org.springframework.ui.context.*\n");
-    code.append("import org.springframework.ui.context.support.*\n");
-    code.append("import org.springframework.util.*\n");
-    code.append("import org.springframework.util.xml.*\n");
-    code.append("import org.springframework.web.context.*\n");
-    code.append("import org.springframework.web.context.support.*\n");
-    code.append("import org.springframework.web.servlet.*\n");
-    code.append("import org.springframework.web.servlet.mvc.*\n");
-    code.append("import org.springframework.webflow.core.collection.*\n");
-    code.append("import sun.awt.image.*\n");
-    code.append("import sun.awt.image.codec.*\n");
-    code.append("import sun.security.action.*\n");
-    code.append("import ucar.nc2.util.net.*\n");
-    code.append("\n");
-    code.append(request.getParameter("script"));
-    if (request.getParameter("background") != null) {
+    pageContext.setAttribute("scriptContent", org.jahia.utils.FileUtils.getContent(new UrlResource(request.getParameter("scriptURI"))));
+%>
+</c:if>
+<c:if test="${not empty param.runScript and param.runScript eq 'true'}">
+<%
+    final StringBuilder code = GroovyConsoleHelper.generateScriptSkeleton();
+
+	boolean executeInBackground = request.getParameter("background") != null;
+	if (executeInBackground) {
+        code.append("\n");
+        code.append("def log = ").append(LoggerFactory.class.getName()).append(".getLogger(\"org.jahia.tools.groovyConsole\");\n");
+        code.append("def logger = log;\n");
+        code.append("\n");
+	}
+
+    final String scriptURL = request.getParameter("scriptURI");
+    boolean isPredefinedScript = false;
+    if (StringUtils.isBlank(scriptURL) || "custom".equals(scriptURL)) {
+        code.append(request.getParameter("script"));
+    } else {
+        code.append((String) pageContext.getAttribute("scriptContent"));
+        isPredefinedScript = true;
+    }
+    if (executeInBackground) {
         File groovyConsole = File.createTempFile("groovyConsole", ".groovy");
         FileUtils.write(groovyConsole, code);
         JobDetail jahiaJob = BackgroundJob.createJahiaJob("Groovy console script", JSR223ScriptJob.class);
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(JSR223ScriptJob.JOB_SCRIPT_ABSOLUTE_PATH,groovyConsole.getAbsolutePath());
+        jobDataMap.put(JSR223ScriptJob.JOB_SCRIPT_ABSOLUTE_PATH, groovyConsole.getAbsolutePath());
         jobDataMap.put("userkey","root");
         jahiaJob.setJobDataMap(jobDataMap);
         try {
@@ -310,8 +94,17 @@
         ScriptContext ctx = new SimpleScriptContext();
         ctx.setWriter(new StringWriter());
         Bindings bindings = engine.createBindings();
-        bindings.put("log", new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"),
-                "org.jahia.tools.groovyConsole", ctx.getWriter()));
+        LoggerWrapper lw = new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"),
+                "org.jahia.tools.groovyConsole", ctx.getWriter());
+        bindings.put("log", lw);
+        bindings.put("logger", lw);
+        if (isPredefinedScript) {
+            final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
+            if (paramNames != null)
+                for (String paramName : paramNames) {
+                    bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
+                }
+        }
         ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         Object result = engine.eval(code.toString(), ctx);
         pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
@@ -352,17 +145,99 @@
     }
 %>
 <form id="groovyForm" action="?" method="post">
-    <input type="checkbox" value="background" name="background">Background</input>
-    <p>Paste here the Groovy code you would like to execute against DX:</p>
-
+    <input type="hidden" id="runScript" name="runScript" value="true" />
+    <c:if test="${empty param.scriptURI or param.scriptURI eq 'custom'}">
+        <input type="checkbox" value="background" name="background" id="background"/>&nbsp;<label for="background">Background</label>
+    </c:if>
+    <c:set var="scripts" value="${tools:getGroovyConsoleScripts()}" />
+    <c:if test="${not empty scripts}">
     <p>
-        <textarea rows="25" style="width: 100%" id="text" name="script"
-                  onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) document.getElementById('groovyForm').submit();">${param.script}</textarea>
+    	Chose a pre-defined script to be executed:
+        <select name="scriptURI" onchange="document.getElementById('runScript').setAttribute('value','false'); document.getElementById('groovyForm').submit();">
+            <option value="custom" class="scriptURISelection">---</option>
+                <%--@elvariable id="script" type="org.jahia.osgi.BundleResource"--%>
+            <c:forEach items="${scripts}" var="script">
+                <c:remove var="currentScriptIsSelected" />
+                <c:if test="${script.URI eq param.scriptURI}"><c:set var="currentScriptIsSelected">selected='selected'</c:set><c:set var="currentScriptFilename" value="${script.filename}"/></c:if>
+                <option value="${script.URI}" class="scriptURISelection" ${currentScriptIsSelected}><c:out value="${script.filename} [${script.bundle.symbolicName}/${script.bundle.version}]" /></option>
+            </c:forEach>
+        </select>
+        <c:if test="${not empty scriptContent}">
+        <a class="fancybox-link" title="${fn:escapeXml(currentScriptFilename)}" href="#viewArea"><img
+        src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="view" title="View"></a>
+        </c:if>
     </p>
+    </c:if>
+        <c:choose>
+            <c:when test="${empty param.scriptURI or param.scriptURI eq 'custom'}">
+                <p>${not empty scripts ? 'Or paste' : 'Paste'} here the Groovy code you would like to execute against DX:</p>
+
+                <p>
+                    <textarea rows="25" style="width: 100%" id="text" name="script"
+                        onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm(<%=GroovyConsoleHelper.WARN_MSG%>')) document.getElementById('groovyForm').submit();">${param.script}</textarea>
+                </p>
+            </c:when>
+            <c:otherwise>
+                ${tools:getScriptCustomFormElements(param.scriptURI, pageContext.request)}
+            </c:otherwise>
+        </c:choose>
     <p>
-        <input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (!confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) { return false; }"/>
+        <input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (!confirm('<%=GroovyConsoleHelper.WARN_MSG%>')) { return false; }"/>
     </p>
 </form>
 <%@ include file="gotoIndex.jspf" %>
+<div style="display: none;">
+    <div id="helpArea">
+        <h3>How to use the Groovy console</h3>
+
+        <h4>Using a custom script</h4>
+        <p>You can run a custom script here, writing or pasting it into the textarea.</p>
+        <p>If your script has to generate some output, you can use the built in logger: <em>log.info("Some output")</em></p>
+
+        <h4>Using a predefined script</h4>
+        <p>You can as well package in any of your modules a predefined script, which can then be conveniently run from the console
+            without you have to copy and paste it. You still have the possibility to write or paste a custom script.</p>
+        <p>Your predefined scripts have to be defined in a specific folder:
+            <em>src/main/resources/META-INF/groovyConsole</em></p>
+        <p>If some predefined script requires some configurations, then you have to create in the same folder a file with the same name as the script
+        and <em>.properties</em> as an extension. In this file, you can declare and configure the required parameters:</p>
+        <ul>
+            <li><em>script.parameters.names</em>: comma separated list of parameters</li>
+            <li><em>script.param.xxx.type</em>: type of the parameter xxx <br />
+            Allowed values: <em>checkbox</em>, <em>text</em><br />
+            Default value: <em>checkbox</em></li>
+            <li><em>script.param.xxx.label</em>: label for the parameter xxx</li>
+            <li><em>script.param.xxx.default</em>: default value of the parameter xxx <br />
+            For a checkbox parameter, the checkbox is unchecked by default, use <em>true</em> as a default value otherwise <br />
+            For a text parameter, the input field is empty by default</li>
+        </ul>
+
+        <p><strong>Example: helloworld.properties</strong>
+        <pre>
+    script.parameters.names=active, name
+    script.param.active.default=true
+    script.param.name.type=text
+    script.param.name.label=User name
+        </pre>
+        </p>
+
+        <p><strong>Example: helloworld.groovy</strong>
+        <pre>
+    if (active) {
+        log.info(String.format("Hello %s!!!", name == null || name.trim().length() == 0 ? "world" : name))
+    } else {
+        log.info("On mute")
+    }
+        </pre>
+        </p>
+    </div>
+</div>
+<c:if test="${not empty scriptContent}">
+<div style="display: none;">
+    <div id="viewArea">
+    	<pre>${scriptContent}</pre>
+    </div>
+</div>
+</c:if>
 </body>
 </html>
