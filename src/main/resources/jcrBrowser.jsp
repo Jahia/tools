@@ -129,8 +129,7 @@
         }
         pageContext.setAttribute("node", node);
         pageContext.setAttribute("currentNode", node);
-        Value versioningSupported = jcrSession.getRepository().getDescriptorValue(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
-        if (versioningSupported != null && versioningSupported.getBoolean() && node.isNodeType(Constants.MIX_VERSIONABLE) && session instanceof JCRSessionWrapper) {
+        if (jcrSession instanceof JCRSessionWrapper && node instanceof JCRNodeWrapper && ((JCRNodeWrapper) node).getProvider().isVersioningAvailable() && node.isNodeType(Constants.MIX_VERSIONABLE)) {
             VersionIterator versionIterator = jcrSession.getWorkspace().getVersionManager().getVersionHistory(node.getPath()).getAllLinearVersions();
             pageContext.setAttribute("versionIterator", versionIterator);
 
