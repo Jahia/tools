@@ -18,7 +18,6 @@ response.setHeader("Content-Disposition", "attachment; filename=\"thread-dump-"
 </head>
 <body>
 <h1>Thread State Information at <%= new Date() %></h1>
-<a href="?file=true" target="_blank">download as a file</a>
 <c:set var="dump"><% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut()), false, false, false, false, false, true, false, false); %></c:set>
 <pre><c:out value="${dump}"/></pre>
 </body>
