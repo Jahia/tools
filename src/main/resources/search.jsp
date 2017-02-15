@@ -9,6 +9,8 @@
 <%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@ page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" %>
 <%@ page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
+<%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
+<%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -54,6 +56,15 @@
             </c:if>
             <p style="color: blue">Re-indexing of the repository content will be done now</p>
         </c:when>
+        <c:when test="${param.action == 'reindex-tree'}">
+            <c:if test="${(param.ws == 'default' || param.ws == 'live') && not empty param.uuid}">
+                <%
+                long treeReindexStartTime = System.currentTimeMillis();
+                ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree(request.getParameter("uuid"), request.getParameter("ws"));
+                %>
+                <p style="color: blue">Re-indexing tree in workspace <strong>${fn:escapeXml(param.ws)}</strong>, starting from node <strong>${fn:escapeXml(param.uuid)}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
+            </c:if>
+        </c:when>
         <c:when test="${param.action == 'index-fix'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix")); %>
             <p style="color: blue">Repository indexes check and fix will be done on next Digital Experience Manager startup</p>
@@ -95,6 +106,21 @@
     <li><a href="?action=reindex-now&ws=default" onclick="return confirm('This will schedule a background task for re-indexing content of the default repository workspace. Would you like to continue?')">Default repository re-indexing</a> - Do repository re-indexing now</li>
     <li><a href="?action=reindex-now" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing</a> - Do repository re-indexing now</li>
     <li><a href="?action=updateSpellCheckerIndex" onclick="return confirm('This will schedule a background task for updating the spellchecker index for live and default workspaces. Would you like to continue?')">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
+    <li>
+        <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace'); var ws = cbW.options[cbW.selectedIndex].value; var uuid = document.getElementById('reindexTreeUuid').value; if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; } if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid; return true; } else { return false; }">Re-index the sub-tree</a>
+        &nbsp;&nbsp;
+        <label for="reindexTreeWorkspace">workspace:&nbsp;</label>
+        <select id="reindexTreeWorkspace" name="reindexTreeWorkspace">
+            <option value="default">default</option>
+            <option value="live" ${param.ws == 'live' ? 'selected="selected"' : ''}>live</option>
+        </select>
+        &nbsp;&nbsp;
+        <label for="reindexTreeUuid">start with node (UUID):&nbsp;</label><input type="text" id="reindexTreeUuid" name="reindexTreeUuid" value="${not empty param.uuid ? fn:escapeXml(param.uuid) : ''}" style="width: 270px"/>
+        <a title="Lookup UUID in JCR Browser" href="<c:url value='jcrBrowser.jsp'/>" target="_blank">
+            <img src="<c:url value='/icons/search.png'/>" width="16"height="16" alt="lookup" title="Lookup UUID in JCR Browser">
+        </a>
+        
+    </li>
 </ul>
 </fieldset>
 <fieldset>
