@@ -91,6 +91,25 @@
             <artifactId>slf4j-ext</artifactId>
             <version>1.6.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.karaf.bundle</groupId>
+            <artifactId>org.apache.karaf.bundle.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.config</groupId>
+            <artifactId>org.apache.karaf.config.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -126,6 +145,16 @@
                             ${jahia.plugin.projectPackageImport},
                             *
                         </Import-Package>
+                        <Export-Package>
+                            org.jahia.modules.tools.probe
+                        </Export-Package>
+                        <_dsannotations>
+                            org.jahia.modules.tools.probe.impl.*,
+                            org.jahia.modules.tools.probe.jcr.impl.*,
+                            org.jahia.modules.tools.probe.properties.impl.*,
+                            org.jahia.modules.tools.probe.runtime.impl.*,
+                            org.jahia.modules.tools.probe.statistics.impl.*
+                        </_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>            
