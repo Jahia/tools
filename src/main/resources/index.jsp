@@ -48,6 +48,7 @@
         <li><a href="dbQuery.jsp">DB query tool</a></li>
         <li><a href="groovyConsole.jsp">Groovy console</a></li>
         <li><a href="workflows.jsp">Workflow monitoring</a></li>
+        <li><a href="rules.jsp">Business rules</a></li>
     </ul>
 </fieldset>
 <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) { %>
