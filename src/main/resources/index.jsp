@@ -2,6 +2,8 @@
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="org.jahia.bin.Jahia"%>
 <%@page import="org.jahia.bin.listeners.JahiaContextLoaderListener"%>
 <%@page import="org.jahia.osgi.BundleUtils"%>
@@ -104,6 +106,6 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-2016 Jahia Solutions Group SA - All rights reserved.</p>
+<p>&copy; Copyright 2002-<%= new SimpleDateFormat("yyyy").format(new Date()) %> Jahia Solutions Group SA - All rights reserved.</p>
 </body>
 </html>
