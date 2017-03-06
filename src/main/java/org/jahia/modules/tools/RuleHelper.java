@@ -190,7 +190,7 @@ public class RuleHelper {
         for (RulesListener listener : RulesListener.getInstances()) {
             List<PackageData> packages = data.get(listener);
             if (packages == null) {
-                packages = new LinkedList<PackageData>();
+                packages = new LinkedList<>();
                 data.put(listener, packages);
             }
             for (Package pkg : listener.getRuleBase().getPackages()) {
@@ -212,16 +212,15 @@ public class RuleHelper {
      */
     public boolean updateRuleState(String listenerId, String packageId, String ruleId, boolean enable) {
         for (RulesListener listener : RulesListener.getInstances()) {
-            if (listener.toString().equals(listenerId)) {
-                for (Package pkg : listener.getRuleBase().getPackages()) {
-                    if (pkg.getName().equals(packageId)) {
-                        for (Rule rule : pkg.getRules()) {
-                            if (rule.getName().equals(ruleId)) {
-                                rule.setEnabled(enable ? EnabledBoolean.ENABLED_TRUE : EnabledBoolean.ENABLED_FALSE);
-                                return true;
-                            }
-                        }
-                    }
+            if (!listener.toString().equals(listenerId)) {
+                continue;
+            }
+            Package pkg = listener.getRuleBase().getPackage(packageId);
+            if (pkg != null) {
+                Rule rule = pkg.getRule(ruleId);
+                if (rule != null) {
+                    rule.setEnabled(enable ? EnabledBoolean.ENABLED_TRUE : EnabledBoolean.ENABLED_FALSE);
+                    return true;
                 }
             }
         }

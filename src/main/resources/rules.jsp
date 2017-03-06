@@ -42,7 +42,7 @@
             <p>
             In order to disable some rules permanently a configuration entry can be added into <code>jahia.properties</code> or <code>jahia.custom.properties</code> file in the following format:
             <pre>
-            jahia.rules.disabledConfig=["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-2&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-3&gt;"...
+            jahia.rules.disabledConfig=["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-1&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-2&gt;"...
             </pre>
             The workspace part is optional. For example the following configuration:
             <pre>
