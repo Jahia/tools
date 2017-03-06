@@ -45,14 +45,12 @@ package org.jahia.modules.tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.drools.core.RuleBase;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
@@ -117,19 +115,6 @@ public class RuleHelper {
     private static final Logger logger = LoggerFactory.getLogger(RuleHelper.class);
 
     private static final String ORIGIN_CORE = "DX Core";
-
-    private static final Field RULE_BASE_FIELD;
-
-    static {
-        try {
-            RULE_BASE_FIELD = RulesListener.class.getDeclaredField("ruleBase");
-            if (!RULE_BASE_FIELD.isAccessible()) {
-                RULE_BASE_FIELD.setAccessible(true);
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 
     private Map<RulesListener, List<PackageData>> rules;
 
@@ -199,14 +184,6 @@ public class RuleHelper {
         return null;
     }
 
-    private Package[] getPackages(RulesListener listener) {
-        try {
-            return ((RuleBase) RULE_BASE_FIELD.get(listener)).getPackages();
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     private Map<RulesListener, List<PackageData>> prepareRuleData() {
         Map<RulesListener, List<PackageData>> data = new LinkedHashMap<>();
 
@@ -216,7 +193,7 @@ public class RuleHelper {
                 packages = new LinkedList<PackageData>();
                 data.put(listener, packages);
             }
-            for (Package pkg : getPackages(listener)) {
+            for (Package pkg : listener.getRuleBase().getPackages()) {
                 packages.add(createPackageData(pkg, listener));
             }
         }
@@ -236,7 +213,7 @@ public class RuleHelper {
     public boolean updateRuleState(String listenerId, String packageId, String ruleId, boolean enable) {
         for (RulesListener listener : RulesListener.getInstances()) {
             if (listener.toString().equals(listenerId)) {
-                for (Package pkg : getPackages(listener)) {
+                for (Package pkg : listener.getRuleBase().getPackages()) {
                     if (pkg.getName().equals(packageId)) {
                         for (Rule rule : pkg.getRules()) {
                             if (rule.getName().equals(ruleId)) {
