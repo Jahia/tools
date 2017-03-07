@@ -86,8 +86,8 @@ public class ProbeServiceImpl implements ProbeService {
     @Override
     public List<Probe> getAllProbes() {
         List<Probe> allProbes = new LinkedList<>();
-        for (Iterator< List<Probe>>iterator = probes.values().iterator(); iterator.hasNext();) {
-            allProbes.addAll(iterator.next());
+        for (List<Probe> probe : probes.values()) {
+            allProbes.addAll(probe);
         }
 
         return allProbes;

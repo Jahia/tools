@@ -78,6 +78,10 @@ public class SupportInfoHelper {
     static final String ENCODING = "UTF-8";
 
     private static final Logger logger = LoggerFactory.getLogger(SupportInfoHelper.class);
+    
+    private SupportInfoHelper() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     private static void exportConfigurationFiles(File dumpDir, HttpServletRequest request) {
         ConfigurationCopier.copy(new File(dumpDir, "config"), request.getParameter("digital-factory-config") != null,
@@ -111,7 +115,6 @@ public class SupportInfoHelper {
             File generatedFile = null;
             try {
                 generatedFile = zip(dumpDir);
-                generatedFile.deleteOnExit();
             } catch (ArchiveException e) {
                 throw new IOException(e);
             }
@@ -121,21 +124,7 @@ public class SupportInfoHelper {
             logger.info("Support information exported in {} ms. Generated file: {}", timeTaken, generatedFile);
 
             if ("download".equals(request.getParameter("action"))) {
-                // write the ZIP file content into the response output
-                try (ServletOutputStream os = response.getOutputStream()) {
-                    response.setContentType("application/zip");
-                    response.setHeader("Content-Disposition",
-                            "attachment; filename=\"" + generatedFile.getName() + "\"");
-                    if (generatedFile.length() <= Integer.MAX_VALUE) {
-                        response.setContentLength((int) generatedFile.length());
-                    } else {
-                        response.setHeader("Content-Length", Long.toString(generatedFile.length()));
-                    }
-                    FileUtils.copyFile(generatedFile, os);
-                    os.flush();
-                } finally {
-                    FileUtils.deleteQuietly(generatedFile);
-                }
+                writeZipContentToResponse(generatedFile, response);
             } else {
                 request.setAttribute("generatedInfo", generatedFile);
                 request.setAttribute("generationTime", timeTaken);
@@ -145,6 +134,24 @@ public class SupportInfoHelper {
         }
     }
 
+    private static void writeZipContentToResponse(File generatedFile, HttpServletResponse response) throws IOException {
+        // write the ZIP file content into the response output
+        try (ServletOutputStream os = response.getOutputStream()) {
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + generatedFile.getName() + "\"");
+            if (generatedFile.length() <= Integer.MAX_VALUE) {
+                response.setContentLength((int) generatedFile.length());
+            } else {
+                response.setHeader("Content-Length", Long.toString(generatedFile.length()));
+            }
+            FileUtils.copyFile(generatedFile, os);
+            os.flush();
+        } finally {
+            FileUtils.deleteQuietly(generatedFile);
+        }
+    }
+    
     private static void exportProbeData(Probe p, File dumpDir, HttpServletRequest request) {
         if (request.getParameter(p.getCategory() + '|' + p.getKey()) != null) {
             long startTime = System.currentTimeMillis();
@@ -155,7 +162,7 @@ public class SupportInfoHelper {
                 logger.info("Exported probe data for {}/{} in {} ms",
                         new Object[] { p.getCategory(), p.getKey(), System.currentTimeMillis() - startTime });
             } catch (Exception e) {
-                logger.error("Error exporting probe data for {}/{}", e);
+                logger.error("Error exporting probe data for " + p.getCategory() + "/" + p.getKey(), e);
             }
         }
     }
@@ -172,7 +179,9 @@ public class SupportInfoHelper {
     private static File zip(File dumpDir) throws ArchiveException, IOException {
         File target = new File(dumpDir.getParentFile(), dumpDir.getName() + ".zip");
         int basePathLength = dumpDir.getAbsolutePath().length();
+        // delete current zip if any and register new zip to be deleted on JVM termination
         FileUtils.deleteQuietly(target);
+        target.deleteOnExit();
         try (ArchiveOutputStream os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP,
                 new FileOutputStream(target))) {
 

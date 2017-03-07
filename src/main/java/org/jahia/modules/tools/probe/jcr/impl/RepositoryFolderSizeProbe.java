@@ -59,7 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Reports current load averages.
+ * Reports current folder sizes of repository, index and eventually file data store.
  * 
  * @author Sergiy Shyrkov
  */

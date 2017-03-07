@@ -63,7 +63,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Reports the list of class files under WEB-INF/classes.
+ * Reports the state of OSGI bundles.
  * 
  * @author Sergiy Shyrkov
  */
@@ -132,17 +132,16 @@ public class OsgiBundleProbe implements ProbeMBean {
             protected String cut(String value, int size) {
                 if (value.length() > size) {
                     String[] parts = value.split("/");
-                    String cut = "";
-                    int c = parts[0].length() + 4;
+                    StringBuilder cut = new StringBuilder();
                     for (int idx = parts.length - 1; idx > 0; idx--) {
-                        if (cut.length() + c + parts[idx].length() + 1 < size) {
-                            cut = "/" + parts[idx] + cut;
+                        if (cut.length() + parts[0].length() + 4 + parts[idx].length() + 1 < size) {
+                            cut.append("/").append(parts[idx]).append(cut);
                         } else {
                             break;
                         }
                     }
-                    cut = parts[0] + "/..." + cut;
-                    return cut;
+                    cut.append(parts[0]).append("/...").append(cut);
+                    return cut.toString();
                 } else {
                     return super.cut(value, size);
                 }
@@ -178,7 +177,7 @@ public class OsgiBundleProbe implements ProbeMBean {
     }
 
     private String printFragments(BundleInfo info) {
-        if (info.getFragments().size() <= 0) {
+        if (info.getFragments().isEmpty()) {
             return "";
         }
         StringBuilder builder = new StringBuilder();
@@ -192,7 +191,7 @@ public class OsgiBundleProbe implements ProbeMBean {
     }
 
     private String printHosts(BundleInfo info) {
-        if (info.getFragmentHosts().size() <= 0) {
+        if (info.getFragmentHosts().isEmpty()) {
             return "";
         }
         StringBuilder builder = new StringBuilder();

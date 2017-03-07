@@ -59,7 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Reports current load averages.
+ * Reports current Jackrabbit BundleCache status.
  * 
  * @author Sergiy Shyrkov
  */

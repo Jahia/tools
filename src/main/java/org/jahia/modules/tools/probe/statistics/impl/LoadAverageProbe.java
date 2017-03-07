@@ -78,8 +78,8 @@ public class LoadAverageProbe implements ProbeMBean {
         out.append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(name), ' '));
         out.append(": ");
         if (loadAverage != null) {
-            out.append("Over one minute=" + loadAverage.getOneMinuteLoad() + " Over five minute="
-                    + loadAverage.getFiveMinuteLoad() + " Over fifteen minute=" + loadAverage.getFifteenMinuteLoad());
+            out.append("Over one minute=" + loadAverage.getOneMinuteLoad() + " Over five minutes="
+                    + loadAverage.getFiveMinuteLoad() + " Over fifteen minutes=" + loadAverage.getFifteenMinuteLoad());
         } else {
             out.append("not available");
         }

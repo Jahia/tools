@@ -62,7 +62,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Reports the list of class files under WEB-INF/classes.
+ * Lists configurations in OSGI
  * 
  * @author Sergiy Shyrkov
  */
@@ -93,47 +93,48 @@ public class OsgiConfigProbe implements ProbeMBean {
 
     @Override
     public String getData() {
-        StringOutputStream os = new StringOutputStream();
-        @SuppressWarnings("resource")
-        PrintStream out = new PrintStream(os);
         Configuration[] configs;
         try {
             configs = configRepository.getConfigAdmin().listConfigurations(null);
         } catch (IOException | InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+        StringOutputStream os = new StringOutputStream();
+        PrintStream out = new PrintStream(os);
         if (configs != null) {
-            Map<String, Configuration> sortedConfigs = new TreeMap<String, Configuration>();
+            Map<String, Configuration> sortedConfigs = new TreeMap<>();
             for (Configuration config : configs) {
                 sortedConfigs.put(config.getPid(), config);
             }
-            for (String pid : sortedConfigs.keySet()) {
-                Configuration config = sortedConfigs.get(pid);
-                out.println("----------------------------------------------------------------");
-                out.println("Pid:            " + config.getPid());
-                if (config.getFactoryPid() != null) {
-                    out.println("FactoryPid:     " + config.getFactoryPid());
-                }
-                out.println("BundleLocation: " + config.getBundleLocation());
-                if (config.getProperties() != null) {
-                    out.println("Properties:");
-                    Dictionary<String, Object> props = config.getProperties();
-                    Map<String, Object> sortedProps = new TreeMap<String, Object>();
-                    for (Enumeration< String>e = props.keys(); e.hasMoreElements();) {
-                        String key = e.nextElement();
-                        sortedProps.put(key, props.get(key));
-                    }
-                    for (String key : sortedProps.keySet()) {
-                        out.println("   " + key + " = " + sortedProps.get(key));
-                    }
-                }
+            for (Configuration config : sortedConfigs.values()) {
+                writeConfigToStream(config, out);
             }
         }
 
         out.flush();
 
         return os.toString();
-
+    }
+    
+    private void writeConfigToStream(Configuration config, PrintStream out) {
+        out.println("----------------------------------------------------------------");
+        out.println("Pid:            " + config.getPid());
+        if (config.getFactoryPid() != null) {
+            out.println("FactoryPid:     " + config.getFactoryPid());
+        }
+        out.println("BundleLocation: " + config.getBundleLocation());
+        if (config.getProperties() != null) {
+            out.println("Properties:");
+            Dictionary<String, Object> props = config.getProperties();
+            Map<String, Object> sortedProps = new TreeMap<>();
+            for (Enumeration< String>e = props.keys(); e.hasMoreElements();) {
+                String key = e.nextElement();
+                sortedProps.put(key, props.get(key));
+            }
+            for (Map.Entry<String, Object> entry : sortedProps.entrySet()) {
+                out.println("   " + entry.getKey() + " = " + entry.getValue());
+            }
+        }
     }
 
     @Override

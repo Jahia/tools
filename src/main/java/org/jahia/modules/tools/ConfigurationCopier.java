@@ -68,6 +68,12 @@ import org.springframework.core.io.Resource;
 class ConfigurationCopier {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationCopier.class);
+    
+    public static final String REPOSITORY_FOLDER  = "repository";
+    
+    private ConfigurationCopier() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     /**
      * Copies the configuration files specified, replacing the sensitive data like usernames, passwords etc..
@@ -119,20 +125,20 @@ class ConfigurationCopier {
 
     private static void exportConfigFromDigitalFactoryConfig(File cfg) {
         long startTime = System.currentTimeMillis();
-        File cfgDir = getDigitalFactoryConfigDir();
-        if (cfgDir != null) {
-            try {
+        File cfgDir = null;
+        try {
+            cfgDir = getDigitalFactoryConfigDir();
+            if (cfgDir != null) {
                 File destDir = new File(cfg, "digital-factory-config");
                 FileUtils.copyDirectory(cfgDir, destDir);
                 replaceSensitivePropertyValue(new File(destDir, "jahia/jahia.properties"), "jahiaToolManagerPassword");
-            } catch (IOException e) {
-                logger.error("Error exporting configuration files from folder " + cfgDir, e);
+            } else {
+                logger.warn("Unable to detect location of DX configuration folder. Skipping exporting config files.");
             }
-        } else {
-            logger.warn("Unable to detect location of DX configuration folder. Skipping exporting config files.");
+        } catch (IOException e) {
+            logger.error("Error exporting configuration files from folder " + cfgDir, e);
         }
-        logger.info("Exported configuration from digital-factory-config folder in {} ms",
-                System.currentTimeMillis() - startTime);
+        logger.info("Exported configuration from digital-factory-config folder in {} ms", System.currentTimeMillis() - startTime);
     }
 
     private static void exportConfigFromDigitalFactoryData(File cfg) {
@@ -149,7 +155,7 @@ class ConfigurationCopier {
         // now export JCR repository configuration
         try {
             sourceDir = SettingsBean.getInstance().getRepositoryHome();
-            File destRepoDir = new File(destDir, "repository");
+            File destRepoDir = new File(destDir, REPOSITORY_FOLDER);
             FileUtils.copyFile(new File(sourceDir, "workspaces/default/workspace.xml"),
                     new File(destRepoDir, "workspaces/default/workspace.xml"));
             FileUtils.copyFile(new File(sourceDir, "workspaces/live/workspace.xml"),
@@ -202,7 +208,7 @@ class ConfigurationCopier {
             FileUtils.copyDirectoryToDirectory(new File(etcDir, "config"), destEtcDir);
             FileUtils.copyDirectoryToDirectory(new File(etcDir, "spring"), destEtcDir);
 
-            copyDirectory(new File(etcDir, "repository"), new File(destEtcDir, "repository"), "root-mail-server.xml",
+            copyDirectory(new File(etcDir, REPOSITORY_FOLDER), new File(destEtcDir, REPOSITORY_FOLDER), "root-mail-server.xml",
                     "root-user.xml");
             copyFileReplaceSensitiveValues(new File(etcDir, "repository/root-mail-server.xml"),
                     new File(destEtcDir, "repository/root-mail-server.xml"), "j:uri");
@@ -216,20 +222,18 @@ class ConfigurationCopier {
                 System.currentTimeMillis() - startTime);
     }
 
-    private static File getDigitalFactoryConfigDir() {
-        try {
-            for (Resource r : SpringContextSingleton.getInstance().getResources("classpath*:jahia/jahia.properties")) {
-                if (r != null && r.exists()) {
-                    try {
-                        return r.getFile().getParentFile().getParentFile();
-                    } catch (IOException e) {
-                        continue;
-                    }
+    private static File getDigitalFactoryConfigDir() throws IOException {
+        for (Resource r : SpringContextSingleton.getInstance().getResources("classpath*:jahia/jahia.properties")) {
+            if (r != null && r.exists()) {
+                try {
+                    return r.getFile().getParentFile().getParentFile();
+                } catch (IOException e) {
+                    logger.debug("Could not retrieve grand-parent of " + r.getDescription(), e);
+                    continue;
                 }
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         }
+
         return null;
     }
 
