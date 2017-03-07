@@ -178,7 +178,7 @@ public class SupportInfoHelper {
 
     private static File zip(File dumpDir) throws ArchiveException, IOException {
         File target = new File(dumpDir.getParentFile(), dumpDir.getName() + ".zip");
-        int basePathLength = dumpDir.getAbsolutePath().length();
+        int basePathLength = dumpDir.getAbsolutePath().length() + 1;
         // delete current zip if any and register new zip to be deleted on JVM termination
         FileUtils.deleteQuietly(target);
         target.deleteOnExit();
