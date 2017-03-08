@@ -33,7 +33,7 @@
 	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
 	Please, note, that no information is sent directly to Jahia support when using this action. You will be able to review and adjust the resulted file.<br/>
 	We are filtering out DX sensitive information (usernames, passwords, etc.) before generating the ZIP file
-	<a class="fancybox-link" title="Help" href="#infoArea"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a><br/>
+	<a class="fancybox-link" title="Sensitive information" href="#infoArea"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="Sensitive information" title="Sensitive information"></a><br/>
 	Please ensure that no custom sensitive information appear in the ZIP file (<code>jahia.properties</code>, etc.). If so, please hide them (using <code>***</code>) before sending the ZIP file to Jahia.
 </fieldset>
 <c:if test="${not empty generatedInfo}">
