@@ -147,7 +147,7 @@ class ConfigurationCopier {
         File sourceDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath());
         try {
             copyDirectory(new File(sourceDir, "karaf/etc"), new File(destDir, "karaf/etc"), "host.key",
-                    "keys.properties");
+                    "keys.properties", "users.properties");
         } catch (IOException e) {
             logger.error("Error exporting configuration files from folder " + sourceDir, e);
         }

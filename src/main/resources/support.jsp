@@ -10,17 +10,32 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<%@ include file="css.jspf" %>
-<script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <%@ include file="css.jspf" %>
+    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
+    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('a.fancybox-link').fancybox({
+                'hideOnContentClick': false,
+                'titleShow': false,
+                'transitionOut': 'none'
+            });
+        });
+    </script>
 <title>Export Support Information</title>
 </head>
 <body>
 <h1>Export Support Information</h1>
-<p>Allows you to export as a ZIP file useful support data about this DX instance.<br/>
-Please, note, that no information is sent directly to Jahia support when using this action and no sensitive information (usernames, passwords, etc.) is included into the ZIP file.<br/>
-You will be able to view the resulted file.
-</p>
+<p>Allows you to export as a ZIP file useful support data about this DX instance.</p>
+<fieldset style="background-color:#dfe8f6;border-color:#c3dbee;color:#000">
+	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
+	Please, note, that no information is sent directly to Jahia support when using this action. You will be able to review and adjust the resulted file.<br/>
+	We are filtering out DX sensitive information (usernames, passwords, etc.) before generating the ZIP file
+	<a class="fancybox-link" title="Help" href="#infoArea"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a><br/>
+	Please ensure that no custom sensitive information appear in the ZIP file (<code>jahia.properties</code>, etc.). If so, please hide them (using <code>***</code>) before sending the ZIP file to Jahia.
+</fieldset>
 <c:if test="${not empty generatedInfo}">
 <p style="color: blue">
 Support information exported in ${fn:escapeXml(generationTime)} ms to file: <strong>${fn:escapeXml(generatedInfo)}</strong>
@@ -65,6 +80,31 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 <pre>        <%= targetDir %></pre>
 </p>
 <%@ include file="gotoIndex.jspf" %>
+<div style="display: none;">
+    <div id="infoArea">
+        <h3>Sensitive information</h3>
+
+        <h4>Excluded files</h4>
+        <p>By default we exclude from the generated support ZIP file the following configuration files with sensitive data:
+        <ul>
+        	<li><code>&lt;digital-factory-data&gt;/karaf/etc/host.key</code></li>
+        	<li><code>&lt;digital-factory-data&gt;/karaf/etc/keys.properties</code></li>
+        	<li><code>&lt;digital-factory-data&gt;/karaf/etc/users.properties</code></li>
+        </ul>
+        </p>
+        
+        <h4>Filtered out information</h4>
+        <p>
+        The following values are replaced in the corresponding files with <code>***</code>:
+        <ul>
+        	<li>DX Tools password hash: <code>&lt;digital-factory-config&gt;/jahia/jahia.properties</code> - <code>jahiaToolManagerPassword</code></li>
+        	<li>Database username/password: <code>&lt;dx-webapp-dir&gt;/META-INF/context.xml</code> - attributes <code>username</code> and <code>password</code></li>
+        	<li>Mail server configuration: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-mail-server.xml</code> - attribute <code>j:uri</code></li>
+        	<li>DX root user password hash: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-user.xml</code> - attribute <code>j:password</code></li>
+        </ul>
+        </p>
+    </div>
+</div>
 </body>
 </html>
 </c:if>

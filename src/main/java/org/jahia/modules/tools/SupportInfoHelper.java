@@ -103,6 +103,8 @@ public class SupportInfoHelper {
         FileUtils.deleteDirectory(dumpDir);
         FileUtils.forceMkdir(dumpDir);
 
+        boolean doDownload = "download".equals(request.getParameter("action"));
+
         try {
             for (List<Probe> probesByCategory : getProbes().values()) {
                 for (Probe p : probesByCategory) {
@@ -114,7 +116,7 @@ public class SupportInfoHelper {
 
             File generatedFile = null;
             try {
-                generatedFile = zip(dumpDir);
+                generatedFile = zip(dumpDir, doDownload);
             } catch (ArchiveException e) {
                 throw new IOException(e);
             }
@@ -123,7 +125,7 @@ public class SupportInfoHelper {
 
             logger.info("Support information exported in {} ms. Generated file: {}", timeTaken, generatedFile);
 
-            if ("download".equals(request.getParameter("action"))) {
+            if (doDownload) {
                 writeZipContentToResponse(generatedFile, response);
             } else {
                 request.setAttribute("generatedInfo", generatedFile);
@@ -176,12 +178,17 @@ public class SupportInfoHelper {
         return BundleUtils.getOsgiService(ProbeService.class, null).getProbesByCategory();
     }
 
-    private static File zip(File dumpDir) throws ArchiveException, IOException {
+    private static File zip(File dumpDir, boolean deleteOnExit) throws ArchiveException, IOException {
         File target = new File(dumpDir.getParentFile(), dumpDir.getName() + ".zip");
         int basePathLength = dumpDir.getAbsolutePath().length() + 1;
-        // delete current zip if any and register new zip to be deleted on JVM termination
+        // delete current zip if any
         FileUtils.deleteQuietly(target);
-        target.deleteOnExit();
+
+        if (deleteOnExit) {
+            // register new zip to be deleted on JVM termination
+            target.deleteOnExit();
+        }
+
         try (ArchiveOutputStream os = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP,
                 new FileOutputStream(target))) {
 
