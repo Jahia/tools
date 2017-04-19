@@ -402,7 +402,7 @@
             runJCRTest(out, request, pageContext, true);
         }
 
-        if (isParameterActive(request, "operation", "stop")) {
+        if (isParameterActive(request, "option", "stop")) {
             mustStop = true;
         }
 
