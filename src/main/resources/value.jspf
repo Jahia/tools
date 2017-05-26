@@ -8,10 +8,10 @@
         <c:set var="fileSize" value='<%= org.jahia.utils.FileUtils.humanReadableByteCount((Long) pageContext.getAttribute("propertySize"), true) %>'/>
         <c:if test="${property.name == 'jcr:data'}" var="jcrData">
             <c:set var="parentNode" value="${currentNode.parent}"/>
-            <c:if test="${parentNode.file}">
+            <c:if test="${parentNode.file && currentNode.name == 'jcr:content'}" var="isFileContentNode">
                 <c:url value="${parentNode.url}" var="binaryUrl"/>
             </c:if>
-            <c:if test="${!parentNode.file}">
+            <c:if test="${!isFileContentNode}">
                 <c:url value="${parentNode.url}" var="binaryUrl">
                     <c:param name="t" value="${currentNode.name}"/>
                 </c:url>
