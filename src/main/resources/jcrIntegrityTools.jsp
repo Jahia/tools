@@ -402,7 +402,7 @@
             runJCRTest(out, request, pageContext, true);
         }
 
-        if (isParameterActive(request, "option", "stop")) {
+        if (isParameterActive(request, "operation", "stop")) {
             mustStop = true;
         }
 
@@ -419,7 +419,7 @@
             out.println("</form>");
         } else {
             out.println("<form>");
-            renderCheckbox(out, "stop", "Stop currently running check/fix", true);
+            renderRadio(out, "stop", "Stop currently running check/fix", true);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         }
