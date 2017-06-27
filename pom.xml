@@ -53,7 +53,7 @@
         <relativePath />
     </parent>
     <artifactId>tools</artifactId>
-    <version>2.0.6-SNAPSHOT</version>
+    <version>2.0.6</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Experience Manager Support Tools</description>
@@ -62,7 +62,7 @@
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/tools.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/tools.git</url>
-      <tag>2_0_x</tag>
+      <tag>2_0_6</tag>
   </scm>
 
     <properties>
