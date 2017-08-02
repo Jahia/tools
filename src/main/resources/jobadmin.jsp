@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page import="org.jahia.bin.Jahia" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.scheduler.*" %>
 <%@ page import="java.util.*" %>
@@ -11,7 +12,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="ramScheduler" value="${param.schedulerType == 'ram'}"/>
-<% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler"); %>
+<% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler");
+pageContext.setAttribute("fullReadOnlyMode", Boolean.valueOf(Jahia.getSettings().isFullReadOnlyMode())); %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
@@ -45,11 +47,19 @@
 SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
 Scheduler scheduler = isRamScheduler ? service.getRAMScheduler() : service.getScheduler();
 pageContext.setAttribute("service", service);
+pageContext.setAttribute("scheduler", scheduler);
 %>
-<c:set var="showActions" value="${functions:default(fn:escapeXml(param.showActions), 'false')}"/>
+<c:set var="showActions" value="${!fullReadOnlyMode && functions:default(fn:escapeXml(param.showActions), 'false')}"/>
 <c:set var="showCompleted" value="${functions:default(fn:escapeXml(param.showCompleted), 'false')}"/>
+<c:url var="imgOn" value="images/nav_plain_green.png"/>
+<c:url var="imgOff" value="images/nav_plain_red.png"/>
+<c:set var="schedulerStatus" value="${scheduler.started ? (scheduler.inStandbyMode ? 'In standby mode' : 'Started') : 'Not started'}"/>
 <body>
 	<h1>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</h1>
+    <p>Scheduler status:
+    <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>
+    ${schedulerStatus}
+    </p>
     <p>
     <c:if test="${ramScheduler}">
         This view lists all the jobs, managed by the RAM (in-memory) scheduler.
@@ -67,8 +77,10 @@ pageContext.setAttribute("service", service);
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>
+        <c:if test="${!fullReadOnlyMode}">
         <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}
                 onchange="go('showActions', '${!showActions}')"/>&nbsp;<label for="cbActions">Show actions</label><br/>
+        </c:if>
         <input id="cbCompleted" type="checkbox" ${showCompleted ? 'checked="checked"' : ''}
                 onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show all jobs</label><br/>
     </p>
