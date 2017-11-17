@@ -6,6 +6,7 @@
 <%@ page import="org.jahia.services.scheduler.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.quartz.*" %>
+<%@ page import="org.jahia.settings.readonlymode.ReadOnlyModeController" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,7 +14,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="ramScheduler" value="${param.schedulerType == 'ram'}"/>
 <% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler");
-pageContext.setAttribute("fullReadOnlyMode", Boolean.valueOf(Jahia.getSettings().isFullReadOnlyMode())); %>
+pageContext.setAttribute("fullReadOnlyMode", Boolean.valueOf(ReadOnlyModeController.getInstance().isReadOnlyModeEnabled())); %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>

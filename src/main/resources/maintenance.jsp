@@ -20,11 +20,11 @@ Jahia.setMaintenance(Boolean.valueOf(request.getParameter("maintenance")));
 <% pageContext.setAttribute("maintenance", Boolean.valueOf(Jahia.isMaintenance())); %>
 <c:if test="${not empty param.fullReadOnlyMode}">
 <%
-Boolean fullReadOnly = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
-((ReadOnlyModeController)SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnly);
+Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
+((ReadOnlyModeController)SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
 %>
 </c:if>
-<% pageContext.setAttribute("fullReadOnlyMode", Boolean.valueOf(Jahia.getSettings().isFullReadOnlyMode())); %>
+<% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus()); %>
 <body>
 <c:if test="${not empty param.readOnlyMode}">
 <%
@@ -51,10 +51,12 @@ If you would like to persist the flag value, use the jahia.properties file.</p>
 If the read-only mode is enabled, requests to the edit/contribute/studio/administration modes will be blocked.<br/>
 The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
 </p>
-<c:set var="modeLabel" value="${fullReadOnlyMode ? 'ON' : 'OFF'}"/>
-<h2><img src="${fullReadOnlyMode ? imgOn : imgOff}" alt="${modeLabel}" title="${modeLabel}" height="16" width="16"/> Full Read-Only Mode</h2>
+<h2><img src="${fullReadOnlyModeStatus != 'OFF' ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode</h2>
 <p>
-The full read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyMode}">${fullReadOnlyMode ? 'disable' : 'enable'} full read-only mode</a>
+The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
+    <c:if test="${fullReadOnlyModeStatus != 'PENDING'}">
+        <br/>Click here to <a href="?fullReadOnlyMode=${fullReadOnlyModeStatus == 'ON' ? false : true}">${fullReadOnlyModeStatus == 'ON' ? 'disable' : 'enable'} full read-only mode</a>
+    </c:if>
 </p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
