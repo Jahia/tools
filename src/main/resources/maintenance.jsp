@@ -13,24 +13,24 @@
 <c:url var="imgOn" value="images/nav_plain_green.png"/>
 <c:url var="imgOff" value="images/nav_plain_red.png"/>
 <c:if test="${not empty param.maintenance}">
-<%
-Jahia.setMaintenance(Boolean.valueOf(request.getParameter("maintenance")));
-%>
+    <%
+    Jahia.setMaintenance(Boolean.valueOf(request.getParameter("maintenance")));
+    %>
 </c:if>
 <% pageContext.setAttribute("maintenance", Boolean.valueOf(Jahia.isMaintenance())); %>
 <c:if test="${not empty param.fullReadOnlyMode}">
-<%
-Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
-((ReadOnlyModeController)SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
-%>
+    <%
+    Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
+    ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
+    %>
 </c:if>
 <% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus()); %>
 <body>
 <c:if test="${not empty param.readOnlyMode}">
-<%
-Boolean readOnly = Boolean.valueOf(request.getParameter("readOnlyMode"));
-Jahia.getSettings().setReadOnlyMode(readOnly);
-%>
+    <%
+    Boolean readOnly = Boolean.valueOf(request.getParameter("readOnlyMode"));
+    Jahia.getSettings().setReadOnlyMode(readOnly);
+    %>
 </c:if>
 <% pageContext.setAttribute("readOnlyMode", Boolean.valueOf(Jahia.getSettings().isReadOnlyMode())); %>
 <h1>System Maintenance</h1>
