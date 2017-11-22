@@ -3,7 +3,9 @@
 <%@page import="org.jahia.bin.Jahia"%>
 <%@page import="org.jahia.services.SpringContextSingleton"%>
 <%@page import="org.jahia.settings.readonlymode.ReadOnlyModeController"%>
+<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -24,7 +26,7 @@
     ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
     %>
 </c:if>
-<% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus()); %>
+<% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus().toString()); %>
 <body>
 <c:if test="${not empty param.readOnlyMode}">
     <%
@@ -54,7 +56,7 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
 <h2><img src="${fullReadOnlyModeStatus != 'OFF' ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode</h2>
 <p>
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
-    <c:if test="${fullReadOnlyModeStatus != 'PENDING'}">
+    <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING')}">
         <br/>Click here to <a href="?fullReadOnlyMode=${fullReadOnlyModeStatus == 'ON' ? false : true}">${fullReadOnlyModeStatus == 'ON' ? 'disable' : 'enable'} full read-only mode</a>
     </c:if>
 </p>
