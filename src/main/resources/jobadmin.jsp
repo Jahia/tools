@@ -14,7 +14,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="ramScheduler" value="${param.schedulerType == 'ram'}"/>
 <% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler");
-pageContext.setAttribute("fullReadOnlyMode", Boolean.valueOf(ReadOnlyModeController.getInstance().isReadOnlyModeEnabled())); %>
+pageContext.setAttribute("fullReadOnlyMode", Objects.equals(ReadOnlyModeController.getInstance().getReadOnlyStatus().toString(), "ON")); %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
