@@ -56,8 +56,13 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
 <h2><img src="${fullReadOnlyModeStatus != 'OFF' ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode</h2>
 <p>
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
-    <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING')}">
-        <br/>Click here to <a href="?fullReadOnlyMode=${fullReadOnlyModeStatus == 'ON' ? false : true}">${fullReadOnlyModeStatus == 'ON' ? 'disable' : 'enable'} full read-only mode</a>
+    <c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="enabled"/>
+    <c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+        <br/>The previous opertation failed. Click here to retry <a href="?fullReadOnlyMode=${enabled}">${!enabled ? 'disabling' : 'enabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'}</a> it.
+    </a>
+    </c:if>
+    <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+        <br/>Click here to <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'} full read-only mode</a>
     </c:if>
 </p>
 <%@ include file="gotoIndex.jspf" %>
