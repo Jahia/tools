@@ -58,7 +58,7 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
     <c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="enabled"/>
     <c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-        <br/>The previous opertation failed. Click here to retry <a href="?fullReadOnlyMode=${enabled}">${!enabled ? 'disabling' : 'enabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'}</a> it.
+        <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${enabled}">${!enabled ? 'disabling' : 'enabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'}</a> it.
     </a>
     </c:if>
     <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
