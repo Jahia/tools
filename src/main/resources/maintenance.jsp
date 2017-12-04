@@ -20,21 +20,21 @@
     %>
 </c:if>
 <% pageContext.setAttribute("maintenance", Boolean.valueOf(Jahia.isMaintenance())); %>
-<c:if test="${not empty param.fullReadOnlyMode}">
-    <%
-    Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
-    ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
-    %>
-</c:if>
-<% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus().toString()); %>
-<body>
 <c:if test="${not empty param.readOnlyMode}">
     <%
     Boolean readOnly = Boolean.valueOf(request.getParameter("readOnlyMode"));
     Jahia.getSettings().setReadOnlyMode(readOnly);
     %>
 </c:if>
+<c:if test="${not empty param.fullReadOnlyMode}">
+    <%
+    Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
+    ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
+    %>
+</c:if>
 <% pageContext.setAttribute("readOnlyMode", Boolean.valueOf(Jahia.getSettings().isReadOnlyMode())); %>
+<% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus().toString()); %>
+<body>
 <h1>System Maintenance</h1>
 <p><a href="maintenance.jsp" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="Refresh" title="Refresh" height="16" width="16"/>&nbsp; Refresh status</a></p>
 <c:set var="modeLabel" value="${maintenance ? 'ON' : 'OFF'}"/>
@@ -53,17 +53,18 @@ If you would like to persist the flag value, use the jahia.properties file.</p>
 If the read-only mode is enabled, requests to the edit/contribute/studio/administration modes will be blocked.<br/>
 The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
 </p>
-<h2><img src="${fullReadOnlyModeStatus != 'OFF' ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode</h2>
+<c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="fullReadOnlyEnabled"/>
+<h2>
+<img src="${fullReadOnlyEnabled ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode
+</h2>
 <p>
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
-    <c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="enabled"/>
-    <c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-        <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${enabled}">${!enabled ? 'disabling' : 'enabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'}</a> it.
-    </a>
-    </c:if>
-    <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-        <br/>Click here to <a href="?fullReadOnlyMode=${!enabled}">${enabled ? 'disable' : 'enable'} full read-only mode</a>
-    </c:if>
+<c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
+</c:if>
+<c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+    <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
+</c:if>
 </p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
