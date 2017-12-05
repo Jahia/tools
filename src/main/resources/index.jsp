@@ -10,6 +10,7 @@
 <%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@page import="org.jahia.utils.DateUtils"%>
 <%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
+<%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -54,7 +55,19 @@
         <li><a href="rules.jsp">Business rules</a></li>
     </ul>
 </fieldset>
-<% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) { %>
+            <% pageContext.setAttribute("moduleTools", ModuleToolsHelper.getInstance().getTools()); %>
+            <c:if test="${not empty moduleTools}">
+                <fieldset>
+                    <legend>Modules</legend>
+                    <ul>
+                        <c:forEach var="tool" items="${moduleTools}">
+                            <li><a href="${pageContext.request.contextPath}${tool.path}">${tool.name}</a></li>
+                        </c:forEach>
+                    </ul>
+                </fieldset>
+            </c:if>
+
+            <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) { %>
 <jsp:include page="/modules/tools/indexEnterprise.jsp" />
 <% } %>
         </td>
