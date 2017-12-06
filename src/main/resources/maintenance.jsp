@@ -31,14 +31,11 @@
     Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
     ReadOnlyModeController readOnlyModeController = ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController"));
     pageContext.setAttribute("currentReadOnlyStatus", readOnlyModeController.getReadOnlyStatus());
-    boolean modeChangeAllowed = false;
-    if (readOnlyModeController.isStatusUpdateAllowed(fullReadOnlyParameter)) {
-        try {
-            readOnlyModeController.switchReadOnlyMode(fullReadOnlyParameter);
-            pageContext.setAttribute("readOnlyStateChangeResult", "done"); 
-        } catch (IllegalStateException e) {
-            // we are not allowed to switch the state 
-        }
+    try {
+        readOnlyModeController.switchReadOnlyMode(fullReadOnlyParameter);
+        pageContext.setAttribute("readOnlyStateChangeResult", "done"); 
+    } catch (IllegalStateException e) {
+        // we are not allowed to switch the state 
     }
     %>
     <c:if test="${empty readOnlyStateChangeResult}">
