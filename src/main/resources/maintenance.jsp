@@ -29,8 +29,21 @@
 <c:if test="${not empty param.fullReadOnlyMode}">
     <%
     Boolean fullReadOnlyParameter = Boolean.valueOf(request.getParameter("fullReadOnlyMode"));
-    ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController")).switchReadOnlyMode(fullReadOnlyParameter);
+    ReadOnlyModeController readOnlyModeController = ((ReadOnlyModeController) SpringContextSingleton.getBean("ReadOnlyModeController"));
+    pageContext.setAttribute("currentReadOnlyStatus", readOnlyModeController.getReadOnlyStatus());
+    boolean modeChangeAllowed = false;
+    if (readOnlyModeController.isStatusUpdateAllowed(fullReadOnlyParameter)) {
+        try {
+            readOnlyModeController.switchReadOnlyMode(fullReadOnlyParameter);
+            pageContext.setAttribute("readOnlyStateChangeResult", "done"); 
+        } catch (IllegalStateException e) {
+            // we are not allowed to switch the state 
+        }
+    }
     %>
+    <c:if test="${empty readOnlyStateChangeResult}">
+        <p style="color: red">Unable to switch full read only mode to <strong>${param.fullReadOnlyMode ? 'ON' : 'OFF'}</strong> as the current state (<strong>${currentReadOnlyStatus}</strong>) does not allow the requested mode change.</p>
+    </c:if>
 </c:if>
 <% pageContext.setAttribute("readOnlyMode", Boolean.valueOf(Jahia.getSettings().isReadOnlyMode())); %>
 <% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus().toString()); %>
