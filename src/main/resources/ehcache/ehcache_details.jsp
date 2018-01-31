@@ -111,7 +111,7 @@
                 <td>${key}</td>
                 <%
                     final Element element1 = cache.getQuiet(pageContext.getAttribute("key"));
-                    final long expirationTime = element1.getExpirationTime();
+                    final long expirationTime = element1 != null ? element1.getExpirationTime() : 0;
                 %>
 
                 <td><%= element1 != null
