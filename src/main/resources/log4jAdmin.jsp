@@ -5,6 +5,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.lang.reflect.Method" %>
 <%@ page import="java.lang.reflect.InvocationTargetException" %>
+<%@ page import="org.jahia.bin.listeners.LoggingConfigListener" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%!
 
@@ -55,22 +56,8 @@
     }
 
     public boolean setLoggerLevel(String loggerName, String loggerLevel) {
-        Object logger = getLogger(loggerName);
-        if (logger == null) {
-            return false;
-        }
-        try {
-            Method setLevelMethod = logger.getClass().getMethod("setLevel", getLevelClass());
-            setLevelMethod.invoke(logger, toLevel(loggerLevel));
-            return true;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return false;
+        LoggingConfigListener.setLoggerLevel(loggerName, loggerLevel);
+        return true;
     }
 
     public List<Map<String,String>> getLoggers() {
@@ -138,20 +125,6 @@
         return parent;
     }
 
-    public void setLoggerLevel(Object logger, Object level) {
-        try {
-            Method method = logger.getClass().getMethod("setLevel", getLevelClass());
-            method.invoke(logger, level);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public Object getRootLogger() {
         Class logManagerClass = getLogManager();
         Object rootLogger = null;
@@ -167,22 +140,6 @@
         }
         return rootLogger;
 
-    }
-
-    public Object getLogger(String loggerName) {
-        Class logManagerClass = getLogManager();
-        Object logger = null;
-        try {
-            Method getRootLoggerMethod = logManagerClass.getMethod("getLogger", String.class);
-            logger = getRootLoggerMethod.invoke(null, loggerName);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return logger;
     }
 
     public String getRootLoggerName() {
@@ -443,10 +400,7 @@
 // MUST CHANGE THE LOG LEVEL ON LOGGER BEFORE GENERATING THE LINKS AND THE
 // CURRENT LOG LEVEL OR DISABLED LINK WON'T MATCH THE NEWLY CHANGED VALUES
             if ("changeLogLevel".equals(targetOperation) && targetLogger.equals(loggerName)) {
-
-                Object selectedLogger = loggersMap.get(targetLogger);
-
-                setLoggerLevel(selectedLogger, toLevel(targetLogLevel));
+                setLoggerLevel(targetLogger, targetLogLevel);
             }
 
             loggerName = null;
