@@ -101,13 +101,13 @@
 <fieldset>
 <legend>Immediate</legend>
 <ul>
-    <li><a href="?action=reindex-now&ws=all" onclick="return confirm('This will schedule a background task for re-indexing content of the whole repository. Would you like to continue?')">Whole repository re-indexing</a> - Do whole repository (live, default and system indexes + spellchecker) re-indexing now</li>
-    <li><a href="?action=reindex-now&ws=live" onclick="return confirm('This will schedule a background task for re-indexing content of the live repository workspace. Would you like to continue?')">Live repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=reindex-now&ws=default" onclick="return confirm('This will schedule a background task for re-indexing content of the default repository workspace. Would you like to continue?')">Default repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=reindex-now" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=updateSpellCheckerIndex" onclick="return confirm('This will schedule a background task for updating the spellchecker index for live and default workspaces. Would you like to continue?')">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
+    <li><a href="?action=reindex-now&ws=all&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the whole repository. Would you like to continue?')">Whole repository re-indexing</a> - Do whole repository (live, default and system indexes + spellchecker) re-indexing now</li>
+    <li><a href="?action=reindex-now&ws=live&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the live repository workspace. Would you like to continue?')">Live repository re-indexing</a> - Do repository re-indexing now</li>
+    <li><a href="?action=reindex-now&ws=default&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the default repository workspace. Would you like to continue?')">Default repository re-indexing</a> - Do repository re-indexing now</li>
+    <li><a href="?action=reindex-now&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing</a> - Do repository re-indexing now</li>
+    <li><a href="?action=updateSpellCheckerIndex&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for updating the spellchecker index for live and default workspaces. Would you like to continue?')">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
     <li>
-        <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace'); var ws = cbW.options[cbW.selectedIndex].value; var uuid = document.getElementById('reindexTreeUuid').value; if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; } if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid; return true; } else { return false; }">Re-index the sub-tree</a>
+        <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace'); var ws = cbW.options[cbW.selectedIndex].value; var uuid = document.getElementById('reindexTreeUuid').value; if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; } if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid + '&amp;toolAccessToken=${toolAccessToken}'; return true; } else { return false; }">Re-index the sub-tree</a>
         &nbsp;&nbsp;
         <label for="reindexTreeWorkspace">workspace:&nbsp;</label>
         <select id="reindexTreeWorkspace" name="reindexTreeWorkspace">
@@ -129,28 +129,28 @@
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "reindex").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=reindex-undo">Undo repository re-indexing</a> - Remove marker file to skip repository re-indexing on the next Digital Experience Manager start
+    	<a href="?action=reindex-undo&toolAccessToken=${toolAccessToken}">Undo repository re-indexing</a> - Remove marker file to skip repository re-indexing on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=reindex">Repository re-indexing</a> - Do repository re-indexing on the next Digital Experience Manager start
+    	<a href="?action=reindex&toolAccessToken=${toolAccessToken}">Repository re-indexing</a> - Do repository re-indexing on the next Digital Experience Manager start
     </c:if>
     </li>
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=index-fix-undo">Undo repository index check and fix</a> - Remove marker file to skip repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
+    	<a href="?action=index-fix-undo&toolAccessToken=${toolAccessToken}">Undo repository index check and fix</a> - Remove marker file to skip repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=index-fix">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
+    	<a href="?action=index-fix&toolAccessToken=${toolAccessToken}">Repository index check and fix</a> - Do repository search indexes logical check and fix inconsistencies on the next Digital Experience Manager start
     </c:if>
     </li>
     <li>
     <% pageContext.setAttribute("markerExists", new File(SettingsBean.getInstance().getRepositoryHome(), "index-check").exists()); %>
     <c:if test="${markerExists}">
-    	<a href="?action=index-check-undo">Undo repository index check (no repair)</a> - Remove marker file to skip repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
+    	<a href="?action=index-check-undo&toolAccessToken=${toolAccessToken}">Undo repository index check (no repair)</a> - Remove marker file to skip repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
     </c:if>
     <c:if test="${!markerExists}">
-    	<a href="?action=index-check">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
+    	<a href="?action=index-check&toolAccessToken=${toolAccessToken}">Repository index check (no repair)</a> - Do repository search indexes logical check just reporting inconsistencies in the log on the next Digital Experience Manager start
     </c:if>
     </li>
 </ul>
@@ -158,7 +158,7 @@
 <fieldset>
 <legend>Index health</legend>
 <ul>
-    <li><a href="?action=index-check-physical">Repository index physical check</a> - Do immediate repository search indexes physical consistency check and print out the results (Lucene CheckIndex tool)</li>
+    <li><a href="?action=index-check-physical&toolAccessToken=${toolAccessToken}">Repository index physical check</a> - Do immediate repository search indexes physical consistency check and print out the results (Lucene CheckIndex tool)</li>
 
 </ul>
 </fieldset>

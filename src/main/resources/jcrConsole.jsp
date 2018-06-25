@@ -358,6 +358,7 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     </legend>
 
     <form id="groovyForm" action="?" method="post">
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
     <input type="hidden" name="locale" id="locale" value="${locale}"/>
     <input type="hidden" name="action" id="action" value="execute"/>

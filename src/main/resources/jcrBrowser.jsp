@@ -179,6 +179,7 @@
         <input type="hidden" id="action" name="action" value=""/>
         <input type="hidden" id="target" name="target" value=""/>
         <input type="hidden" id="showJCRNodes" name="showJCRNodes" value="${showJCRNodes}"/>
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     </form>
     <input type="text" id="goToPath" name="goToPath" value="${fn:escapeXml(node.path)}"
            onkeypress="if ((event || window.event).keyCode == 13) go('path', this.value);" />
@@ -554,6 +555,7 @@
     <c:param name="showNodes" value="${showNodes}"/>
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
+    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
 </c:url>
 <body>
 <p>Item with UUID <strong>${nodeId}</strong> does not exist in the '${workspace}' workspace</p>
@@ -571,6 +573,7 @@
     <c:param name="showNodes" value="${showNodes}"/>
     <c:param name="showActions" value="${showActions}"/>
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
+    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
 </c:url>
 <p>Item with the path <strong>${param.path}</strong> does not exist in the '${workspace}' workspace</p>
 <p>Actions:

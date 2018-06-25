@@ -145,6 +145,7 @@
     }
 %>
 <form id="groovyForm" action="?" method="post">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     <input type="hidden" id="runScript" name="runScript" value="true" />
     <c:if test="${empty param.scriptURI or param.scriptURI eq 'custom'}">
         <input type="checkbox" value="background" name="background" id="background"/>&nbsp;<label for="background" title="Execute the script as a background job (separate thread)">Execute as a background job</label>

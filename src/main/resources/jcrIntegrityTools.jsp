@@ -409,7 +409,7 @@
         out.println("<h2>Test completed in " + (System.currentTimeMillis() - timer) + " ms.</h2>");
     } else {
         if (!running) {
-            out.println("<form>");
+            out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
@@ -418,7 +418,7 @@
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {
-            out.println("<form>");
+            out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderRadio(out, "stop", "Stop currently running check/fix", true);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");

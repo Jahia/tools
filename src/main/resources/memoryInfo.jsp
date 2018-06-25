@@ -32,12 +32,12 @@ pageContext.setAttribute("info", s.toString().replace("\n", "<br/>"));
 pageContext.setAttribute("isHeapDumpSupported", ErrorFileDumper.isHeapDumpSupported());
 %>
 <p>
-<a href="?refresh=true"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
+<a href="?refresh=true&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
 &nbsp;
-<a href="?action=gc"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>
+<a href="?action=gc&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>
 <c:if test="${isHeapDumpSupported}">
 &nbsp;
-<a href="?action=dump"><img src="<c:url value='/icons/export.png'/>" height="16" width="16" alt=" " align="top"/>Perform Heap Dump</a>
+<a href="?action=dump&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/export.png'/>" height="16" width="16" alt=" " align="top"/>Perform Heap Dump</a>
 </c:if>
 <br/>
 ${info}

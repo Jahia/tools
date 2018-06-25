@@ -48,7 +48,7 @@ ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begi
 <body>
 	<h1>Completed Job Info</h1>
     <p>Completed job count: <strong>${allCount}</strong> <a href="#refresh" onclick="window.location.reload(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a>
-    <br/><a href="?file=true&amp;group=${fn:escapeXml(param.group)}" target="_blank"><img src="<c:url value='/icons/download.png'/>" alt="download" title="download" height="16" width="16"/>download as a file</a></p>
+    <br/><a href="?file=true&amp;group=${fn:escapeXml(param.group)}&toolAccessToken=${toolAccessToken}" target="_blank"><img src="<c:url value='/icons/download.png'/>" alt="download" title="download" height="16" width="16"/>download as a file</a></p>
     
     <c:if test="${not empty jobs}">
     

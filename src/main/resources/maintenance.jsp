@@ -53,7 +53,7 @@
 If you would like to persist the flag value, use the jahia.properties file.</p>
 <p>
 If the maintenance mode is enabled only requests to the Tools Area are allowed. Requests to all other pages, will be blocked.<br/>
-The maintenance mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?maintenance=${!maintenance}">${maintenance ? 'disable' : 'enable'} maintenance mode</a>
+The maintenance mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?maintenance=${!maintenance}&toolAccessToken=${toolAccessToken}">${maintenance ? 'disable' : 'enable'} maintenance mode</a>
 </p>
 <c:set var="modeLabel" value="${readOnlyMode ? 'ON' : 'OFF'}"/>
 <h2><img src="${readOnlyMode ? imgOn : imgOff}" alt="${modeLabel}" title="${modeLabel}" height="16" width="16"/> Read-only Mode</h2>
@@ -61,7 +61,7 @@ The maintenance mode is currently <strong>${modeLabel}</strong>.<br/>Click here 
 If you would like to persist the flag value, use the jahia.properties file.</p>
 <p>
 If the read-only mode is enabled, requests to the edit/contribute/studio/administration modes will be blocked.<br/>
-The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
+The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}&toolAccessToken=${toolAccessToken}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
 </p>
 <c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="fullReadOnlyEnabled"/>
 <h2>
@@ -70,10 +70,10 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
 <p>
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
 <c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
+    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
 </c:if>
 <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-    <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
+    <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
 </c:if>
 </p>
 <%@ include file="gotoIndex.jspf" %>

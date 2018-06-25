@@ -25,8 +25,8 @@ pageContext.setAttribute("queryStat", queryStat);
 %>
 <h1>JCR Query statistics</h1>
 <p>
-	<a href="?refresh=true"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
-	<a href="?action=reset"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Reset statistics</a>
+	<a href="?refresh=true&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
+	<a href="?action=reset&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Reset statistics</a>
 </p>
 <c:if test="${not empty param.action}">
 	<c:choose>
@@ -45,7 +45,7 @@ pageContext.setAttribute("queryStat", queryStat);
 </c:if>
 <p>Query statistics when enabled provides information about slow queries and most popular queries.</p>
 <p>The JCR query statistics is currently ${queryStat.enabled ? 'enabled' : 'disabled'}.
-<a href="?action=enable&amp;status=${queryStat.enabled ? 'off' : 'on'}">${queryStat.enabled ? 'Disable it' : 'Enable it'}</a></p>
+<a href="?action=enable&amp;status=${queryStat.enabled ? 'off' : 'on'}&toolAccessToken=${toolAccessToken}">${queryStat.enabled ? 'Disable it' : 'Enable it'}</a></p>
 <c:if test="${queryStat.enabled}">
 <fieldset>
 <legend>Slow queries</legend>
@@ -58,6 +58,7 @@ pageContext.setAttribute("queryStat", queryStat);
 			<c:url var="executeUrl" value="jcrQuery.jsp">
 				<c:param name="lang" value="${q.language}"/>
 				<c:param name="query" value="${q.statement}"/>
+				<c:param name="toolAccessToken" value="${toolAccessToken}"/>
 			</c:url>
 			<a title="Execute in JCR Query Tool"
             	href="${executeUrl}"
@@ -86,6 +87,7 @@ pageContext.setAttribute("queryStat", queryStat);
 			<c:url var="executeUrl" value="jcrQuery.jsp">
 				<c:param name="lang" value="${q.language}"/>
 				<c:param name="query" value="${q.statement}"/>
+				<c:param name="toolAccessToken" value="${toolAccessToken}"/>
 			</c:url>
 			<a title="Execute in JCR Query Tool"
             	href="${executeUrl}"

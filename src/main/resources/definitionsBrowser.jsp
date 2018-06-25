@@ -66,6 +66,7 @@
     <input type="hidden" id="action" name="action"/>
     <input type="hidden" id="module" name="module"/>
     <input type="hidden" id="nodetype" name="nodetype"/>
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 </form>
 
 <%!

@@ -29,7 +29,7 @@
     <h1>Business Rules</h1>
     <p>
         Here is a list of all business rules, currently registered in the system.
-        <a href="?refresh=true" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="Refresh" height="16" width="16"/></a>
+        <a href="?refresh=true&toolAccessToken=${toolAccessToken}" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="Refresh" height="16" width="16"/></a>
     </p>
     <p>
         Note, please, the enable/disable actions here are not persistent, meaning they influence the state of a rule only till the next server restart and only on this current cluster node.<br/>
@@ -75,7 +75,7 @@
 	            <c:set var="ruleEnabled" value="${rule.enabled == 'true'}"/>
 	            <c:url value="/icons/publication/${!ruleEnabled ? 'not' : ''}published.png" var="iconUrl"/>
 	            <c:url value="/icons/${ruleEnabled ? 'cancel' : 'accept'}.png" var="actionIconUrl"/>
-	            <li><img src="${iconUrl}" alt="${ruleEnabled ? 'on' : 'off'}" height="12" width="12"/> ${rule.name} [<a href="?listener=${fn:escapeXml(listener.key)}&amp;pkg=${fn:escapeXml(pkg.name)}&amp;rule=${fn:escapeXml(rule.name)}&amp;action=${ruleEnabled ? 'disable' : 'enable'}" title="Temporary ${ruleEnabled ? 'disable' : 'enable'} this rule"><img src="${actionIconUrl}" alt="${ruleEnabled ? 'disable' : 'enable'}" title="Temporary ${ruleEnabled ? 'disable' : 'enable'} this rule" height="16" width="16"/></a>]</li>
+	            <li><img src="${iconUrl}" alt="${ruleEnabled ? 'on' : 'off'}" height="12" width="12"/> ${rule.name} [<a href="?listener=${fn:escapeXml(listener.key)}&amp;pkg=${fn:escapeXml(pkg.name)}&amp;rule=${fn:escapeXml(rule.name)}&amp;action=${ruleEnabled ? 'disable' : 'enable'}&toolAccessToken=${toolAccessToken}" title="Temporary ${ruleEnabled ? 'disable' : 'enable'} this rule"><img src="${actionIconUrl}" alt="${ruleEnabled ? 'disable' : 'enable'}" title="Temporary ${ruleEnabled ? 'disable' : 'enable'} this rule" height="16" width="16"/></a>]</li>
 	        </c:forEach>
 	        </ul>
 	        <div style="display: none;">

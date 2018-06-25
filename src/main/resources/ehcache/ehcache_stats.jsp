@@ -60,11 +60,11 @@
     %>
     <body id="dt_example">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?refresh">refresh</a>&nbsp;
-    <a href="?flush=true"
+    <a href="?refresh&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
+    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
        onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
        title="flush the content of the module output cache">flush</a>&nbsp;
-    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
+    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
     <c:if test="${not empty removed and removed}">
         <p>Key (${requestScope.flushkey}) has been flushed</p>
     </c:if>

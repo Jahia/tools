@@ -118,6 +118,7 @@ try {
 </c:if>
 
 <form id="navigateForm" action="?" method="get">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     <input type="hidden" name="action" id="action" value=""/>
 
     <fieldset>
@@ -134,6 +135,7 @@ try {
     </fieldset>    
 </form>
 <form id="navigateFormUnused" action="?" method="get">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     <input type="hidden" name="action" id="actionUnused" value=""/>
     <fieldset>
         <legend>Unused versions</legend>

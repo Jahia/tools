@@ -100,11 +100,11 @@
     %>
     <body id="dt_example">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?refresh">refresh</a>&nbsp;
-    <a href="?flush=true"
+    <a href="?refresh&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
+    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
        onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
        title="flush the content of the module output cache">flush</a>&nbsp;
-    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
+    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
     <c:if test="${not empty removed and removed}">
         <p>Key (${requestScope.flushkey}) has been flushed</p>
     </c:if>
@@ -152,9 +152,11 @@
                             <div style="text-align: center;">
                                 <c:url var="detailsUrl" value="ehcache_cj.jsp">
                                     <c:param name="key" value="${key}"/>
+                                    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
                                 </c:url>
                                 <c:url var="flushUrl" value="ehcache_cj.jsp">
                                     <c:param name="flushkey" value="${key}"/>
+                                    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
                                 </c:url>
                                 <a href="${detailsUrl}" target="_blank">view</a>
                                 <a href="${flushUrl}">flush</a>

@@ -95,7 +95,7 @@
                     ${workflow.variables['nodeId']}
                 </c:if>
                 <c:if test="${not empty node}">
-                    <a href="jcrBrowser.jsp?uuid=${workflow.variables['nodeId']}">${workflow.variables['nodeId']}</a>
+                    <a href="jcrBrowser.jsp?uuid=${workflow.variables['nodeId']}&toolAccessToken=${toolAccessToken}">${workflow.variables['nodeId']}</a>
                 </c:if>
             </td>
 
@@ -117,13 +117,13 @@
                     ${emptyNodes}
             </td>
             <td>
-                <a href="workflows.jsp?abortProcess=${task.processId}&provider=${task.provider}">abort workflow</a>
+                <a href="workflows.jsp?abortProcess=${task.processId}&provider=${task.provider}&toolAccessToken=${toolAccessToken}">abort workflow</a>
             </td>
         </tr>
     </c:forEach>
 </table>
 
-<a href="workflows.jsp?abortGhost=all">Abort all ghost workflows</a>
+<a href="workflows.jsp?abortGhost=all&toolAccessToken=${toolAccessToken}">Abort all ghost workflows</a>
 
 <%@ include file="gotoIndex.jspf" %>
 </body>

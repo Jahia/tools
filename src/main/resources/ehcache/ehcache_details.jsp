@@ -84,7 +84,7 @@
 %>
 <body id="dt_example">
 <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-<a href="?refresh&name=${param.name}&cache=${param.cache}">refresh</a>&nbsp;
+<a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
 <div id="statistics">
     <span>Cache Hits: ${stats.cacheHitCount} (Cache hits in memory : ${stats.localHeapHitCount}; Cache hits on disk : ${stats.localDiskHitCount})</span><br/>
     <span>Cache Miss: ${stats.cacheMissCount}</span><br/>
@@ -132,6 +132,7 @@
                             <c:param name="flushkey" value="${key}"/>
                             <c:param name="name" value="${param.name}"/>
                             <c:param name="cache" value="${param.cache}"/>
+                            <c:param name="toolAccessToken" value="${toolAccessToken}"/>
                         </c:url>
                         <a href="${flushUrl}">flush</a>
                         <br/>[<%= element1 != null ? FileUtils.byteCountToDisplaySize(element1.getSerializedSize()).replace(" ", "&nbsp;") : "-" %>

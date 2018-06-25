@@ -44,6 +44,7 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 
 <% pageContext.setAttribute("allProbes", SupportInfoHelper.getProbes()); %>
 <form id="support" action="<c:url value='support.jsp'/>" method="get">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 <p>
 <a href="#all-on" title="Select all" onclick="$('.cbProbe').prop('checked', true); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe').prop('checked', false); return false;">unselect all</a>
 <c:forEach var="probesPerCategory" items="${allProbes}">

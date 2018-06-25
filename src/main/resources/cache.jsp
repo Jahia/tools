@@ -75,6 +75,7 @@
         <input type="hidden" id="action" name="action" value=""/>
         <input type="hidden" id="name" name="name" value=""/>
         <input type="hidden" id="propagate" name="propagate" value="false"/>
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     </form>
 </fieldset>
 
@@ -202,13 +203,13 @@
 
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
-                                <h3><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}">${cache.name}</a></h3>
+                                <h3><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a></h3>
                                 <pre>${fn:escapeXml(cache.config)}</pre>
                             </div>
                         </div>
                     </td>
                 </c:if>
-                <td><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}">${cache.name}</a></td>
+                <td><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a></td>
                 <td align="center">${cache.size}</td>
                 <td align="center">${cache.localHeapSize}</td>
                 <td align="center">${cache.overflowToDisk ? cache.localDiskSize : '-'}</td>

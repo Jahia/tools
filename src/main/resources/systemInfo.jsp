@@ -18,7 +18,7 @@ response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
 </head>
 <body>
 <h1>System Status Information at <%= new Date() %></h1>
-<a href="?file=true" target="_blank">download as a file</a>
+<a href="?file=true&toolAccessToken=${toolAccessToken}" target="_blank">download as a file</a>
 <br/>
 <%@ include file="gotoIndex.jspf" %>
 <pre>

@@ -45,6 +45,7 @@
                 <c:param name="showNodes" value="${showNodes}"/>
                 <c:param name="showActions" value="${showActions}"/>
                 <c:param name="workspace" value="${workspace}"/>
+                <c:param name="toolAccessToken" value="${toolAccessToken}"/>
             </c:url>
             <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>        
         </c:if>

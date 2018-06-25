@@ -610,7 +610,7 @@
 
         out.println("<h2>Benchmark completed.</h2>");
     } else {
-        out.println("<form>");
+        out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
         renderCheckbox(out, "runDBTest", "Run database benchmark", true);
         renderCheckbox(out, "runFileSystemTest", "Run file system benchmark", true);
         renderCheckbox(out, "runJCRTest", "Run Java Content Repository read benchmark", true);

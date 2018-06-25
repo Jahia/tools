@@ -86,6 +86,7 @@ pageContext.setAttribute("scheduler", scheduler);
                 onchange="go('showCompleted', '${!showCompleted}')"/>&nbsp;<label for="cbCompleted">Show all jobs</label><br/>
     </p>
     <form id="navigateForm" action="?" method="get">
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <input type="hidden" id="showActions" name="showActions" value="${showActions}"/>
         <input type="hidden" id="showCompleted" name="showCompleted" value="${showCompleted}"/>
         <input type="hidden" id="action" name="action" value=""/>
@@ -251,7 +252,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
                                 <c:forEach items="${job.jobDataMap}" var="data">
                                 <tr>
                                     <td><strong>${data.key}:</strong></td>
-                                    <td><c:if test="${data.key == 'node'}"><a title="Open in JCR Browser" href="<c:url value='jcrBrowser.jsp?uuid=${data.value}&workspace=live'/>" target="_blank">${fn:escapeXml(data.value)}</a></c:if><c:if test="${data.key != 'node'}">${fn:escapeXml(data.value)}</c:if></td>
+                                    <td><c:if test="${data.key == 'node'}"><a title="Open in JCR Browser" href="<c:url value='jcrBrowser.jsp?uuid=${data.value}&workspace=live&toolAccessToken=${toolAccessToken}'/>" target="_blank">${fn:escapeXml(data.value)}</a></c:if><c:if test="${data.key != 'node'}">${fn:escapeXml(data.value)}</c:if></td>
                                 </tr>
                                 </c:forEach>
                             </tbody>

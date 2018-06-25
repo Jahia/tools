@@ -54,7 +54,7 @@
     </c:when>
     <c:otherwise>
         <%
-            out.println("<form>");
+            out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderWorkspaceSelector(out);
             renderRadio(out, RUN_CONSISTENCY_TEST, "Run the content nodes consistency check", true);
             renderRadio(out, FIX_JCR, "Fix the inconsistent content nodes (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !).", false);

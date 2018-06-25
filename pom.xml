@@ -149,6 +149,7 @@
                             org.jahia.modules.tools.probe
                         </Export-Package>
                         <_dsannotations>
+                            org.jahia.modules.tools.HttpTestFilter,
                             org.jahia.modules.tools.clustering.*,
                             org.jahia.modules.tools.probe.impl.*,
                             org.jahia.modules.tools.probe.jcr.impl.*,

@@ -38,6 +38,7 @@
 <p style="color: blue">Encrypted password for <strong>${fn:escapeXml(param.pwd)}</strong> is:<br/><strong>${digest}</strong>&nbsp;<span class="copy-to-clipboard" title="Copy to clipboard">${digest}</span></p>
 </c:if>
 <form id="pwdEncrypt" action="?" method="get">
+	<input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 <p>
 <label for="pwd">Provide a password you would like to digest:</label><br/>
 <input type="text" id="pwd" name="pwd" value="${fn:escapeXml(param.pwd)}" size="30"/>

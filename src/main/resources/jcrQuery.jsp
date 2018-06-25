@@ -101,6 +101,7 @@
                onchange="go('useJackrabbitSession', '${!useJackrabbitSession}')"/>&nbsp;<label for="cbUseJackrabbitSession">Use Jackrabbit session</label>
     </fieldset>
     <form id="navigateForm" action="?" method="get">
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <input type="hidden" name="workspace" id="workspace" value="${workspace}"/>
         <input type="hidden" name="locale" id="locale" value="${locale}"/>
         <input type="hidden" name="showActions" id="showActions" value="${showActions}"/>
@@ -373,7 +374,7 @@
                                    end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
                             <li>
                                 <a title="Open in JCR Browser"
-                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
+                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true&toolAccessToken=${toolAccessToken}'/>"
                                    target="_blank"><strong>${node.name}</strong></a>
                                 <strong>${node.name}</strong>
                                 <c:forEach items="${node.mixinNodeTypes}" var="mixin">
@@ -394,7 +395,7 @@
                                         pageContext.setAttribute("node",((JoinRow)pageContext.getAttribute("row")).getNode(((String)pageContext.getAttribute("selectorName"))));
                                     %>
                                     <a title="Open in JCR Browser"
-                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true'/>"
+                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true&toolAccessToken=${toolAccessToken}'/>"
                                        target="_blank"><strong>${node.name}</strong></a>
                                     <c:forEach items="${node.mixinNodeTypes}" var="mixin">
                                         ${mixin.name}
@@ -414,7 +415,7 @@
                                    end="${displayLimit != -1 ? displayLimit - 1 : maxIntValue}">
                             <li>
                                 <a title="Open in JCR Browser"
-                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
+                                   href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&toolAccessToken=${toolAccessToken}'/>"
                                    target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a>
                                 (${fn:escapeXml(node.nodeTypes)})
                                 <a title="Open in Repository Explorer"
@@ -459,10 +460,10 @@
                                     <c:otherwise>                                
                                     <c:set var="node" value="${row.nodes[selectorName]}"/>
                                     <a title="Open in JCR Browser"
-                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true'/>"
+                                       href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&toolAccessToken=${toolAccessToken}'/>"
                                        target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
                                     <a title="Open in Repository Explorer"
-                                       href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>"
+                                       href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}&toolAccessToken=${toolAccessToken}'/>"
                                        target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16"
                                                             height="16" alt="open" title="Open in Repository Explorer"></a>
                                     <c:if test="${showActions}">

@@ -80,6 +80,7 @@ try {
 </fieldset>
 </c:if>
 <form id="navigateForm" action="textExtractor.jsp" method="get">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
     <input type="hidden" name="action" id="action" value=""/>
 <c:choose>
   <c:when test="${extractionCheckRunning}">

@@ -48,6 +48,7 @@ Please, wait for the Digital Experience Manager server to deploy the bundle for 
 </p>
 </c:if>
 <form id="cke" action="ckeditorConfig.jsp" method="post">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 <p>Paste here your custom CKEditor configuration:</p>
 <p><textarea rows="20" cols="120" id="config" name="config"><c:if test="${empty param.config}">
 CKEDITOR.editorConfig = function( config ) {

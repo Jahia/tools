@@ -313,6 +313,7 @@
 <div class="filterForm">
 
     <form action="" name="logFilterForm">Filter Loggers:&nbsp;&nbsp;
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <input name="logNameFilter" type="text" size="50" value="<%=(logNameFilter == null ? "":logNameFilter)%>" class="filterText"/>
 
         <input name="logNameFilterType" type="submit" value="<%=beginsWithFilter%>" class="filterButton"/>&nbsp;
@@ -436,7 +437,7 @@
             <%
             } else {
             %>
-            <a href='<%=url%>'>[<%=logLevels[cnt]%>]</a>&nbsp;
+            <a href='<%=url%>&toolAccessToken=${toolAccessToken}'>[<%=logLevels[cnt]%>]</a>&nbsp;
             <%
                     }
                 }

@@ -129,7 +129,7 @@
             <td align="center">${pstatus.count}</td>
             <td><a name="${pkg.name}" href="definitionsBrowser.jsp?#${pkg.name}">${pkg.name}</a>
             <br>
-                <a href="modulesBrowser.jsp?delete=${pkg.name}">Delete</a>
+                <a href="modulesBrowser.jsp?delete=${pkg.name}&toolAccessToken=${toolAccessToken}">Delete</a>
 
             </td>
             <td>${pkg.description}</td>

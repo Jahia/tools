@@ -16,6 +16,7 @@
 <fieldset>
     <legend>DB query</legend>
     <form id="queryForm" action="?" method="get">
+        <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <textarea rows="3" cols="75" name="query" id="query"
             onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('queryForm').submit();"
         >${not empty param.query ? param.query : 'SELECT * FROM jahia_db_test'}</textarea>

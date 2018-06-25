@@ -711,14 +711,14 @@
         out.println("<h2>Test completed.</h2>");
     } else {
         if (!running) {
-            out.println("<form>");
+            out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderWorkspaceSelector(out);
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING!). If you are running in cluster, please, shut down other cluster nodes when running this fix. As this tool performs low-level operations on the repository content, please, backup your data before running this fix! Also you MUST RESTART JAHIA after running this fix!", false);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");
         } else {
-            out.println("<form>");
+            out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderCheckbox(out, "stop", "Stop currently running check/fix", true);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
             out.println("</form>");

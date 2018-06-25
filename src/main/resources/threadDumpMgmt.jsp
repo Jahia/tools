@@ -28,12 +28,12 @@ Thread dump task started<c:if test="${not empty outputFile}">. The output fill b
 </c:if>
 <ul>
     <li><img src="<c:url value='/icons/filePreview.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='threadDump.jsp'/>" target="_blank">Perform thread dump (view in a new browser window)</a></li>
-	<li><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='threadDump.jsp?file=true'/>" target="_blank">Perform thread dump (download as a file)</a></li>
-    <li><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=sysout">Perform thread dump (System.out)</a></li>
-    <li><img src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=file">Perform thread dump (File)</a>&nbsp;*</li>
+	<li><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="<c:url value='threadDump.jsp?file=true&toolAccessToken=${toolAccessToken}'/>" target="_blank">Perform thread dump (download as a file)</a></li>
+    <li><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=sysout&toolAccessToken=${toolAccessToken}">Perform thread dump (System.out)</a></li>
+    <li><img src="<c:url value='/icons/globalRepository.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;<a href="?threadDump=file&toolAccessToken=${toolAccessToken}">Perform thread dump (File)</a>&nbsp;*</li>
     <li>
         <img src="<c:url value='/icons/workflowManager.png'/>" height="16" width="16" alt=" " align="top"/>&nbsp;
-        <a href="#dump" onclick="this.href='?threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value; return true;">Perform thread dump (multiple to a file)</a>&nbsp;*
+        <a href="#dump" onclick="this.href='?threadDump=file&amp;threadDumpCount=' + document.getElementById('threadDumpCount').value + '&amp;threadDumpInterval=' + document.getElementById('threadDumpInterval').value + '&amp;toolAccessToken=${toolAccessToken}'; return true;">Perform thread dump (multiple to a file)</a>&nbsp;*
         &nbsp;&nbsp;
         <label for="threadDumpCount">count:&nbsp;</label><input type="text" id="threadDumpCount" name="threadDumpCount" size="2" value="${not empty param.threadDumpCount ? param.threadDumpCount : '10'}"/>
         &nbsp;&nbsp;
