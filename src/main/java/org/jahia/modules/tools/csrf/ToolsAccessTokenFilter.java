@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
@@ -17,14 +18,17 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final int MAX_TOKENS = 5000;
     private static final int MAX_DURATION = 20;
 
+    private static Pattern TOOLS_REGEXP = Pattern.compile("/[^/]+/tools/.*");
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-
-        if (servletRequest.getParameterMap().size() > 0) {
-            validateToken(request);
-        } else {
-            generateAndStoreToken(request);
+        if (request.getPathInfo() != null && TOOLS_REGEXP.matcher(request.getPathInfo()).matches()) {
+            if (servletRequest.getParameterMap().size() > 0) {
+                validateToken(request);
+            } else {
+                generateAndStoreToken(request);
+            }
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
