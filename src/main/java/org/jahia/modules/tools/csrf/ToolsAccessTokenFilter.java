@@ -18,7 +18,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final int MAX_TOKENS = 5000;
     private static final int MAX_DURATION = 20;
 
-    private static Pattern TOOLS_REGEXP = Pattern.compile("/[^/]+/tools/.*");
+    private static Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
