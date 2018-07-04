@@ -44,6 +44,7 @@
 package org.jahia.modules.tools;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.modules.tools.csrf.ToolsAccessTokenFilter;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.utils.NoOutputResponseWrapper;
@@ -58,6 +59,7 @@ import java.util.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -146,7 +148,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             String url = aResponse.encodeURL(aRequest.getContextPath()
                     + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                    + "=all&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+                    + "=all&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(aRequest));
 
             out.print(url);
             out.println("\">all</a></li>");
@@ -155,7 +157,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             url = aResponse.encodeURL(aRequest.getContextPath()
                     + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                    + "=non-modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+                    + "=non-modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(aRequest));
 
             out.print(url);
             out.println("\">non-modules</a></li>");
@@ -164,7 +166,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             url = aResponse.encodeURL(aRequest.getContextPath()
                     + aRequest.getServletPath() + "?" + COMPILE_TYPE_PARAM
-                    + "=modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
+                    + "=modules&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(aRequest));
 
             out.print(url);
             out.print("\">all modules</a></li>");
@@ -187,7 +189,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
                 url = aResponse.encodeURL(aRequest.getContextPath() + aRequest.getServletPath() + "?"
                         + COMPILE_TYPE_PARAM + "=module&id=" + entry.getValue() + "&timestamp=" + now + "&"
-                        + MAGIC_TOMCAT_PARAM);
+                        + MAGIC_TOMCAT_PARAM  + "&" + getTokenParam(aRequest));
 
                 out.print(url);
                 out.print("\">" + entry.getKey() + "</a></li>");
@@ -196,8 +198,7 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("</ul><br/>");
 
             out.println("<h2>All JSPs:</h2>");
-            listFiles(out, aRequest.getContextPath(),
-                    aRequest.getServletPath(), foundJsps, aResponse, now);
+            listFiles(out, aRequest, foundJsps, aResponse, now);
 
             out.println("</body>");
             out.println("</html>");
@@ -312,9 +313,7 @@ public class JspPrecompileServlet extends HttpServlet {
         else {
             out.print("Precompile failed for following <strong>" + buggyJsps.size()
                     + "</strong> JSPs:<br/>\r\n");
-            listFiles(out, aRequest.getContextPath(),
-                    aRequest.getServletPath(), buggyJsps, aResponse, System
-                            .currentTimeMillis());
+            listFiles(out, aRequest, buggyJsps, aResponse, System.currentTimeMillis());
         }
         out.println("</body>" + "</html>");
     }
@@ -330,16 +329,15 @@ public class JspPrecompileServlet extends HttpServlet {
      * can not be reached from outside, therefore a link to the servlet is created with a jsp_name param. Tomcat specific jsp_precompile
      * param is also added to each link. Also current timestamp is added to help the browser marking visited links.
      */
-    private void listFiles(PrintWriter anOut, String aContextPath,
-            String aServletPath, List<String> aFoundJsps,
+    private void listFiles(PrintWriter anOut, HttpServletRequest request, List<String> aFoundJsps,
             HttpServletResponse aResponse, long now) {
         for (String jspPath : aFoundJsps) {
             anOut.print("<a target=\"_blank\" href=\"");
             String url = null;
 
             // create link to JspPrecompileServlet with jsp_name param
-            url = aContextPath + aServletPath + "?" + JSP_NAME_PARAM + "="
-                    + jspPath + "&" + MAGIC_TOMCAT_PARAM;
+            url = request.getContextPath() + request.getServletPath() + "?" + JSP_NAME_PARAM + "="
+                    + jspPath + "&" + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(request);
 
             url = url + "&now=" + now;
             anOut.print(aResponse.encodeURL(url));
@@ -348,5 +346,9 @@ public class JspPrecompileServlet extends HttpServlet {
             anOut.print(jspPath);
             anOut.println("</a><br/>");
         }
+    }
+
+    private String getTokenParam(ServletRequest request) {
+        return ToolsAccessTokenFilter.CSRF_TOKEN_ATTR + "=" + request.getAttribute(ToolsAccessTokenFilter.CSRF_TOKEN_ATTR);
     }
 }

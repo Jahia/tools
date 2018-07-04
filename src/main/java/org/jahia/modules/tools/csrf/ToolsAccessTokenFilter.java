@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
-    private static final String CSRF_TOKEN_ATTR = "toolAccessToken";
+    public static final String CSRF_TOKEN_ATTR = "toolAccessToken";
     private static final int MAX_TOKENS = 5000;
     private static final int MAX_DURATION = 20;
 
