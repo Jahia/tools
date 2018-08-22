@@ -12,9 +12,11 @@
 <%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
 <%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <%@ include file="css.jspf" %>
+<% pageContext.setAttribute("currentDate", new java.util.Date()); %>
 <title>Digital Experience Manager Support Tools</title>
 </head>
 <body>
@@ -103,6 +105,8 @@
         <li><a href="ehcache/ehcache_stats.jsp">Output cache statistics</a></li>
         <li><a href="ehcache/ehcache_cj.jsp">Output cache</a></li>
         <li><a href="ehcache/ehcache_cj_dep.jsp">Output dependencies cache</a></li>
+        <fmt:formatDate var="currentTime" value="${currentDate}" pattern="yyyy-MM-dd_HH:mm:ss"/>
+        <li><a href="ehcache/ehcache_dump.jsp" download="ehcache_dump_${currentTime}.xml">Dump output cache</a></li>
     </ul>
 </fieldset>
 <fieldset>
