@@ -105,7 +105,7 @@
         <li><a href="ehcache/ehcache_stats.jsp">Output cache statistics</a></li>
         <li><a href="ehcache/ehcache_cj.jsp">Output cache</a></li>
         <li><a href="ehcache/ehcache_cj_dep.jsp">Output dependencies cache</a></li>
-        <fmt:formatDate var="currentTime" value="${currentDate}" pattern="yyyy-MM-dd_HH:mm:ss"/>
+        <fmt:formatDate var="currentTime" value="${currentDate}" pattern="yyyy_MM_dd_HH_mm_ss"/>
         <li><a href="ehcache/ehcache_dump.jsp" download="ehcache_dump_${currentTime}.xml">Dump output cache</a></li>
     </ul>
 </fieldset>
