@@ -97,6 +97,7 @@
         <li><a href="renderFilters.jsp">Render filters</a></li>
         <li><a href="actions.jsp">Actions</a></li>
         <li><a href="choicelistInitializersRenderers.jsp">Choicelist initializers &amp; renderers</a></li>
+        <li><a href="render.jsp">Render chain dump</a></li>
     </ul>
 </fieldset>
 <fieldset>
