@@ -156,7 +156,8 @@
                             org.jahia.modules.tools.probe.properties.impl.*,
                             org.jahia.modules.tools.probe.runtime.impl.*,
                             org.jahia.modules.tools.probe.statistics.impl.*,
-                            org.jahia.modules.tools.modules.*
+                            org.jahia.modules.tools.modules.*,
+                            org.jahia.modules.tools.karaf.*
                         </_dsannotations>
                     </instructions>
                 </configuration>
