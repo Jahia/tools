@@ -9,6 +9,9 @@
 <%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
 <%@ page import="org.jahia.settings.SettingsBean" %>
+<%@ page import="org.jahia.utils.DatabaseUtils" %>
+<%@ page import="org.jahia.utils.DateUtils" %>
+<%@ page import="org.jahia.modules.tools.benchmark.DatabaseBenchmark" %>
 <%@ page import="javax.jcr.*" %>
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="java.io.*" %>
@@ -24,7 +27,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%@ include file="css.jspf" %>
-    <title>Jahia Benchmark Tool</title>
+    <title>System Benchmark Tool</title>
+    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript">
         function toggleLayer(whichLayer) {
             var elem, vis;
@@ -57,7 +61,7 @@
     </style>
 </head>
 <body>
-<h1>Jahia System Benchmark Tool</h1>
+<h1>System Benchmark Tool</h1>
 
 <p>
     This tool will benchmark the database read performance as well as perform both read and write performance
@@ -70,51 +74,17 @@
     You can re-run a test simply by reloading the JSP.
 </p>
 
-<h2>Running tests...</h2>
-<%!
-
-    // the following code was copied from DatabaseUtils class since we need to be able to use it with 6.6.0.1 that
-    // didn't include this class.
-
-    private static String dbType;
-
-    public static String getDatabaseType() {
-        if (dbType == null) {
-            dbType = StringUtils.substringBefore(
-                    StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile()
-                            .getProperty("db_script").trim(), "."), "_");
-        }
-        return dbType;
+<%!public static String getDatabaseType() {
+        return DatabaseUtils.getDatabaseType().name();
     }
 
     public static DataSource getDatasource() {
-        return (DataSource) SpringContextSingleton.getBean("dataSource");
+        return DatabaseUtils.getDatasource();
     }
 
     public static void closeQuietly(Object closable) {
-        if (closable == null) {
-            return;
-        }
-        try {
-            if (closable instanceof Connection) {
-                ((Connection) closable).close();
-            } else if (closable instanceof Statement) {
-                ((Statement) closable).close();
-            } else if (closable instanceof ResultSet) {
-                ((ResultSet) closable).close();
-            } else if (closable instanceof ScrollableResults) {
-                ((ScrollableResults) closable).close();
-            } else if (closable instanceof org.hibernate.Session) {
-                ((org.hibernate.Session) closable).close();
-            } else if (closable instanceof StatelessSession) {
-                ((StatelessSession) closable).close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        DatabaseUtils.closeQuietly(closable);
     }
-
-    // end of copied code.
 
     private void runWorkspaceDBTest(JspWriter out, String readAllDataSQL, String readRowSQL, String tableName, long nbRandomLoops, Connection conn, boolean keyTypeLongLong) throws SQLException, IOException {
         Set<NodeId> idCollection = new HashSet<NodeId>();
@@ -188,11 +158,31 @@
         idArray = null;
     }
 
-    private void runDBTest(JspWriter out) throws IOException, SQLException {
-        printTestName(out, "Database");
+    private void printDBInfo(JspWriter out) throws IOException, SQLException {
+        Connection conn = null;
 
+        try {
+            DataSource ds = getDatasource();
+
+            if (ds != null) {
+                conn = ds.getConnection();
+
+                if (conn != null) {
+                    DatabaseMetaData meta = conn.getMetaData();
+                    println(out, "Database: " + meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
+                    println(out, "JDBC driver: " + meta.getDriverName() + " " + meta.getDriverVersion());
+                    println(out, "URL: " + meta.getURL());
+                }
+            }
+        } catch (Exception t) {
+            println(out, "Error while accessing database", t, false);
+        } finally {
+            closeQuietly(conn);
+        }
+    }
+
+    private void runDBTest(boolean defaultWorkspace, boolean liveWorkspace, JspWriter out) throws IOException, SQLException {
         String dbType = getDatabaseType();
-        println(out, "Database type:" + dbType);
         boolean keyTypeLongLong = dbType.equals("derby") || dbType.equals("postgresql");
 
         String readEditTableName = "JR_DEFAULT_BUNDLE";
@@ -222,8 +212,12 @@
                 conn = ds.getConnection();
 
                 if (conn != null) {
-                    runWorkspaceDBTest(out, readAllEditDataSQL, readEditRowSQL, readEditTableName, nbRandomLoops, conn, keyTypeLongLong);
-                    runWorkspaceDBTest(out, readAllLiveDataSQL, readLiveRowSQL, readLiveTableName, nbRandomLoops, conn, keyTypeLongLong);
+                    if (defaultWorkspace) {
+                        runWorkspaceDBTest(out, readAllEditDataSQL, readEditRowSQL, readEditTableName, nbRandomLoops, conn, keyTypeLongLong);
+                    }
+                    if (liveWorkspace) {
+                        runWorkspaceDBTest(out, readAllLiveDataSQL, readLiveRowSQL, readLiveTableName, nbRandomLoops, conn, keyTypeLongLong);
+                    }
                 }
             }
         } catch (Throwable t) {
@@ -292,7 +286,7 @@
         long startTime;
         long bytesRead;
         long totalTime;
-        printTestName(out, "Java Content Repository");
+        printTestName(out, "Java Content Repository (READ)");
         try {
             JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
@@ -323,7 +317,7 @@
         long startTime;
         long bytesRead;
         long totalTime;
-        printTestName(out, "Java Content Repository Write");
+        printTestName(out, "Java Content Repository (WRITE)");
         try {
             JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
@@ -564,62 +558,93 @@
             }
         }
         return true;
-    }
-
-    private void renderCheckbox(JspWriter out, String checkboxValue, String checkboxLabel, boolean checked) throws IOException {
-        out.println("<input type=\"checkbox\" name=\"operation\" value=\"" + checkboxValue
-                + "\" id=\"" + checkboxValue + "\""
-                + (checked ? " checked=\"checked\" " : "")
-                + "/><label for=\"" + checkboxValue + "\">"
-                + checkboxLabel
-                + "</label><br/>");
-    }
-
-    private boolean isParameterActive(HttpServletRequest request, String operationName) {
-        String[] operationValues = request.getParameterValues("operation");
-        if (operationValues == null) {
-            return false;
-        }
-        for (String operationValue : operationValues) {
-            if (operationValue.equals(operationName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-%>
+    }%>
+<c:if test="${not empty param.do}">
+<p style="color: blue">Running tests...</p>
 <%
-    if (request.getParameterMap().size() > 0) {
-
-        if (isParameterActive(request, "runDBTest")) {
-            runDBTest(out);
-        }
-
-        if (isParameterActive(request, "runFileSystemTest")) {
-            runFileSystemTest(out);
-        }
-
-        if (isParameterActive(request, "runJCRTest")) {
-            runJCRTest(out, request, pageContext);
-        }
-
-        if (isParameterActive(request, "runJCRWriteTest")) {
-            runJCRWriteTest(out, request, pageContext);
-        }
-
-        out.println("<h2>Benchmark completed.</h2>");
-    } else {
-        out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
-        renderCheckbox(out, "runDBTest", "Run database benchmark", true);
-        renderCheckbox(out, "runFileSystemTest", "Run file system benchmark", true);
-        renderCheckbox(out, "runJCRTest", "Run Java Content Repository read benchmark", true);
-        renderCheckbox(out, "runJCRWriteTest", "Run Java Content Repository write benchmark", true);
-        out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
-        out.println("</form>");
-    }
-
+    long startTime = System.currentTimeMillis();
 %>
+<c:if test="${not empty param.runDBStats || not empty param.runDBTestDefault || not empty param.runDBTestLive}">
+    <%
+        printTestName(out, "Database");
+        printDBInfo(out);
+    %>
+    <c:if test="${not empty param.runDBStats}">
+        <%
+        Map<String, Map<String, Object>> dbStats = DatabaseBenchmark.perform();
+        System.out.println(DatabaseBenchmark.statsToString(dbStats));
+        pageContext.setAttribute("dbStats", dbStats);
+        %>
+        <h4>Database connection speed</h4>
+        <ul>
+        <c:forEach var="dbStatEntry" items="${dbStats}">
+            <li>Query: <strong>${fn:escapeXml(dbStatEntry.key)}</strong>
+                <c:set var="stat" value="${dbStatEntry.value}"/>
+                <ul>
+                    <li>50% line: <strong>${stat.percentiles[50].millis} ms (${stat.percentiles[50].nanos} ns)</strong></li>
+                    <li>90% line: ${stat.percentiles[90].millis} ms (${stat.percentiles[90].nanos} ns)</li>
+                    <li>99% line: ${stat.percentiles[99].millis} ms (${stat.percentiles[99].nanos} ns)</li>
+                    <li>min: ${stat.min.millis} ms (${stat.min.nanos} ns)</li>
+                    <li>average: ${stat.mean.millis} ms (${stat.mean.nanos} ns)</li>
+                    <li>max: ${stat.max.millis} ms (${stat.max.nanos} ns)</li>
+                    <li>execution count: ${stat.count}</li>
+                </ul>
+            </li>
+        </c:forEach>
+        </ul>
+    </c:if>
+    <c:if test="${not empty param.runDBTestDefault || not empty param.runDBTestLive}">
+        <% runDBTest(request.getParameter("runDBTestDefault") != null, request.getParameter("runDBTestLive") != null, out); %>
+    </c:if>
+</c:if>
+<c:if test="${not empty param.runFileSystemTest}">
+    <% runFileSystemTest(out); %>
+</c:if>
+<c:if test="${not empty param.runJCRTest}">
+    <% runJCRTest(out, request, pageContext); %>
+</c:if>
+<c:if test="${not empty param.runJCRWriteTest}">
+    <% runJCRWriteTest(out, request, pageContext); %>
+</c:if>
+<% pageContext.setAttribute("timeTaken", DateUtils.formatDurationWords(System.currentTimeMillis() - startTime)); %>
+<p style="color: blue">Benchmark completed in <strong>${timeTaken}</strong>.</p>
+</c:if>
+
+<form id="benchmarks" action="<c:url value='benchmarks.jsp'/>" method="get">
+    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
+<h2>Choose the tests to run:</h2>
+<p>
+<a href="#all-on" title="Select all" onclick="$('.cbProbe').prop('checked', true); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe').prop('checked', false); return false;">unselect all</a>
+</p>
+<p>
+<fieldset>
+    <legend>&nbsp;Database&nbsp;
+    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-db').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-db').prop('checked', false); return false;">none</a>) 
+    </legend>
+    <input type="checkbox" name="runDBStats" id="runDBStats" class="cbProbe category-db" ${empty param.do || not empty param.runDBStats ? 'checked="checked"' : ''}/><label for="runDBStats">Database connection speed</label><br/>
+    <input type="checkbox" name="runDBTestDefault" id="runDBTestDefault" class="cbProbe category-db" ${empty param.do || not empty param.runDBTestDefault ? 'checked="checked"' : ''}/><label for="runDBTestDefault">Table JR_DEFAULT_BUNDLE</label><br/>
+    <input type="checkbox" name="runDBTestLive" id="runDBTestLive" class="cbProbe category-db" ${empty param.do || not empty param.runDBTestLive ? 'checked="checked"' : ''}/><label for="runDBTestLive">Table JR_LIVE_BUNDLE</label>
+</fieldset>
+
+<fieldset>
+    <legend>&nbsp;File system&nbsp;
+    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-fs').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-fs').prop('checked', false); return false;">none</a>) 
+    </legend>
+    <input type="checkbox" name="runFileSystemTest" id="runFileSystemTest" class="cbProbe category-fs" ${empty param.do || not empty param.runFileSystemTest ? 'checked="checked"' : ''}/><label for="runFileSystemTest">File system read/write</label>
+</fieldset>
+
+<fieldset>
+    <legend>&nbsp;Java Content Repository&nbsp;
+    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-jcr').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-jcr').prop('checked', false); return false;">none</a>) 
+    </legend>
+    <input type="checkbox" name="runJCRTest" id="runJCRTest" class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRTest ? 'checked="checked"' : ''}/><label for="runJCRTest">JCR read</label><br/>
+    <input type="checkbox" name="runJCRWriteTest" id="runJCRWriteTest" class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRWriteTest ? 'checked="checked"' : ''}/><label for="runJCRWriteTest">JCR write</label>
+</fieldset>
+</p>
+<p>
+    <input type="submit" name="do" value="Run tests" title="Performs the execution of chosen benchmark tests" onclick="if (!confirm('Would you like to execute the chosen benchmark tests now?')) { return false; }"/>
+</p>
+</form>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>
