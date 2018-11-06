@@ -59,10 +59,20 @@
         <c:when test="${param.action == 'reindex-tree'}">
             <c:if test="${(param.ws == 'default' || param.ws == 'live') && not empty param.uuid}">
                 <%
-                long treeReindexStartTime = System.currentTimeMillis();
-                ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree(request.getParameter("uuid"), request.getParameter("ws"));
+                try {
+                    long treeReindexStartTime = System.currentTimeMillis();
+                    ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree(request.getParameter("uuid"), request.getParameter("ws"));
+                    %>
+                    <p style="color: blue">Re-indexing tree in workspace <strong>${fn:escapeXml(param.ws)}</strong>, starting from node <strong>${fn:escapeXml(param.uuid)}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
+                    <%
+                } catch (IllegalArgumentException e) {
+                    // node not found by UUID
+                    pageContext.setAttribute("treeReindexNodeNotFound", Boolean.TRUE);
+                } catch (NoSuchItemStateException e) {
+                    // node not found by UUID
+                    pageContext.setAttribute("treeReindexNodeNotFound", Boolean.TRUE);
+                }
                 %>
-                <p style="color: blue">Re-indexing tree in workspace <strong>${fn:escapeXml(param.ws)}</strong>, starting from node <strong>${fn:escapeXml(param.uuid)}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
             </c:if>
         </c:when>
         <c:when test="${param.action == 'index-fix'}">
@@ -116,10 +126,11 @@
         </select>
         &nbsp;&nbsp;
         <label for="reindexTreeUuid">start with node (UUID):&nbsp;</label><input type="text" id="reindexTreeUuid" name="reindexTreeUuid" value="${not empty param.uuid ? fn:escapeXml(param.uuid) : ''}" style="width: 270px"/>
-        <a title="Lookup UUID in JCR Browser" href="<c:url value='jcrBrowser.jsp'/>" target="_blank">
-            <img src="<c:url value='/icons/search.png'/>" width="16"height="16" alt="lookup" title="Lookup UUID in JCR Browser">
-        </a>
-        
+        (you can lookup UUID in JCR Browser: 
+        <a title="Lookup UUID in JCR Browser" href="<c:url value='jcrBrowser.jsp'/>" target="_blank"><img src="<c:url value='/icons/search.png'/>" width="16"height="16" alt="lookup" title="Lookup UUID in JCR Browser"></a>)
+        <c:if test="${treeReindexNodeNotFound}">
+            <span style="color: red;"><strong>Node not found. Please, provide an existing UUID.</strong></span>
+        </c:if>
     </li>
 </ul>
 </fieldset>
