@@ -5,6 +5,7 @@
 <%@page import="javax.jcr.version.Version" %>
 <%@page import="org.apache.commons.collections.IteratorUtils"%>
 <%@page import="org.apache.commons.lang.StringUtils" %>
+<%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl"%>
 <%@page import="javax.jcr.version.VersionIterator" %>
 <%@page import="java.util.*" %>
 <%@ page import="org.jahia.api.Constants" %>
@@ -14,6 +15,7 @@
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
 <%@ page import="javax.jcr.*" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
+<%@ page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -349,6 +351,17 @@
             %>
         </c:when>
 
+        <c:when test="${param.action == 'reindex-tree'}">
+            <%
+            if (node instanceof JCRNodeWrapper && ((JCRNodeWrapper) node).getProvider().isDefault()) {
+                long treeReindexStartTime = System.currentTimeMillis();
+                ((JahiaRepositoryImpl)((SpringJackrabbitRepository) ((JCRNodeWrapper) node).getProvider().getRepository()).getRepository()).reindexTree(node.getIdentifier(), jcrSession.getWorkspace().getName());
+                %>
+                <p style="color: blue">Re-indexing tree in workspace <strong>${workspace}</strong>, starting from node <strong>${nodeId}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
+                <%
+            }
+            %>
+        </c:when>
     </c:choose>
 </c:if>
 
@@ -373,6 +386,10 @@
         <img src="<c:url value='/icons/unlock.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#unlock" onclick="if (confirm('You are about to remove all locks on this node. Continue?')) {go('action', 'unlock');} return false;" title="Clean all locks on this node">unlock node</a>
         <img src="<c:url value='/icons/unlock.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alr=" "/>&nbsp;<a href="#unlockTree" onclick="if (confirm('You are about to remove all locks on this node and its children. Continue?')) {go('action', 'unlockTree');} return false;" title="Clean all locks on this node and its children">unlock tree</a>
     </c:if>
+    <% if (node instanceof JCRNodeWrapper && ((JCRNodeWrapper) node).getProvider().isDefault()) { %>
+    &nbsp;
+    <img src="<c:url value='/icons/reversePublish.png'/>" height="16" width="16" border="0" style="vertical-align: middle;" alt=" "/>&nbsp;<a href="#reindex-tree" onclick="if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the ${workspace} workspace, starting with the this node. Would you like to continue?')) {go('action', 'reindex-tree');} return false;" title="Re-index the node and its whole sub-tree in ${workspace} workspace">re-index node and sub-tree</a>
+    <% } %>
 </p>
 </c:if>
 <strong>Name:&nbsp;</strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}<br/>
