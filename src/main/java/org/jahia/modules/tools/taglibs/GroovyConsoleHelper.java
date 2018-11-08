@@ -400,6 +400,7 @@ public class GroovyConsoleHelper {
                 }
             }
         }
+        scripts.sort((s1,s2) -> s1.toString().compareTo(s2.toString()));
         return scripts;
     }
 
