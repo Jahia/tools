@@ -36,6 +36,7 @@
         <li><a href="precompileServlet">JSP pre-compilation</a></li>
         <li><a href="benchmarks.jsp">System benchmarks</a></li>
         <li><a href="support.jsp">Export support information</a></li>
+        <li><a href="karaf.jsp">Karaf command line</a></li>
     </ul>
 </fieldset>
 <fieldset>
