@@ -19,7 +19,7 @@
     <legend>Command line</legend>
     <form id="command" action="?" method="get">
         <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
-        <input name="commandInput" id="commandInput" onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('command').submit();" autofocus/>
+        <input name="commandInput" id="commandInput" onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('command').submit();" autofocus size="70"/>
         <span>
 
         <input type="submit" name="action" value="Execute ([Ctrl+Enter])"  title="Execute" />
