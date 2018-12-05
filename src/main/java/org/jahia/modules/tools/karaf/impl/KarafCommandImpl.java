@@ -1,13 +1,17 @@
 package org.jahia.modules.tools.karaf.impl;
 
+import static org.apache.karaf.shell.support.ansi.SimpleAnsi.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
 import org.jahia.modules.tools.karaf.KarafCommand;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.Subject;
 import java.io.ByteArrayOutputStream;
@@ -20,9 +24,21 @@ import java.util.concurrent.*;
 @Component(service = KarafCommand.class, immediate = true)
 public class KarafCommandImpl implements KarafCommand {
 
+    private static final Logger logger = LoggerFactory.getLogger(KarafCommandImpl.class);
+
+    private static String[] CONSOLE_CONTROL_STRINGS = new String[] { COLOR_CYAN, COLOR_DEFAULT, COLOR_RED,
+            INTENSITY_BOLD, INTENSITY_NORMAL };
+    private static String[] CONSOLE_CONTROL_STRINGS_REPLACEMENT = new String[CONSOLE_CONTROL_STRINGS.length];
+
     static final Long SERVICE_TIMEOUT = 5000L;
 
-    private BundleContext bundleContext;
+    static {
+        Arrays.fill(CONSOLE_CONTROL_STRINGS_REPLACEMENT, StringUtils.EMPTY);
+    }
+
+    private static String cleanupOutput(String output) {
+        return StringUtils.replaceEach(output, CONSOLE_CONTROL_STRINGS, CONSOLE_CONTROL_STRINGS_REPLACEMENT);
+    }
 
     private SessionFactory sessionFactory;
 
@@ -35,13 +51,12 @@ public class KarafCommandImpl implements KarafCommand {
 
 
     @Activate
-    public void activate(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public void activate() {
         this.executor = Executors.newCachedThreadPool();
     }
 
     @Deactivate
-    public void deactivate(BundleContext bundleContext) {
+    public void deactivate() {
         executor.shutdown();
     }
 
@@ -114,10 +129,10 @@ public class KarafCommandImpl implements KarafCommand {
 
         try {
             executor.submit(commandFuture);
-            response = commandFuture.get(timeout, TimeUnit.MILLISECONDS);
+            response = cleanupOutput(commandFuture.get(timeout, TimeUnit.MILLISECONDS));
         } catch (TimeoutException e) {
-            e.printStackTrace(System.err);
-            response = "SHELL COMMAND TIMED OUT: ";
+            logger.warn("Shell command has timed out: {}", command);
+            throw new RuntimeException("Shell command has timed out: " + command, e);
         } catch (ExecutionException e) {
             Throwable cause = e.getCause() != null ? (e.getCause().getCause() != null ? e.getCause().getCause() : e.getCause()) : e;
             throw new RuntimeException(cause.getMessage(), cause);

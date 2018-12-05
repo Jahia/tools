@@ -19,14 +19,14 @@
     <legend>Command line</legend>
     <form id="command" action="?" method="get">
         <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
-        <input name="commandInput" id="commandInput" onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('command').submit();" autofocus size="70"/>
+        <input name="commandInput" id="commandInput" onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('command').submit();" autofocus size="70" value="${fn:escapeXml(param.commandInput)}"/>
         <span>
 
         <input type="submit" name="action" value="Execute ([Ctrl+Enter])"  title="Execute" />
         </span>
     </form>
 
-    Examples : bundle:list , bundle:restart [bundleid] , bundle:tree-show [bundleid] , jahia:modules , shell:tail -n 100 ../logs/jahia.log , dump-create , ...
+    Examples: bundle:list , bundle:restart [bundleid] , bundle:tree-show [bundleid] , jahia:modules , shell:tail -n 100 ../logs/jahia.log , dump-create , ...
 </fieldset>
 
 
@@ -34,12 +34,10 @@
     <c:catch var="error">
         <%
             KarafCommand c = (KarafCommand) BundleUtils.getOsgiService("org.jahia.modules.tools.karaf.KarafCommand", null);
-            String output = c.executeCommand(request.getParameter("commandInput"), 1000L, false, request.getUserPrincipal(), new RolePrincipal("manager"), new RolePrincipal("admin"));
+            String output = c.executeCommand(request.getParameter("commandInput"), 10000L, false, request.getUserPrincipal(), new RolePrincipal("manager"), new RolePrincipal("admin"));
             pageContext.setAttribute("output", output);
         %>
-        <pre>
-<%= output %>
-        </pre>
+        <pre>${fn:escapeXml(output)}</pre>
     </c:catch>
 
     <c:if test="${not empty error}">
