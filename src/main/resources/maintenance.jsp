@@ -70,7 +70,7 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
 <p>
 The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
 <c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
+    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
 </c:if>
 <c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
     <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
