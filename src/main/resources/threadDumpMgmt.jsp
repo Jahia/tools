@@ -74,6 +74,7 @@ Click to <a href="?threadDumpMonitorActive=${!threadDumpMonitorActive}&toolAcces
     <h4>${loadAverage.info}</h4>
     <p>
         Logging trigger value: <strong>${loadAverage.loggingTriggerValue}</strong><br/>
+        Thread dump trigger value: <strong>${loadAverage.threadDumpTriggerValue}</strong><br/>
         Thread dump on high load: <strong>${loadAverage.threadDumpOnHighLoad ? 'ON' : 'OFF'}</strong><br/>
         Click to <a href="?loadAverage=${loadAverageEntry.key}&threadDumpOnHighLoad=${loadAverage.threadDumpOnHighLoad ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${loadAverage.threadDumpOnHighLoad ? 'disable' : 'enable'} thread dumps on high load</a>&nbsp;**
     </p>
