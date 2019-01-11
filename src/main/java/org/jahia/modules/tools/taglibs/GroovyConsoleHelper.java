@@ -45,11 +45,7 @@ package org.jahia.modules.tools.taglibs;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -386,7 +382,7 @@ public class GroovyConsoleHelper {
      * @return a collection of BundleResource, representing scripts, which are found in all active module bundles
      */
     public static Collection<BundleResource> getGroovyConsoleScripts() {
-        final List<BundleResource> scripts = new ArrayList<>();
+        final TreeSet<BundleResource> scripts = new TreeSet<>(Comparator.comparing(UrlResource::getFilename));
         for (final JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getAvailableTemplatePackages()) {
             final Bundle bundle = aPackage.getBundle();
