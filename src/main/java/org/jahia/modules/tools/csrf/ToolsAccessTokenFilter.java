@@ -47,6 +47,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.filters.AbstractServletFilter;
+import org.jahia.settings.SettingsBean;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +60,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
     public static final String CSRF_TOKEN_ATTR = "toolAccessToken";
     private static final int MAX_TOKENS = 5000;
-    private static final int MAX_DURATION = 20;
+    private static final int MAX_DURATION = Integer.parseInt(SettingsBean.getInstance().getString("toolsTokenExpiration","20"));
 
     private static Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
 
