@@ -80,7 +80,9 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
 
     @SuppressWarnings("unchecked")
     private void validateToken(HttpServletRequest httpReq) throws ServletException {
-
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            return;
+        }
         String token = httpReq.getParameter(CSRF_TOKEN_ATTR);
 
         if (token == null || getCache(httpReq).getIfPresent(token) == null) {
