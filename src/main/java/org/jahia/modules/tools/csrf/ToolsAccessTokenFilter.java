@@ -60,7 +60,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
     public static final String CSRF_TOKEN_ATTR = "toolAccessToken";
     private static final int MAX_TOKENS = 5000;
-    private static final int MAX_DURATION = Integer.parseInt(SettingsBean.getInstance().getString("toolsTokenExpiration","20"));
+    private int tokenExpiration = 20;
 
     private static Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
 
@@ -111,7 +111,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
         if (tokensCache == null){
             tokensCache = CacheBuilder.newBuilder()
                     .maximumSize(MAX_TOKENS)
-                    .expireAfterWrite(MAX_DURATION, TimeUnit.MINUTES)
+                    .expireAfterWrite(tokenExpiration, TimeUnit.MINUTES)
                     .build();
 
             httpReq.getSession().setAttribute(CSRF_TOKENS_ATTR, tokensCache);
@@ -128,5 +128,9 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     @Override
     public void destroy() {
 
+    }
+
+    public void setTokenExpiration(int tokenExpiration) {
+        this.tokenExpiration = tokenExpiration;
     }
 }
