@@ -44,7 +44,7 @@
 	        return 0;
 	    }
 	};
-	
+
     private void traceVersionTree(Version v, List<StringBuffer> lines, Map<String, int[]> m, int currentLine, int col) throws Exception {
         m.put(v.getName(), new int[]{currentLine,col});
         while (lines.size() <= currentLine) {
@@ -166,6 +166,7 @@
     <c:param name="selectedPaths" value="${currentNode.path}"/>
     <c:param name="workspace" value="${workspace}"/>
 </c:url>
+<div class="${workspace}">
 <fieldset>
     <form id="navigateForm" action="?" method="get">
         <input type="hidden" id="showProperties" name="showProperties" value="${showProperties}"/>
@@ -199,7 +200,7 @@
 <c:url value="/icons/${workspace == 'default' ? 'live' : 'editMode'}.png" var="iconSwitchWorkspace"/>
 <c:url value="/icons/${showActions ? 'preview' : 'editContent'}.png" var="iconActions"/>
 <c:set var="anotherWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
-<legend><strong>${fn:escapeXml(not empty node.name ? node.name : '<root>')}</strong>&nbsp;- workspace:&nbsp;<img src="${iconWorkspace}" width="16" height="16" alt=" "/>&nbsp;<strong>${workspace}</strong>&nbsp;(<a href="#switchWorkspace" onclick="go('workspace', '${anotherWorkspace}'); return false;">switch to ${anotherWorkspace} <img src="${iconSwitchWorkspace}" width="16" height="16" alt=" "/></a>)
+    <legend><strong>This is the ${workspace} workspace</strong>&nbsp;(<a href="#switchWorkspace" onclick="go('workspace', '${anotherWorkspace}'); return false;">switch to ${anotherWorkspace}</a>)
     &nbsp; browse as ${showJCRNodes?"<span style='color:red;font-weight:bold'>jcr</span>":"jahia"} session (<a href="#showJCRNodes" onclick="go('showJCRNodes','${showJCRNodes?"false":"true"}'); return false;">switch to ${!showJCRNodes?"jcr":"jahia"}</a>) )
     &nbsp;
     <a href="${mgrUrl}" target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; margin-right:2px;"/>repository explorer</a>
@@ -469,7 +470,7 @@
 <p><strong>References:&nbsp;</strong><a href="#references" onclick="go('showReferences', ${showReferences ? 'false' : 'true'}); return false;">${showReferences ? 'hide' : 'show'}</a></p>
 <c:if test="${showReferences}">
     <ul>
-      <%try {%>    
+      <%try {%>
         <c:set var="refsCount" value="${functions:length(node.references) + functions:length(node.weakReferences)}"/>
         <c:if test="${refsCount == 0}"><li>No references found</li></c:if>
         <c:if test="${refsCount > 0}">
@@ -492,7 +493,7 @@
         </c:if>
       <%} catch (Exception ex) {%>
           <p style="color:red;">Error retrieving references<br/>Cause: <%=(ex.getCause() != null ? ex.getCause().toString() : ex.toString())%></p>
-      <%} %>        
+      <%} %>
     </ul>
 </c:if>
 
@@ -604,6 +605,7 @@
 <%} finally {
     JCRSessionFactory.getInstance().setCurrentUser(null);
 }%>
+</div>
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>
