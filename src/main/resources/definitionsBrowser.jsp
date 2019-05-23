@@ -15,6 +15,8 @@
 <%@ page import="javax.jcr.nodetype.ConstraintViolationException" %>
 <%@ page import="javax.jcr.nodetype.NodeTypeManager" %>
 <%@ page import="javax.jcr.ItemNotFoundException" %>
+<%@ page import="javax.jcr.NodeIterator" %>
+<%@ page import="javax.jcr.Node" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -77,15 +79,20 @@
             JCRCallback<Object> callback = new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
-                    JCRNodeIteratorWrapper nodes = jcrSessionWrapper.getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType.getName() + "']", Query.JCR_SQL2).execute().getNodes();
+                    JCRNodeWrapper root = jcrSessionWrapper.getNode("/");
+                    NodeIterator nodes = jcrSessionWrapper.getProviderSession(root.getProvider()).getWorkspace().getQueryManager().createQuery("select * from ['" + nodeType.getName() + "']", Query.JCR_SQL2).execute().getNodes();
+                    int count = 0;
                     while (nodes.hasNext()) {
-                        JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+                        Node next = (Node) nodes.next();
                         if (nodeType.isMixin() && !next.getPrimaryNodeType().isNodeType(nodeType.getName())) {
                             System.out.println("removed mixin " +nodeType.getName() +" for "+next.getName());
                             next.removeMixin(nodeType.getName());
                         } else {
                             System.out.println("removed node " +nodeType.getName() +" for "+next.getName());
                             next.remove();
+                        }
+                        if ((++count % 100) == 0) {
+                            jcrSessionWrapper.save();
                         }
                     }
                     jcrSessionWrapper.save();
