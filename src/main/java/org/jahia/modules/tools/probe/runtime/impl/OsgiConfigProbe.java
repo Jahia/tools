@@ -99,21 +99,24 @@ public class OsgiConfigProbe implements ProbeMBean {
         } catch (IOException | InvalidSyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+        String data = null;
         StringOutputStream os = new StringOutputStream();
-        PrintStream out = new PrintStream(os);
-        if (configs != null) {
-            Map<String, Configuration> sortedConfigs = new TreeMap<>();
-            for (Configuration config : configs) {
-                sortedConfigs.put(config.getPid(), config);
+        try (PrintStream out = new PrintStream(os)) {
+            if (configs != null) {
+                Map<String, Configuration> sortedConfigs = new TreeMap<>();
+                for (Configuration config : configs) {
+                    sortedConfigs.put(config.getPid(), config);
+                }
+                for (Configuration config : sortedConfigs.values()) {
+                    writeConfigToStream(config, out);
+                }
             }
-            for (Configuration config : sortedConfigs.values()) {
-                writeConfigToStream(config, out);
-            }
+
+            out.flush();
+
+            data = os.toString();
         }
-
-        out.flush();
-
-        return os.toString();
+        return data;
     }
     
     private void writeConfigToStream(Configuration config, PrintStream out) {
