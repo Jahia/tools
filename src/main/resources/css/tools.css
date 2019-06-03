@@ -13,7 +13,30 @@ body {
 pre, code {
     font-size: 120%;
 }
-legend {
-	font-weight: bold;
-}
 img {border: 0}
+.default fieldset {
+    border-color: #B40000;
+    border-style: solid;
+
+}
+.live fieldset {
+    border-color: #006900;
+    border-style: solid;
+
+}
+.default fieldset legend {
+    color: #B40000;
+}
+.live fieldset legend {
+    color: #006900;
+}
+fieldset legend a{
+    color: #000;
+}
+fieldset legend strong {
+    text-transform: uppercase;
+}
+fieldset legend strong span {
+    text-transform: none;
+}
+

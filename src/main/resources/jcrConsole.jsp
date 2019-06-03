@@ -30,6 +30,7 @@ Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) page
 pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
 %>
 <body>
+<div class="${workspace}">
 <h1>JCR Console</h1>
 <%
 long timer = System.currentTimeMillis();
@@ -348,7 +349,7 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
 <c:set var="switchToWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <fieldset>
     <legend>
-        <strong>${workspace}</strong>&nbsp;workspace&nbsp;(<a href="#switchWorkspace" onclick="document.getElementById('workspace').value='${switchToWorkspace}'; document.getElementById('action').value=''; document.getElementById('groovyForm').submit(); return false;">switch to ${switchToWorkspace}</a>)
+        <strong>This is ${workspace}&nbsp;workspace</strong>&nbsp;(<a href="#switchWorkspace" onclick="document.getElementById('workspace').value='${switchToWorkspace}'; document.getElementById('action').value=''; document.getElementById('groovyForm').submit(); return false;">switch to ${switchToWorkspace}</a>)
         <select name="localeSelector" onchange="document.getElementById('locale').value=this.value;">
             <c:forEach items="${locales}" var="loc">
                 <% pageContext.setAttribute("localeLabel", ((Locale) pageContext.getAttribute("loc")).getDisplayName(Locale.ENGLISH)); %>
@@ -368,6 +369,8 @@ pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     <p><input type="submit" value="Execute ([Ctrl+Enter])" onclick="if (!confirm('WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?')) { return false; }" /></p>
     </form>
 </fieldset>
+</div>
+
 <%@ include file="gotoIndex.jspf" %>
 </body>
 </html>
