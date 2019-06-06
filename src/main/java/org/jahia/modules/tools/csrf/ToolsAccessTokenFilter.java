@@ -51,7 +51,10 @@ import org.jahia.settings.SettingsBean;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -63,6 +66,9 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private int tokenExpiration = 20;
 
     private static Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
+    private static final String TOKEN_URI = "/token";
+    private static final String TOKEN_METHOD = "POST";
+    private static final String TOKEN_CONTENT_TYPE = "application/json";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -71,7 +77,16 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
             if (servletRequest.getParameterMap().size() > 0) {
                 validateToken(request);
             } else {
-                generateAndStoreToken(request);
+                String token = generateAndStoreToken(request);
+
+                if (request.getMethod().equals(TOKEN_METHOD) && request.getRequestURI().endsWith(TOKEN_URI)) {
+                    HttpServletResponse response = (HttpServletResponse) servletResponse;
+                    PrintWriter out = response.getWriter();
+                    response.setContentType(TOKEN_CONTENT_TYPE);
+                    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                    out.print("{\"token\":\"" + token + "\"}");
+                    out.flush();
+                }
             }
         }
 
@@ -94,13 +109,15 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     }
 
 
-    private void generateAndStoreToken(HttpServletRequest httpReq) {
+    private String generateAndStoreToken(HttpServletRequest httpReq) {
         // generate and store token
         String token = UUID.randomUUID().toString();
         getCache(httpReq).put(token, Boolean.TRUE);
 
         // send token in current request
         httpReq.setAttribute(CSRF_TOKEN_ATTR, token);
+
+        return token;
     }
 
     @SuppressWarnings("unchecked")
