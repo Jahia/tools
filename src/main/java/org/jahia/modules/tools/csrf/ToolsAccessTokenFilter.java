@@ -43,8 +43,6 @@
  */
 package org.jahia.modules.tools.csrf;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.filters.AbstractServletFilter;
 import org.jahia.settings.SettingsBean;
@@ -52,8 +50,9 @@ import org.jahia.settings.SettingsBean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class ToolsAccessTokenFilter extends AbstractServletFilter {
@@ -62,7 +61,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final int MAX_TOKENS = 5000;
     private int tokenExpiration = 20;
 
-    private static Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
+    private static final Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -85,7 +84,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
         }
         String token = httpReq.getParameter(CSRF_TOKEN_ATTR);
 
-        if (token == null || getCache(httpReq).getIfPresent(token) == null) {
+        if (token == null || getCache(httpReq).get(token) == null || getCache(httpReq).get(token) < (System.currentTimeMillis() - tokenExpiration * 60L * 1000L)) {
             throw new ServletException("Missing token: " + httpReq.getRequestURL() + (StringUtils.isNotEmpty(httpReq.getQueryString()) ? ("?" + httpReq.getQueryString()) : ""));
         }
 
@@ -97,23 +96,25 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private void generateAndStoreToken(HttpServletRequest httpReq) {
         // generate and store token
         String token = UUID.randomUUID().toString();
-        getCache(httpReq).put(token, Boolean.TRUE);
+        HashMap<String, Long> tokens = getCache(httpReq);
+        tokens.put(token, System.currentTimeMillis());
+
+        if (tokens.size() > MAX_TOKENS) {
+            tokens.remove(tokens.entrySet().stream().min(Map.Entry.comparingByValue()).orElseThrow(ArrayIndexOutOfBoundsException::new).getKey());
+        }
+
+        httpReq.getSession().setAttribute(CSRF_TOKENS_ATTR, tokens);
 
         // send token in current request
         httpReq.setAttribute(CSRF_TOKEN_ATTR, token);
     }
 
     @SuppressWarnings("unchecked")
-    private Cache<String, Boolean> getCache(HttpServletRequest httpReq) {
-        Cache<String, Boolean> tokensCache = (Cache<String, Boolean>)
-                httpReq.getSession().getAttribute(CSRF_TOKENS_ATTR);
+    private HashMap<String, Long> getCache(HttpServletRequest httpReq) {
+        HashMap<String, Long> tokensCache = (HashMap<String, Long>) httpReq.getSession().getAttribute(CSRF_TOKENS_ATTR);
 
         if (tokensCache == null){
-            tokensCache = CacheBuilder.newBuilder()
-                    .maximumSize(MAX_TOKENS)
-                    .expireAfterWrite(tokenExpiration, TimeUnit.MINUTES)
-                    .build();
-
+            tokensCache = new HashMap<>();
             httpReq.getSession().setAttribute(CSRF_TOKENS_ATTR, tokensCache);
         }
 
@@ -122,12 +123,12 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        // Nothing to init
     }
 
     @Override
     public void destroy() {
-
+        // Nothing to destroy
     }
 
     public void setTokenExpiration(int tokenExpiration) {
