@@ -28,11 +28,11 @@
 </head>
 <body>
 <h1>Export Support Information</h1>
-<p>Allows you to export as a ZIP file useful support data about this DX instance.</p>
+<p>Allows you to export as a ZIP file useful support data about this Jahia instance.</p>
 <fieldset style="background-color:#dfe8f6;border-color:#c3dbee;color:#000">
 	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
 	Please, note, that no information is sent directly to Jahia support when using this action. You will be able to review and adjust the resulted file.<br/>
-	We are filtering out DX sensitive information (usernames, passwords, etc.) before generating the ZIP file
+	We are filtering out Jahia sensitive information (usernames, passwords, etc.) before generating the ZIP file
 	<a class="fancybox-link" title="Sensitive information" href="#infoArea"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="Sensitive information" title="Sensitive information"></a><br/>
 	Please ensure that no custom sensitive information appear in the ZIP file (<code>jahia.properties</code>, etc.). If so, please hide them (using <code>***</code>) before sending the ZIP file to Jahia.
 </fieldset>
@@ -98,10 +98,10 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
         <p>
         The following values are replaced in the corresponding files with <code>***</code>:
         <ul>
-        	<li>DX Tools password hash: <code>&lt;digital-factory-config&gt;/jahia/jahia.properties</code> - <code>jahiaToolManagerPassword</code></li>
+        	<li>Jahia Tools password hash: <code>&lt;digital-factory-config&gt;/jahia/jahia.properties</code> - <code>jahiaToolManagerPassword</code></li>
         	<li>Database username/password: <code>&lt;dx-webapp-dir&gt;/META-INF/context.xml</code> - attributes <code>username</code> and <code>password</code></li>
         	<li>Mail server configuration: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-mail-server.xml</code> - attribute <code>j:uri</code></li>
-        	<li>DX root user password hash: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-user.xml</code> - attribute <code>j:password</code></li>
+        	<li>Jahia root user password hash: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-user.xml</code> - attribute <code>j:password</code></li>
         </ul>
         </p>
     </div>

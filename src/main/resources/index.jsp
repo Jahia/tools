@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <%@ include file="css.jspf" %>
 <% pageContext.setAttribute("currentDate", new java.util.Date()); %>
-<title>Digital Experience Manager Support Tools</title>
+<title>Jahia Support Tools</title>
 </head>
 <body>
 <h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
