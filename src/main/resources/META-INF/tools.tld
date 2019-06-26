@@ -6,7 +6,7 @@
         version="2.1">
 
     <description>Provides functions for the Groovy Console</description>
-    <display-name>DX Tools</display-name>
+    <display-name>Jahia Tools</display-name>
     <tlib-version>1.0</tlib-version>
     <short-name>tools</short-name>
     <uri>http://www.jahia.org/tags/tools</uri>

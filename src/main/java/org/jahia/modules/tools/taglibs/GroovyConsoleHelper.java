@@ -65,7 +65,7 @@ public class GroovyConsoleHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyConsoleHelper.class);
 
-    public static final String WARN_MSG = "WARNING: You are about to execute a script, which can manipulate the repository data or execute services in DX. Are you sure, you want to continue?";
+    public static final String WARN_MSG = "WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?";
 
     private static void generateCbFormElement(String paramName, StringBuilder sb, Properties confs,
             HttpServletRequest request) {
