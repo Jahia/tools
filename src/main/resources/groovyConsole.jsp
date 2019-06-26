@@ -171,7 +171,7 @@
     </c:if>
         <c:choose>
             <c:when test="${empty param.scriptURI or param.scriptURI eq 'custom'}">
-                <p>${not empty scripts ? 'Or paste' : 'Paste'} here the Groovy code you would like to execute against DX:</p>
+                <p>${not empty scripts ? 'Or paste' : 'Paste'} here the Groovy code you would like to execute against Jahia:</p>
 
                 <p>
                     <textarea rows="25" style="width: 100%" id="text" name="script"
