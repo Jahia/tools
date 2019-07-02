@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.jahia.bin.Jahia"%>
-<%@page import="org.jahia.services.SpringContextSingleton"%>
-<%@page import="org.jahia.settings.readonlymode.ReadOnlyModeController"%>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
+<%@ page import="org.jahia.bin.Jahia" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
+<%@ page import="org.jahia.settings.readonlymode.ReadOnlyModeController" %>
+<%@ page import="org.jahia.settings.readonlymode.ReadOnlyModeController.ReadOnlyModeStatus" %>
+<%@ page import="org.jahia.settings.readonlymode.ReadOnlyModeStatusInfo" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.function.Function" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -44,6 +48,8 @@
 </c:if>
 <% pageContext.setAttribute("readOnlyMode", Boolean.valueOf(Jahia.getSettings().isReadOnlyMode())); %>
 <% pageContext.setAttribute("fullReadOnlyModeStatus", ReadOnlyModeController.getInstance().getReadOnlyStatus().toString()); %>
+<% pageContext.setAttribute("fullReadOnlyModeController", ReadOnlyModeController.getInstance()); %>
+<% pageContext.setAttribute("settings", SettingsBean.getInstance()); %>
 <body>
 <h1>System Maintenance</h1>
 <p><a href="maintenance.jsp" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="Refresh" title="Refresh" height="16" width="16"/>&nbsp; Refresh status</a></p>
@@ -63,18 +69,61 @@ If you would like to persist the flag value, use the jahia.properties file.</p>
 If the read-only mode is enabled, requests to the edit/contribute/studio/administration modes will be blocked.<br/>
 The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to <a href="?readOnlyMode=${!readOnlyMode}&toolAccessToken=${toolAccessToken}">${readOnlyMode ? 'disable' : 'enable'} read-only mode</a>
 </p>
-<c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="fullReadOnlyEnabled"/>
+<c:choose>
+    <c:when test="${settings.clusterActivated}">
+        <%
+            // can't use lambda or method references unless JSP source is set to 1.8 or above
+            Function<ReadOnlyModeStatusInfo, ReadOnlyModeStatus> getStatusValue = new Function<ReadOnlyModeStatusInfo, ReadOnlyModeStatus>() {
+                @Override public ReadOnlyModeStatus apply(ReadOnlyModeStatusInfo readOnlyModeStatusInfo) {
+                    return readOnlyModeStatusInfo.getValue();
+                }
+            };
+
+            List<ReadOnlyModeStatusInfo> statuses = ReadOnlyModeController.getInstance().getReadOnlyStatuses();
+            boolean statusesSynched = statuses.stream().map(getStatusValue).distinct().count() == 1;
+            pageContext.setAttribute("fullReadOnlyStatusesSynched", statusesSynched);
+            pageContext.setAttribute("fullReadOnlyStatuses", statuses);
+        %>
+        <c:set value="${fullReadOnlyStatusesSynched && fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="fullReadOnlyEnabled"/>
+    </c:when>
+    <c:otherwise>
+        <c:set value="${fn:endsWith(fullReadOnlyModeStatus, 'ON')}" var="fullReadOnlyEnabled"/>
+    </c:otherwise>
+</c:choose>
 <h2>
 <img src="${fullReadOnlyEnabled ? imgOn : imgOff}" alt="${fullReadOnlyModeStatus}" title="${fullReadOnlyModeStatus}" height="16" width="16"/> Full Read-Only Mode
 </h2>
+<c:if test="${settings.clusterActivated && not settings.processingServer}">
 <p>
-The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
-<c:if test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-    <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
+    Please note that enabling or disabling full read-only mode will only be applied cluster-wide when initiated from the processing
+    server. <strong>Enabling or disabling it from here will only update the status of this node.</strong>
+</p>
 </c:if>
-<c:if test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
-    <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
-</c:if>
+<p>
+<c:choose>
+    <c:when test="${settings.clusterActivated && not fullReadOnlyStatusesSynched}">
+        The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong> for the current node.
+        <ul style="margin: 0">
+        <c:forEach items="${fullReadOnlyStatuses}" var="status" begin="1">
+            <li>The full read-only mode is currently <strong>${status.value}</strong> for node <strong>${status.origin}</strong></li>
+        </c:forEach>
+        </ul>
+    </c:when>
+    <c:otherwise>
+        The full read-only mode is currently <strong>${fullReadOnlyModeStatus}</strong>.
+    </c:otherwise>
+</c:choose>
+<c:choose>
+    <c:when test="${settings.clusterActivated && not fullReadOnlyStatusesSynched}">
+        <br/>The status of the cluster is inconsistent. Click here to <a href="?fullReadOnlyMode=false&toolAccessToken=${toolAccessToken}">disable</a> full read-only mode, or <a href="?fullReadOnlyMode=true&toolAccessToken=${toolAccessToken}">enable</a> it.
+    </c:when>
+    <c:when test="${fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+        <br/>The previous operation failed. Click here to retry <a href="?fullReadOnlyMode=${fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'enabling' : 'disabling'}</a> full read-only mode, or <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'}</a> it.
+    </c:when>
+    <c:when test="${not fn:startsWith(fullReadOnlyModeStatus, 'PENDING') and not fn:startsWith(fullReadOnlyModeStatus, 'PARTIAL')}">
+        <br/>Click here to <a href="?fullReadOnlyMode=${!fullReadOnlyEnabled}&toolAccessToken=${toolAccessToken}">${fullReadOnlyEnabled ? 'disable' : 'enable'} full read-only mode</a>
+    </c:when>
+</c:choose>
 </p>
 <%@ include file="gotoIndex.jspf" %>
 </body>
