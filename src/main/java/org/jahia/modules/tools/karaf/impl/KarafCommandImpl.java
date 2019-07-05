@@ -134,7 +134,17 @@ public class KarafCommandImpl implements KarafCommand {
         }
     }
 
-    public String executeCommand(final String command, final Long timeout, final Boolean silent, final Principal... principals) {
+    public String executeCommand(String command, final Long timeout, final Boolean silent, final Principal... principals) {
+        if (command != null && command.startsWith("dx:")) {
+            // workaround to alias "jahia" scope with "dx" since aliases are not available from here
+            // see BACKLOG-10563
+            command = command.replace("dx:", "jahia:");
+        }
+
+        return execute(command, timeout, silent, principals);
+    }
+
+    private String execute(final String command, final Long timeout, final Boolean silent, final Principal... principals) {
         waitForCommandService(command);
 
         String response;
