@@ -70,6 +70,7 @@
     <properties>
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
+        <jahia-module-signature>MCwCFAsx7tCPOn9ZhJahCkvoYe3UuOucAhQaFGZL9eCs0af9+umb/88IKbZ8eA==</jahia-module-signature>
     </properties>
 
     <repositories>
