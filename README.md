@@ -2,7 +2,8 @@
     <img src="https://www.jahia.com/modules/jahiacom-templates/images/jahia-3x.png" alt="Jahia logo" title="Jahia" align="right" height="60" />
 </a>
 
-Tools======================
+Tools
+======================
 Set of low-level tools for support, troubleshooting and maintenance of a Digital Experience Manager platform
 
 ## Open-Source
