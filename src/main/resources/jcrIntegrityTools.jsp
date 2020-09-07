@@ -143,7 +143,9 @@
                             JCRNodeWrapper jahiaNode;
                             if (integrityID == "root") {
                                 jahiaNode = sessionWrapper.getRootNode();
-                            } else jahiaNode = sessionWrapper.getNodeByUUID(integrityID);
+                            } else {
+                                jahiaNode = sessionWrapper.getNodeByUUID(integrityID);
+                            }
 
                             try {
                                 println(out, "Running integrity check from path: " + jahiaNode.getPath());
