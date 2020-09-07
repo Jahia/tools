@@ -105,6 +105,22 @@
         out.println("</select><br/>");
     }
 
+    private void renderNodeInput(JspWriter out, String uuid, String textLabel) throws IOException {
+        out.println("<lable for=\"" + uuid + "\">"
+                + textLabel
+                + "</label><input type=\"text\" name=\"uuid\" value=\"" + uuid
+                + "\" id=\"" + uuid + "\""
+                + "/>");
+    }
+
+    private String integrityID(HttpServletRequest request, String uuid) throws IOException {
+        String intuuid = request.getParameter(uuid);
+        if (intuuid.isEmpty()) {
+            intuuid = "root" ;
+        }
+        return intuuid;
+    }
+
     private boolean isParameterActive(HttpServletRequest request, String parameterName, String operationName) {
         String[] operationValues = request.getParameterValues(parameterName);
         if (operationValues == null) {
