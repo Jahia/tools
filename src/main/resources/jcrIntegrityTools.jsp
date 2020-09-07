@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
+%>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
@@ -22,7 +23,7 @@
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%@ include file="css.jspf" %>
@@ -104,6 +105,7 @@
         long totalTime;
         final boolean referencesCheck = fix || !isParameterActive(request, "option", "noReferencesCheck");
         final boolean binaryCheck = !isParameterActive(request, "option", "noBinariesCheck");
+        final String integrityID = integrityID(request, "uuid");
         if (fix) {
             printTestName(out, "JCR Integrity Fix");
         } else {
@@ -138,14 +140,25 @@
                         @Override
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
 
-                            JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
-                            Node jcrRootNode = jahiaRootNode.getRealNode();
-                            Session jcrSession = jcrRootNode.getSession();
+                            JCRNodeWrapper jahiaNode;
+                            if (integrityID == "root") {
+                                jahiaNode = sessionWrapper.getRootNode();
+                            } else {
+                                jahiaNode = sessionWrapper.getNodeByUUID(integrityID);
+                            }
+
+                            try {
+                                println(out, "Running integrity check from path: " + jahiaNode.getPath());
+                            } catch (IOException e) {
+                                throw new RepositoryException("IOException while running", e);
+                            }
+                            Node jcrNode = jahiaNode.getRealNode();
+                            Session jcrSession = jcrNode.getSession();
 
                             Workspace workspace = jcrSession.getWorkspace();
                             try {
                                 println(out, "Traversing " + workspace.getName() + " workspace ...");
-                                processNode(out, sessionWrapper, jcrRootNode, results, fix, referencesCheck, binaryCheck);
+                                processNode(out, sessionWrapper, jcrNode, results, fix, referencesCheck, binaryCheck);
                             } catch (IOException e) {
                                 throw new RepositoryException("IOException while running", e);
                             }
@@ -254,7 +267,7 @@
                             } else if (((newLastModificationDate != null) && (originalLastModificationDate == null)) ||
                                     ((newLastModificationDate == null) && (originalLastModificationDate != null)) ||
                                     (!newLastModificationDate.equals(originalLastModificationDate))) {
-                                println(out, "Last modification date ("+originalLastModificationDate.getTime().toString()+") was changed by save operation (to "+newLastModificationDate.getTime().toString()+"), must reset to old value !");
+                                println(out, "Last modification date (" + originalLastModificationDate.getTime().toString() + ") was changed by save operation (to " + newLastModificationDate.getTime().toString() + "), must reset to old value !");
                                 parentNode.setProperty(Constants.JCR_LASTMODIFIED, originalLastModificationDate);
                                 nodeSession.save();
                             }
@@ -275,7 +288,7 @@
                                         newValues.add(oldValue);
                                     }
                                 }
-                                property.setValue(newValues.toArray(new Value[] {}));
+                                property.setValue(newValues.toArray(new Value[]{}));
                             } else {
                                 property.setValue((Value) null);
                             }
@@ -294,7 +307,7 @@
                             } else if (((newLastModificationDate != null) && (originalLastModificationDate == null)) ||
                                     ((newLastModificationDate == null) && (originalLastModificationDate != null)) ||
                                     (!newLastModificationDate.equals(originalLastModificationDate))) {
-                                println(out, "Last modification date ("+originalLastModificationDate.getTime().toString()+") was changed by save operation (to "+newLastModificationDate.getTime().toString()+"), must reset to old value !");
+                                println(out, "Last modification date (" + originalLastModificationDate.getTime().toString() + ") was changed by save operation (to " + newLastModificationDate.getTime().toString() + "), must reset to old value !");
                                 node.setProperty(Constants.JCR_LASTMODIFIED, originalLastModificationDate);
                                 nodeSession.save();
                             }
@@ -349,8 +362,8 @@
                                     return;
                                 }
                             }
-                        }catch(javax.jcr.nodetype.ConstraintViolationException x) {
-                             //Definition was changed, property is missing
+                        } catch (javax.jcr.nodetype.ConstraintViolationException x) {
+                            //Definition was changed, property is missing
                             System.out.println("Warning: Property definition for node " + node.getPath() + " is missing:" + x.getMessage());
                         }
                     } else {
@@ -380,7 +393,7 @@
     // in the following list, we will remove the parent node completely. This can be the case for group members, where
     // if the reference doesn't exist we want to remove the parent node completely. It is recommended that this list
     // be minimal as it does delete the node !
-    static String[] invalidReferenceNodeTypesToRemove = new String[] {
+    static String[] invalidReferenceNodeTypesToRemove = new String[]{
             "nt:linkedFile",
             "jnt:member",
             "jnt:reference"
@@ -411,6 +424,8 @@
         if (!running) {
             out.println("<form><input type=\"hidden\" name=\"toolAccessToken\" value=\"" + request.getAttribute("toolAccessToken") + "\"/>");
             renderWorkspaceSelector(out);
+            renderNodeInput(out, "", "UUID of node to index from (will use root node if empty): ");
+            out.println("(you can lookup UUID in JCR Browser: " + "<a title=\"Lookup UUID in JCR Browser\" href=\"jcrBrowser.jsp\" target=\"_blank\"><img src=\"/icons/search.png\" width=\"16\"height=\"16\" alt=\"lookup\" title=\"Lookup UUID in JCR Browser\"></a>)<br/>");
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
             renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", true);
