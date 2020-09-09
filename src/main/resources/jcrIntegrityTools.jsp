@@ -17,7 +17,10 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
+<%@ page import="org.jahia.utils.DatabaseUtils" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.sql.PreparedStatement" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -236,6 +239,20 @@
                         } catch (ItemNotFoundException infeDefault) {
                             // node not found also in default
                         }
+                    }
+                    try {
+                        PreparedStatement statement = DatabaseUtils.getDatasource().getConnection().prepareStatement("select * from jahia_external_mapping where internalUuid=?");
+                        statement.setString(1, uuid);
+                        ResultSet resultSet = statement.executeQuery();
+                        if(resultSet.next()) {
+                            println(out, "Mapping found towards "+resultSet.getString("externalId") + ", this reference is not available at this time (referenced from property " + property.getPath()+"), please check your mount points and/or external providers.", null, true);
+                            if(fix) {
+                                println(out, "It will not be fixed automatically.", null, true);
+                            }
+                            break;
+                        }
+                    } catch (SQLException throwables) {
+                        //uuid is not an external reference
                     }
                     println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), null, true);
                     if (fix) {
