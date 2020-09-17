@@ -64,7 +64,7 @@
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/tools.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/tools.git</url>
-        <tag>HEAD</tag>
+        <tag>2_x</tag>
     </scm>
 
     <properties>
