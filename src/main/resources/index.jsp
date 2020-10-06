@@ -24,11 +24,10 @@
 <div style="position: absolute; right: 20px; top: 7px; font-size:1.0em;">
     <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
         if (Boolean.getBoolean("cluster.activated")) {
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            ObjectName channel = new ObjectName("JGroupsReplication:type=channel,cluster=\"ehcache-jahia\"");
             %>
-            Current Node Id: <%=mBeanServer.getAttribute(channel, "address") %>
-            <% }
+            Current Node Id: <%= System.getProperty("cluster.node.serverId", "N/A") %>
+            <%
+        }
     } %>
     <br/>
     Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>
