@@ -11,9 +11,6 @@
 <%@page import="org.jahia.utils.DateUtils"%>
 <%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
 <%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
-<%@ page import="java.lang.management.ManagementFactory" %>
-<%@ page import="javax.management.ObjectName" %>
-<%@ page import="javax.management.MBeanServer" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <head>
