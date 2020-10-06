@@ -11,6 +11,9 @@
 <%@page import="org.jahia.utils.DateUtils"%>
 <%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
 <%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
+<%@ page import="java.lang.management.ManagementFactory" %>
+<%@ page import="javax.management.ObjectName" %>
+<%@ page import="javax.management.MBeanServer" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <head>
@@ -21,7 +24,19 @@
 </head>
 <body>
 <h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
-<div style="position: absolute; right: 20px; top: 20px; font-size:1.0em;">Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></div>
+<div style="position: absolute; right: 20px; top: 7px; font-size:1.0em;">
+    <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
+        if (Boolean.getBoolean("cluster.activated")) {
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            ObjectName channel = new ObjectName("JGroupsReplication:type=channel,cluster=\"ehcache-jahia\"");
+            %>
+            Current Node Id: <%=mBeanServer.getAttribute(channel, "address") %>
+            <% }
+    } %>
+    <br/>
+    Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>
+    Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %>
+</div>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">
