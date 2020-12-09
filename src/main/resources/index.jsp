@@ -21,7 +21,18 @@
 </head>
 <body>
 <h1>Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></h1>
-<div style="position: absolute; right: 20px; top: 20px; font-size:1.0em;">Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></div>
+<div style="position: absolute; right: 20px; top: 7px; font-size:1.0em;">
+    <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
+        if (Boolean.getBoolean("cluster.activated")) {
+            %>
+            Current Node Id: <%= System.getProperty("cluster.node.serverId", "N/A") %>
+            <%
+        }
+    } %>
+    <br/>
+    Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>
+    Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %>
+</div>
 <table width="100%" border="0">
     <tr>
         <td width="50%" valign="top">
