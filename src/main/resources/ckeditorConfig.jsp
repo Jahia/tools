@@ -14,16 +14,14 @@
 %>
 <%!
 
-    public String getModuleVersion() {
+    public Version getExistingVersion() {
         Bundle bundle = BundleUtils.getBundleBySymbolicName("ckeditor-config", null);
-        String ckEditorVersion;
-        if (bundle != null) {
-            Version version = bundle.getVersion();
-            ckEditorVersion = version.getMajor() + "." + (version.getMinor() + 1);
-        } else {
-            ckEditorVersion = "1.0";
-        }
-        return ckEditorVersion;
+        return bundle != null ? bundle.getVersion() : null;
+    }
+
+    public String getNewModuleVersion() {
+        Version version = getExistingVersion();
+        return version != null ? version.getMajor() + "." + version.getMinor() + "." + (version.getMicro() + 1) : "1.0.0";
     }
 
     public void createJar(String cfg, OutputStream os, String version) throws IOException {
@@ -45,7 +43,7 @@
     }
 %><c:if test="${not empty param.config && param.action=='Create and download configuration'}" var="download"><%
 
-    String ckEditorVersion = getModuleVersion();
+    String ckEditorVersion = getNewModuleVersion();
     response.setContentType("application/java-archive; charset=UTF-8");
     response.setHeader("Content-Disposition", "attachment; filename=\"ckeditor-config-" + ckEditorVersion + ".jar\"");
     createJar(request.getParameter("config"), response.getOutputStream(), ckEditorVersion);
@@ -65,15 +63,14 @@
     <h1>CKEditor Custom Configuration</h1>
     <c:if test="${not empty param.config}">
         <%
-            Bundle ckEditorBundle = BundleUtils.getBundleBySymbolicName("ckeditor-config", null);
-            if (ckEditorBundle != null) {
-                Version oldVersion = ckEditorBundle.getVersion();
-                String oldVersionString = oldVersion.getMajor() + "." + oldVersion.getMinor();
+            Version existingVersion = getExistingVersion();
+            if (existingVersion != null) {
+                String oldVersionString = existingVersion.getMajor() + "." + existingVersion.getMinor()+ "." + existingVersion.getMicro();
                 File targetFile = new File(SettingsBean.getInstance().getJahiaModulesDiskPath(),
                         "ckeditor-config-" + oldVersionString + ".jar");
                 targetFile.delete();
             }
-            String ckEditorVersion = getModuleVersion();
+            String ckEditorVersion = getNewModuleVersion();
             File cfgFile = new File(FileUtils.getTempDirectory(), "ckeditor-config-" + ckEditorVersion + ".jar");
             FileOutputStream fos = new FileOutputStream(cfgFile);
             createJar(request.getParameter("config"), fos, ckEditorVersion);
