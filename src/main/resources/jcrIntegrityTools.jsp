@@ -21,6 +21,7 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.Connection" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -240,10 +241,14 @@
                             // node not found also in default
                         }
                     }
+                    Connection conn = null;
+                    PreparedStatement statement = null;
+                    ResultSet resultSet = null;
                     try {
-                        PreparedStatement statement = DatabaseUtils.getDatasource().getConnection().prepareStatement("select * from jahia_external_mapping where internalUuid=?");
+                        conn = DatabaseUtils.getDatasource().getConnection();
+                        statement = conn.prepareStatement("select * from jahia_external_mapping where internalUuid=?");
                         statement.setString(1, uuid);
-                        ResultSet resultSet = statement.executeQuery();
+                        resultSet = statement.executeQuery();
                         if(resultSet.next()) {
                             println(out, "Mapping found towards "+resultSet.getString("externalId") + ", this reference is not available at this time (referenced from property " + property.getPath()+"), please check your mount points and/or external providers.", null, true);
                             if(fix) {
@@ -253,6 +258,10 @@
                         }
                     } catch (SQLException throwables) {
                         //uuid is not an external reference
+                    } finally {
+                        DatabaseUtils.closeQuietly(resultSet);
+                        DatabaseUtils.closeQuietly(statement);
+                        DatabaseUtils.closeQuietly(conn);
                     }
                     println(out, "Couldn't find referenced node with UUID " + uuid + " referenced from property " + property.getPath(), null, true);
                     if (fix) {
