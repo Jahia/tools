@@ -191,7 +191,7 @@ public class GroovyConsoleHelper {
         code.append("import org.apache.jackrabbit.commons.query.*\n");
         code.append("import org.apache.jackrabbit.util.*\n");
         code.append("import org.apache.jackrabbit.value.*\n");
-        code.append("import org.apache.logging.log4j.*\n");
+        code.append("import org.apache.log4j.*\n");
         code.append("import org.apache.oro.text.regex.*\n");
         code.append("import org.apache.pdfbox.pdmodel.*\n");
         code.append("import org.apache.pluto.container.*\n");
