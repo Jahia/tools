@@ -1,3 +1,4 @@
+<%@page import="org.slf4j.Logger"%>
 <%@ page contentType="text/html; charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -19,7 +20,6 @@
 <%@ page import="java.io.InputStream" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.jahia.modules.tools.LoggerWrapper" %>
 <%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -92,23 +92,29 @@
         pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     } else {
         ScriptContext ctx = new SimpleScriptContext();
-        ctx.setWriter(new StringWriter());
-        Bindings bindings = engine.createBindings();
-        LoggerWrapper lw = new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"),
-                "org.jahia.tools.groovyConsole", ctx.getWriter());
-        bindings.put("log", lw);
-        bindings.put("logger", lw);
-        if (isPredefinedScript) {
-            final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
-            if (paramNames != null)
-                for (String paramName : paramNames) {
-                    bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
-                }
+        ctx.setWriter(GroovyConsoleHelper.createLogAwareWriter());
+        try {
+            Bindings bindings = engine.createBindings();
+            Logger lw = LoggerFactory.getLogger(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
+            bindings.put("log", lw);
+            bindings.put("logger", lw);
+            if (isPredefinedScript) {
+                final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
+                if (paramNames != null) {
+                    for (String paramName : paramNames) {
+                        bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
+                    }
+                }    
+            }
+            ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+        
+            Object result = engine.eval(code.toString(), ctx);
+            pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
+            pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+        } finally {
+            GroovyConsoleHelper.removeLogAwareWriter();
         }
-        ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        Object result = engine.eval(code.toString(), ctx);
-        pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
-        pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     }
 %>
 <fieldset>

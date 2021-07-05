@@ -50,12 +50,12 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>8.0.0.0</version>
+        <version>8.1.0.0-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <artifactId>tools</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Experience Manager Support Tools</description>
@@ -90,13 +90,7 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>1.6.6</version>
-        </dependency>
-
-        <dependency>
+       <dependency>
             <groupId>org.apache.karaf.bundle</groupId>
             <artifactId>org.apache.karaf.bundle.core</artifactId>
             <version>${karaf.version}</version>

@@ -44,12 +44,20 @@
 package org.jahia.modules.tools.taglibs;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.WriterAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
@@ -66,6 +74,7 @@ public class GroovyConsoleHelper {
     private static final Logger logger = LoggerFactory.getLogger(GroovyConsoleHelper.class);
 
     public static final String WARN_MSG = "WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?";
+    public static final String GROOVY_CONSOLE_FQCN = "org.jahia.tools.groovyConsole";
 
     private static void generateCbFormElement(String paramName, StringBuilder sb, Properties confs,
             HttpServletRequest request) {
@@ -455,6 +464,33 @@ public class GroovyConsoleHelper {
             logger.error("An error occured while reading the configurations for the script " + scriptURI, e);
         }
         return null;
+    }
+    
+    public static Writer createLogAwareWriter() {
+        StringWriter stringWriter = new StringWriter();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        PatternLayout layout = PatternLayout.newBuilder()
+                .withPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} %level [%t] [%c] [%M] [%l] - %msg%n").build();
+        WriterAppender writerAppender = WriterAppender.newBuilder()
+                                            .setName(GROOVY_CONSOLE_FQCN + "writeLogger")
+                                            .setTarget(stringWriter)
+                                            .setLayout(layout)
+                                            .build();
+        writerAppender.start();
+        config.addAppender(writerAppender);
+        LoggerConfig loggerConfig = config.getLoggerConfig(GROOVY_CONSOLE_FQCN);
+        loggerConfig.addAppender(writerAppender, null, null);
+        ctx.updateLoggers();
+        return stringWriter;
+    }
+    
+    public static void removeLogAwareWriter(){
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(GROOVY_CONSOLE_FQCN);
+        loggerConfig.removeAppender(GROOVY_CONSOLE_FQCN + "writeLogger");
+        ctx.updateLoggers();
     }
 
 }
