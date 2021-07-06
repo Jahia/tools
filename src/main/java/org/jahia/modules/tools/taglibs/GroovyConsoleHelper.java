@@ -52,11 +52,15 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.WriterAppender;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
@@ -465,32 +469,4 @@ public class GroovyConsoleHelper {
         }
         return null;
     }
-    
-    public static Writer createLogAwareWriter() {
-        StringWriter stringWriter = new StringWriter();
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
-        PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} %level [%t] [%c] [%M] [%l] - %msg%n").build();
-        WriterAppender writerAppender = WriterAppender.newBuilder()
-                                            .setName(GROOVY_CONSOLE_FQCN + "writeLogger")
-                                            .setTarget(stringWriter)
-                                            .setLayout(layout)
-                                            .build();
-        writerAppender.start();
-        config.addAppender(writerAppender);
-        LoggerConfig loggerConfig = config.getLoggerConfig(GROOVY_CONSOLE_FQCN);
-        loggerConfig.addAppender(writerAppender, null, null);
-        ctx.updateLoggers();
-        return stringWriter;
-    }
-    
-    public static void removeLogAwareWriter(){
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
-        LoggerConfig loggerConfig = config.getLoggerConfig(GROOVY_CONSOLE_FQCN);
-        loggerConfig.removeAppender(GROOVY_CONSOLE_FQCN + "writeLogger");
-        ctx.updateLoggers();
-    }
-
 }

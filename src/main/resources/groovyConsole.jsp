@@ -20,6 +20,7 @@
 <%@ page import="java.io.InputStream" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.jahia.bin.listeners.LoggingConfigListener"%>
 <%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -92,7 +93,7 @@
         pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     } else {
         ScriptContext ctx = new SimpleScriptContext();
-        ctx.setWriter(GroovyConsoleHelper.createLogAwareWriter());
+        ctx.setWriter(LoggingConfigListener.createLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
         try {
             Bindings bindings = engine.createBindings();
             Logger lw = LoggerFactory.getLogger(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
@@ -113,7 +114,7 @@
             pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
             pageContext.setAttribute("took", System.currentTimeMillis() - timer);
         } finally {
-            GroovyConsoleHelper.removeLogAwareWriter();
+            LoggingConfigListener.removeLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
         }
     }
 %>

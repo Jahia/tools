@@ -12,6 +12,7 @@
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="javax.script.ScriptException" %>
+<%@ page import="org.jahia.bin.listeners.LoggingConfigListener"%>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters"%>
 <%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper"%>
@@ -306,7 +307,7 @@ code.append("});\n");
 //LoggerFactory.getLogger("org.jahia.tools.groovyConsole").info(code.toString());
 
 ScriptContext ctx = new SimpleScriptContext();
-ctx.setWriter(GroovyConsoleHelper.createLogAwareWriter());
+ctx.setWriter(LoggingConfigListener.createLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
 try {
     Bindings bindings = engine.createBindings();
     bindings.put("log", LoggerFactory.getLogger(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
@@ -315,7 +316,7 @@ try {
     pageContext.setAttribute("result", ((StringWriter) ctx.getWriter()).getBuffer().toString());
     pageContext.setAttribute("took", System.currentTimeMillis() - timer);
 } finally {
-    GroovyConsoleHelper.removeLogAwareWriter();
+    LoggingConfigListener.removeLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
 }
 %>
 <fieldset>
