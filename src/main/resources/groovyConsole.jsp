@@ -1,15 +1,16 @@
-<%@page import="org.slf4j.Logger"%>
 <%@ page contentType="text/html; charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
+<%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="javax.script.*" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.io.StringWriter" %>
+<%@ page import="java.nio.charset.Charset"%>
 <%@ page import="org.jahia.services.scheduler.JSR223ScriptJob" %>
 <%@ page import="org.jahia.services.scheduler.BackgroundJob" %>
 <%@ page import="org.quartz.JobDetail" %>
@@ -44,7 +45,7 @@
 </head>
 <body>
 <h1>Groovy Console&nbsp;<a class="fancybox-link" title="Help" href="#helpArea"><img
-        src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></h1>
+        src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"/></a></h1>
 <%
     long timer = System.currentTimeMillis();
     ScriptEngine engine = null;
@@ -78,7 +79,7 @@
     }
     if (executeInBackground) {
         File groovyConsole = File.createTempFile("groovyConsole", ".groovy");
-        FileUtils.write(groovyConsole, code);
+        FileUtils.write(groovyConsole, code, Charset.defaultCharset());
         JobDetail jahiaJob = BackgroundJob.createJahiaJob("Groovy console script", JSR223ScriptJob.class);
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(JSR223ScriptJob.JOB_SCRIPT_ABSOLUTE_PATH, groovyConsole.getAbsolutePath());
@@ -172,7 +173,7 @@
         </select>
         <c:if test="${not empty scriptContent}">
         <a class="fancybox-link" title="${fn:escapeXml(currentScriptFilename)}" href="#viewArea"><img
-        src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="view" title="View"></a>
+        src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="view" title="View"/></a>
         </c:if>
     </p>
     </c:if>
