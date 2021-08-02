@@ -50,12 +50,12 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>8.0.0.0</version>
+        <version>8.1.0.0-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <artifactId>tools</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Experience Manager Support Tools</description>
@@ -71,7 +71,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
-        <jahia-module-signature>MCwCFDcX/dsfxedMqlk9caWCsyaqyvUmAhQHoPCC7mR7JPTwUQT5tJQhAWaXLw==</jahia-module-signature>
+        <jahia-module-signature>MC0CFAXjmbj1RvpqWhl+w6s+8aeP/eIEAhUAjaTF7P0/PLngP3D7KkZnnSbDcfY=</jahia-module-signature>
     </properties>
 
     <repositories>
@@ -91,12 +91,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
-            <version>1.6.6</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
+       <dependency>
             <groupId>org.apache.karaf.bundle</groupId>
             <artifactId>org.apache.karaf.bundle.core</artifactId>
             <version>${karaf.version}</version>

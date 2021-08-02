@@ -44,12 +44,24 @@
 package org.jahia.modules.tools.taglibs;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.WriterAppender;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
@@ -66,6 +78,7 @@ public class GroovyConsoleHelper {
     private static final Logger logger = LoggerFactory.getLogger(GroovyConsoleHelper.class);
 
     public static final String WARN_MSG = "WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?";
+    public static final String GROOVY_CONSOLE_FQCN = "org.jahia.tools.groovyConsole";
 
     private static void generateCbFormElement(String paramName, StringBuilder sb, Properties confs,
             HttpServletRequest request) {
@@ -191,7 +204,7 @@ public class GroovyConsoleHelper {
         code.append("import org.apache.jackrabbit.commons.query.*\n");
         code.append("import org.apache.jackrabbit.util.*\n");
         code.append("import org.apache.jackrabbit.value.*\n");
-        code.append("import org.apache.log4j.*\n");
+        code.append("import org.apache.logging.log4j.*\n");
         code.append("import org.apache.oro.text.regex.*\n");
         code.append("import org.apache.pdfbox.pdmodel.*\n");
         code.append("import org.apache.pluto.container.*\n");
@@ -456,5 +469,4 @@ public class GroovyConsoleHelper {
         }
         return null;
     }
-
 }

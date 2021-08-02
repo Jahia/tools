@@ -4,11 +4,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
+<%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="javax.script.*" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.io.StringWriter" %>
+<%@ page import="java.nio.charset.Charset"%>
 <%@ page import="org.jahia.services.scheduler.JSR223ScriptJob" %>
 <%@ page import="org.jahia.services.scheduler.BackgroundJob" %>
 <%@ page import="org.quartz.JobDetail" %>
@@ -19,7 +21,7 @@
 <%@ page import="java.io.InputStream" %>
 <%@ page import="org.apache.commons.io.IOUtils" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.jahia.modules.tools.LoggerWrapper" %>
+<%@ page import="org.jahia.bin.listeners.LoggingConfigListener"%>
 <%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -43,7 +45,7 @@
 </head>
 <body>
 <h1>Groovy Console&nbsp;<a class="fancybox-link" title="Help" href="#helpArea"><img
-        src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></h1>
+        src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"/></a></h1>
 <%
     long timer = System.currentTimeMillis();
     ScriptEngine engine = null;
@@ -77,7 +79,7 @@
     }
     if (executeInBackground) {
         File groovyConsole = File.createTempFile("groovyConsole", ".groovy");
-        FileUtils.write(groovyConsole, code);
+        FileUtils.write(groovyConsole, code, Charset.defaultCharset());
         JobDetail jahiaJob = BackgroundJob.createJahiaJob("Groovy console script", JSR223ScriptJob.class);
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(JSR223ScriptJob.JOB_SCRIPT_ABSOLUTE_PATH, groovyConsole.getAbsolutePath());
@@ -92,23 +94,29 @@
         pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     } else {
         ScriptContext ctx = new SimpleScriptContext();
-        ctx.setWriter(new StringWriter());
-        Bindings bindings = engine.createBindings();
-        LoggerWrapper lw = new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"),
-                "org.jahia.tools.groovyConsole", ctx.getWriter());
-        bindings.put("log", lw);
-        bindings.put("logger", lw);
-        if (isPredefinedScript) {
-            final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
-            if (paramNames != null)
-                for (String paramName : paramNames) {
-                    bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
-                }
+        ctx.setWriter(LoggingConfigListener.createLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
+        try {
+            Bindings bindings = engine.createBindings();
+            Logger lw = LoggerFactory.getLogger(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
+            bindings.put("log", lw);
+            bindings.put("logger", lw);
+            if (isPredefinedScript) {
+                final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
+                if (paramNames != null) {
+                    for (String paramName : paramNames) {
+                        bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
+                    }
+                }    
+            }
+            ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+
+        
+            Object result = engine.eval(code.toString(), ctx);
+            pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
+            pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+        } finally {
+            LoggingConfigListener.removeLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
         }
-        ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        Object result = engine.eval(code.toString(), ctx);
-        pageContext.setAttribute("result", result == null ? ((StringWriter) ctx.getWriter()).getBuffer().toString() : result);
-        pageContext.setAttribute("took", System.currentTimeMillis() - timer);
     }
 %>
 <fieldset>
@@ -165,7 +173,7 @@
         </select>
         <c:if test="${not empty scriptContent}">
         <a class="fancybox-link" title="${fn:escapeXml(currentScriptFilename)}" href="#viewArea"><img
-        src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="view" title="View"></a>
+        src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="view" title="View"/></a>
         </c:if>
     </p>
     </c:if>

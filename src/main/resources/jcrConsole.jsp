@@ -12,9 +12,10 @@
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="javax.script.ScriptException" %>
+<%@ page import="org.jahia.bin.listeners.LoggingConfigListener"%>
 <%@ page import="org.jahia.utils.ScriptEngineUtils" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters"%>
-<%@ page import="org.jahia.modules.tools.LoggerWrapper" %>
+<%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -131,7 +132,7 @@ code.append("import org.apache.coyote.http11.upgrade.*\n");
 code.append("import org.apache.jackrabbit.commons.query.*\n");
 code.append("import org.apache.jackrabbit.util.*\n");
 code.append("import org.apache.jackrabbit.value.*\n");
-code.append("import org.apache.log4j.*\n");
+code.append("import org.apache.logging.log4j.*\n");
 code.append("import org.apache.oro.text.regex.*\n");
 code.append("import org.apache.pdfbox.pdmodel.*\n");
 code.append("import org.apache.pluto.container.*\n");
@@ -306,13 +307,17 @@ code.append("});\n");
 //LoggerFactory.getLogger("org.jahia.tools.groovyConsole").info(code.toString());
 
 ScriptContext ctx = new SimpleScriptContext();
-ctx.setWriter(new StringWriter());
-Bindings bindings = engine.createBindings();
-bindings.put("log", new LoggerWrapper(LoggerFactory.getLogger("org.jahia.tools.groovyConsole"), "org.jahia.tools.groovyConsole", ctx.getWriter()));
-ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-engine.eval(code.toString(), ctx);
-pageContext.setAttribute("result", ((StringWriter) ctx.getWriter()).getBuffer().toString());
-pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+ctx.setWriter(LoggingConfigListener.createLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
+try {
+    Bindings bindings = engine.createBindings();
+    bindings.put("log", LoggerFactory.getLogger(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN));
+    ctx.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+    engine.eval(code.toString(), ctx);
+    pageContext.setAttribute("result", ((StringWriter) ctx.getWriter()).getBuffer().toString());
+    pageContext.setAttribute("took", System.currentTimeMillis() - timer);
+} finally {
+    LoggingConfigListener.removeLogAwareWriter(GroovyConsoleHelper.GROOVY_CONSOLE_FQCN);
+}
 %>
 <fieldset>
     <legend style="color: blue">Successfully executed in ${took} ms</legend>
