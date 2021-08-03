@@ -115,13 +115,12 @@
         return getLoggerName(rootLogger);
     }
 
-    public Map<String, ?> getCurrentLoggers() {
-        Map<String, ?> currentLoggers = null;
+    public Collection<?> getCurrentLoggers() {
+        Collection<?> currentLoggers = null;
         Class<?> logManagerClass = getLogManager();
         try {
             Object loggerContext = logManagerClass.getMethod("getContext", boolean.class).invoke(null, false);
-            Object loggerConfiguration = loggerContext.getClass().getMethod("getConfiguration").invoke(loggerContext);
-            currentLoggers = (Map<String, ?>)loggerConfiguration.getClass().getMethod("getLoggers").invoke(loggerConfiguration);
+            currentLoggers = (Collection<?>)loggerContext.getClass().getMethod("getLoggers").invoke(loggerContext);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -314,7 +313,7 @@
         %>
     </c:if>
     <%
-        Map<String, ?> loggers = getCurrentLoggers();
+        Collection<?> loggers = getCurrentLoggers();
 
         Map<String,Object> loggersMap = new LinkedHashMap<String,Object>();
         Object rootLogger = getRootLogger();
@@ -325,9 +324,8 @@
             loggersMap.put(rootLoggerName, rootLogger);
         }
 
-        for (Map.Entry<String, ?> entry : loggers.entrySet()) {
-            Object logger = entry.getValue();
-            String loggerName = entry.getKey();
+        for (Object logger : loggers) {
+            String loggerName = getLoggerName(logger);
 
             if (logNameFilter == null || logNameFilter.trim().length() == 0) {
 
