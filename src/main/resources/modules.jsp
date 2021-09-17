@@ -61,7 +61,7 @@
                 <td>${bundle.bundleId}</td>
                 <td>${bundle.symbolicName}</td>
                 <td>${bundle.version}</td>
-                <td>${item.getValue()}</td>
+                <td style="${item.value ne 'Started' ? 'color:red' : ''}">${item.value}</td>
                 <td style="${startLevel le 80 ? 'color:red' : ''}">
                     ${startLevel}
                 </td>
