@@ -52,7 +52,7 @@
 
             <c:forEach var="item" items="${modules}">
             <tr>
-                <c:set var="bundle" value="${item.getKey()}"/>
+                <c:set var="bundle" value="${item.key}"/>
                 <%
                     int startLevel = ((Bundle)pageContext.getAttribute("bundle")).adapt(BundleStartLevel.class).getStartLevel();
                     pageContext.setAttribute("startLevel", startLevel);
