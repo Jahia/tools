@@ -31,9 +31,11 @@
     </thead>
     <tbody>
     <c:forEach items="${actions}" var="action" varStatus="status">
+        <%-- we split the action class name to remove the hash code before display it to the end user --%>
+        <c:set var="splitActionClassName" value="<%= pageContext.getAttribute(\"action\").toString().split(\"@\") %>"/>
         <tr>
             <td align="center"><span style="font-size: 0.8em;">${status.count}</span></td>
-            <td title='<%= pageContext.getAttribute("action").getClass().getName() %>'><strong>${action.name}</strong></td>
+            <td title='${splitActionClassName[0]}'><strong>${action.name}</strong></td>
             <td align="center">${action.requireAuthenticatedUser}</td>
             <td align="center">${action.requiredPermission}</td>
             <td align="center">${action.requiredWorkspace}</td>
