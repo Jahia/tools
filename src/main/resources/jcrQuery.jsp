@@ -3,25 +3,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.apache.commons.lang.StringUtils" %>
 <%@page import="org.apache.jackrabbit.core.query.lucene.join.JahiaQueryEngine" %>
-<%@page import="org.jahia.services.content.JCRContentUtils" %>
+<%@page import="org.apache.jackrabbit.core.query.lucene.join.JoinRow" %>
 <%@page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@page import="org.jahia.services.history.NodeVersionHistoryHelper" %>
+<%@page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
 <%@page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@page import="javax.jcr.ItemNotFoundException" %>
 <%@page import="javax.jcr.Node" %>
 <%@page import="javax.jcr.NodeIterator" %>
 <%@page import="javax.jcr.Session" %>
 <%@page import="javax.jcr.Value" %>
-<%@page import="javax.jcr.query.Query" %>
+<%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryResult" %>
-<%@page import="javax.jcr.query.Row"%>
+<%@page import="javax.jcr.query.Row" %>
 <%@page import="java.io.PrintWriter" %>
-<%@page import="java.io.StringWriter" %>
-<%@page import="java.util.Locale" %>
-<%@ page import="org.apache.jackrabbit.core.query.lucene.join.JoinRow" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="org.jahia.services.content.JCRContentUtils" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -196,18 +196,18 @@
                try {
                    jcrSession.checkout(target.getParent());
                    target.remove();
-                  
+
                    count++;
                    if (count % maxBatch == 0 && it.hasNext()) {
                        jcrSession.save();
                        System.out.println(count + " nodes deleted. Continuing deletion...");
-                   }                   
+                   }
                } catch (Exception e) {
                    e.printStackTrace();
                }
            }
            jcrSession.save();
-           System.out.println(count + " nodes deleted. Finished deletion.");           
+           System.out.println(count + " nodes deleted. Finished deletion.");
            pageContext.setAttribute("deletedCount", Integer.valueOf(count));
        } catch (ItemNotFoundException e) {
            // not found
@@ -266,14 +266,14 @@
             pageContext.setAttribute("count", JCRContentUtils.size(result.getRows()));
             String countColumnName = null;
             String spellCheckColumnName = null;
-            
+
             for (String columnName : result.getColumnNames()) {
                 if (columnName.startsWith("rep:count(")) {
                     countColumnName = columnName;
                     break;
                 } else if (columnName.startsWith("rep:spellcheck(")) {
                     spellCheckColumnName = columnName;
-                    break;                                    
+                    break;
                 } else if (columnName.startsWith("rep:facet(")) {
                     pageContext.setAttribute("hasFacets", true);
                     pageContext.setAttribute("result", result);
@@ -284,9 +284,9 @@
                 pageContext.setAttribute("countColumnName", countColumnName);
                 pageContext.setAttribute("countResult", result.getRows().nextRow().getValue(countColumnName).getLong());
             } else if (spellCheckColumnName != null) {
-                pageContext.setAttribute("spellCheckColumnName", spellCheckColumnName);            
+                pageContext.setAttribute("spellCheckColumnName", spellCheckColumnName);
                 pageContext.setAttribute("selectorNames", new String[]{spellCheckColumnName});
-                pageContext.setAttribute("rows", result.getRows());            
+                pageContext.setAttribute("rows", result.getRows());
             } else if (result.getSelectorNames().length == 1) {
                 pageContext.setAttribute("nodes", result.getNodes());
             } else {
@@ -298,8 +298,9 @@
 %>
 <c:if test="${not empty param.query}">
     <fieldset>
-        <legend>Found ${count} results.
-            Displaying ${displayLimit == 0 ? 'none' : (displayLimit == -1 || displayLimit > count ? 'all' : displayLimit)}.
+        <legend>Found ${count} nodes across all languages.
+            Displaying ${displayLimit == 0 ? 'none' : (displayLimit == -1 || displayLimit > count ? 'all' : displayLimit)} in current
+            language.
             Query took ${took} ms.
         </legend>
         <c:if test="${showActions}">
@@ -351,7 +352,7 @@
                                 </li>
                             </c:forEach>
                         </ul>
-                    </c:forEach>                    
+                    </c:forEach>
                     <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
                         <c:if test="${iterationStatus.first}">
                             <ul>
@@ -454,10 +455,10 @@
                                     <c:choose>
                                     <c:when test="${selectorName == spellCheckColumnName}">
                                         <% Value value = ((Row) pageContext.getAttribute("row")).getValue((String)pageContext.getAttribute("spellCheckColumnName")); %>
-                                        <strong>Suggestion: </strong><%=value != null ? value.getString() : "No suggestions" %>                                    
+                                        <strong>Suggestion: </strong><%=value != null ? value.getString() : "No suggestions" %>
                                         <br/>
                                     </c:when>
-                                    <c:otherwise>                                
+                                    <c:otherwise>
                                     <c:set var="node" value="${row.nodes[selectorName]}"/>
                                     <a title="Open in JCR Browser"
                                        href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&toolAccessToken=${toolAccessToken}'/>"
@@ -491,7 +492,7 @@
                                         <br/>
                                     </c:if>
                                     </c:otherwise>
-                                    </c:choose>                                    
+                                    </c:choose>
                                 </c:forEach>
                             </li>
                         </c:forEach>
