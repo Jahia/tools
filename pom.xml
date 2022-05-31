@@ -43,7 +43,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
-        <jahia-module-signature>MCwCFHOi0k49bQMeCqI1too91sg5wUudAhQfyac7MwK1GVBrdJ2Oy2mRvbF2OQ==</jahia-module-signature>
+        <jahia-module-signature>MCwCFGMurAzVcst/gd/KR7xOQw0X88oMAhQ/b1BayHjcjk0Z/zL9CdXAUh/+yQ==</jahia-module-signature>
     </properties>
 
     <repositories>
@@ -105,6 +105,7 @@
                             net.sf.ehcache.statistics,
                             net.sf.ehcache.store,
                             net.sf.ehcache.terracotta,
+                            org.apache.commons.io.file,
                             org.apache.jackrabbit.api,
                             org.apache.jackrabbit.commons,
                             org.apache.jackrabbit.core.stats,
