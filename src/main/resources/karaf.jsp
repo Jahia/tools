@@ -34,7 +34,8 @@
     <c:catch var="error">
         <%
             KarafCommand c = (KarafCommand) BundleUtils.getOsgiService("org.jahia.modules.tools.karaf.KarafCommand", null);
-            String output = c.executeCommand(request.getParameter("commandInput"), 10000L, false, request.getUserPrincipal(), new RolePrincipal("manager"), new RolePrincipal("admin"));
+            String output = c.executeCommand(request.getParameter("commandInput"), 10000L, false, request.getUserPrincipal(), new
+                    RolePrincipal("manager"), new RolePrincipal("admin"), new RolePrincipal("systembundles"));
             pageContext.setAttribute("output", output);
         %>
         <pre>${fn:escapeXml(output)}</pre>
