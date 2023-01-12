@@ -2,7 +2,6 @@
         %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.jahia.services.render.RenderService"%>
-<%@page import="org.jahia.services.render.filter.AbstractFilter"%>
 <%@ page import="org.jahia.services.render.filter.RenderFilter" %>
 <%@ page import="java.util.Collections" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -17,27 +16,20 @@
             Double.parseDouble(request.getParameter("previousPriority"));
 
     if (beanName != null) {
-
-        AbstractFilter abstractFilter;
         for (RenderFilter f : RenderService.getInstance().getRenderChainInstance().getFilters()) {
             if (f.getClass().getName().equals(beanName) && (p == 0 || p == f.getPriority())) {
-                System.out.print("processing bean " + beanName);
-                abstractFilter = (AbstractFilter) f;
+                System.out.print("processing render filter " + beanName + "(" + f.getName() + ")");
                 if ("true".equals(s)) {
-                    abstractFilter.setDisabled(!abstractFilter.isDisabled());
-                    System.out.print(abstractFilter.isDisabled() ? " disable" : " enable");
-                    System.out.println(" filter");
+                    f.setDisabled(!f.isDisabled());
+                    System.out.println(f.isDisabled() ? " disabled" : " enabled");
                 } else if ("priority".equals(s)) {
-                    System.out.println("change priority from " + f.getPriority() + " to " + pp);
-                    abstractFilter.setPriority(pp);
+                    System.out.println(" change priority from " + f.getPriority() + " to " + pp);
+                    f.setPriority(pp);
                     RenderService.getInstance().getRenderChainInstance().doSortFilters();
                 }
             }
-
         }
     }
-
-
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -68,28 +60,20 @@
     <c:forEach items="${filters}" var="filter" varStatus="status">
         <%
             RenderFilter f = (RenderFilter) pageContext.getAttribute("filter");
-            AbstractFilter af = null;
-            if (f instanceof AbstractFilter) {
-                af = (AbstractFilter) f;
-            }
-            pageContext.setAttribute("aFilter",af);
-			
 			pageContext.setAttribute("filterClassName", f.getClass().getName());
         %>
         <tr id="${filterClassName}">
             <td align="center"><span style="font-size: 0.8em;">${status.index + 1}</span></td>
             <td align="center"><strong>${filter.priority}</strong></td>
-            <td title="${filterClassName}"><c:set var="parts" value="${fn:split(filterClassName, '.')}"/>${parts[fn:length(parts) - 1]}</td>
+            <td title="${filterClassName}">${fn:escapeXml(filter.name)}</td>
             <td>
-                ${!empty aFilter ? fn:escapeXml(aFilter.description) : ''}
+                ${fn:escapeXml(filter.description)}
             </td>
-            <td>${!empty aFilter ? fn:escapeXml(aFilter.conditionsSummary) : ''}</td>
-            <td><c:if test="${!empty aFilter}">${aFilter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</c:if></td>
+            <td>${fn:escapeXml(filter.conditionsSummary)}</td>
+            <td>${filter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</td>
             <td>
-                <c:if test="${!empty aFilter}">
-                    <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}&toolAccessToken=${toolAccessToken}">${aFilter.disabled ? "enable" : "disable"}</a>
-                    <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}&toolAccessToken=${toolAccessToken}">down</a>
-                </c:if>
+                <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}&toolAccessToken=${toolAccessToken}">${filter.disabled ? "enable" : "disable"}</a>
+                <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}&toolAccessToken=${toolAccessToken}">down</a>
             </td>
         </tr>
         <c:set var="previousPriority" value="${filter.priority}"/>
