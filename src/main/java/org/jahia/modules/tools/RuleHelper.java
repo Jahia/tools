@@ -17,10 +17,7 @@ package org.jahia.modules.tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.drools.core.base.EnabledBoolean;
@@ -29,6 +26,7 @@ import org.drools.core.rule.Rule;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
@@ -144,12 +142,20 @@ public class RuleHelper {
     }
 
     private JahiaTemplatesPackage getPackageOrigin(String packageName, RulesListener listener) {
-        for (Map.Entry<String, String> entry : listener.getModulePackageNameMap().entrySet()) {
-            if (packageName.equals(entry.getValue())) {
-                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                        .getTemplatePackage(entry.getKey());
-                if (module != null) {
-                    return module;
+        for (Map.Entry<String, Collection<String>> entry : listener.getModulePackageNameMap().entrySet()) {
+            if (entry.getValue().contains(packageName)) {
+                try {
+                    // entry key are like this: location/3.2.0
+                    String[] entryKeySplit = entry.getKey().split("/");
+                    if (entryKeySplit.length == 2){
+                        JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                .getTemplatePackageRegistry().lookupByIdAndVersion(entryKeySplit[0], new ModuleVersion(entryKeySplit[1]));
+                        if (module != null) {
+                            return module;
+                        }
+                    }
+                } catch (Exception e) {
+                    // failed silently ... was not able to locate module
                 }
             }
         }
