@@ -165,6 +165,7 @@
 <c:url var="mgrUrl" value="/engines/manager.jsp">
     <c:param name="selectedPaths" value="${currentNode.path}"/>
     <c:param name="workspace" value="${workspace}"/>
+    <c:param name="jahia.ui.theme" value="default"/>
 </c:url>
 <div class="${workspace}">
 <fieldset>
