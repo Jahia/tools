@@ -379,23 +379,24 @@
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext() && !mustStop) {
                     Property property = propertyIterator.nextProperty();
-                    int propertyType = property.getType();
-                    if (property.isMultiple()) {
-                        try {
+                    try {
+                        property.getDefinition();
+                        int propertyType = property.getType();
+                        if (property.isMultiple()) {
                             Value[] values = property.getValues();
                             for (int i = 0; i < values.length; i++) {
                                 if (!processPropertyValue(out, session, node, property, values[i], results, fix, referencesCheck, binaryCheck)) {
                                     return;
                                 }
                             }
-                        } catch (javax.jcr.nodetype.ConstraintViolationException x) {
-                            //Definition was changed, property is missing
-                            System.out.println("Warning: Property definition for node " + node.getPath() + " is missing:" + x.getMessage());
+                        } else {
+                            if (!processPropertyValue(out, session, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {
+                                return;
+                            }
                         }
-                    } else {
-                        if (!processPropertyValue(out, session, node, property, property.getValue(), results, fix, referencesCheck, binaryCheck)) {
-                            return;
-                        }
+                    } catch (javax.jcr.nodetype.ConstraintViolationException x) {
+                        //Definition was changed, property is missing
+                        println(out, "Warning: Property definition for node " + node.getPath() + " is missing:" + x.getMessage());
                     }
                 }
             }
