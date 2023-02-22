@@ -99,6 +99,7 @@
         <li><a href="jcrVersionHistory.jsp">JCR version history management</a></li>
         <li><a href="jcrIntegrityTools.jsp">JCR integrity tools</a></li>
         <li><a href="jcrExternalProviders.jsp">JCR external providers</a></li>
+        <li><a href="jcrJarsCleanup.jsp">JCR OSGi jars cleanup</a></li>
     </ul>
 </fieldset>
 <fieldset>
