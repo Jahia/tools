@@ -375,6 +375,23 @@
                 println(out, "Processed " + nodesRead + " nodes...");
             }
             results.put("nodesRead", nodesRead);
+
+            // Report missing node which refer to this node
+            PropertyIterator weekRefs = node.getWeakReferences();
+            PropertyIterator refs = node.getReferences();
+            PropertyIterator[] iterators = new PropertyIterator[]{refs, weekRefs};
+
+            for (PropertyIterator it : iterators) {
+                while (it.hasNext()) {
+                    Property p = it.nextProperty();
+                    try {
+                        session.getNodeByIdentifier(p.getParent().getIdentifier());
+                    } catch (Exception e) {
+                        println(out, "Referencing node " + p.getParent().getPath() + " no longer exists for referenced node: " + node.getPath(), null, true);
+                    }
+                }
+            }
+
             if (fix || referencesCheck || binaryCheck) {
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext() && !mustStop) {
