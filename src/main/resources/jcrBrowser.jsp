@@ -157,6 +157,13 @@
             if (id3 != null) {
                 document.getElementById(id3).value=value3;
             }
+
+            // If switching workspace reset target and action to avoid invoking functions
+            if (id1 === 'workspace') {
+                document.getElementById('target').value = '';
+                document.getElementById('action').value = '';
+            }
+
             document.getElementById('navigateForm').submit();
         }
     </script>
