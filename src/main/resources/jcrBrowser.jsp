@@ -235,7 +235,6 @@
 <c:if test="${not empty param.action}">
     <c:choose>
         <c:when test="${param.action == 'delete' && not empty param.target}">
-            Remove target ${param.target}
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
                 if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(target.getParent().getPath()))  {
