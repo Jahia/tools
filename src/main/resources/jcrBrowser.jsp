@@ -157,6 +157,13 @@
             if (id3 != null) {
                 document.getElementById(id3).value=value3;
             }
+
+            // If switching workspace reset target and action to avoid invoking functions
+            if (id1 === 'workspace') {
+                document.getElementById('target').value = '';
+                document.getElementById('action').value = '';
+            }
+
             document.getElementById('navigateForm').submit();
         }
     </script>
@@ -228,6 +235,7 @@
 <c:if test="${not empty param.action}">
     <c:choose>
         <c:when test="${param.action == 'delete' && not empty param.target}">
+            Remove target ${param.target}
             <% Node target = jcrSession.getNodeByIdentifier(request.getParameter("target"));
                 pageContext.setAttribute("target", target);
                 if (!jcrSession.getWorkspace().getVersionManager().isCheckedOut(target.getParent().getPath()))  {
