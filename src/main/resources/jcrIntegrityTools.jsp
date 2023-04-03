@@ -108,6 +108,7 @@
         long bytesRead;
         long totalTime;
         final boolean referencesCheck = fix || !isParameterActive(request, "option", "noReferencesCheck");
+        final boolean missingReferencesCheck = isParameterActive(request, "option", "missingReferencesCheck");
         final boolean binaryCheck = !isParameterActive(request, "option", "noBinariesCheck");
         final String integrityID = integrityID(request, "uuid");
         if (fix) {
@@ -162,7 +163,7 @@
                             Workspace workspace = jcrSession.getWorkspace();
                             try {
                                 println(out, "Traversing " + workspace.getName() + " workspace ...");
-                                processNode(out, sessionWrapper, jcrNode, results, fix, referencesCheck, binaryCheck);
+                                processNode(out, sessionWrapper, jcrNode, results, fix, referencesCheck, binaryCheck, missingReferencesCheck);
                             } catch (IOException e) {
                                 throw new RepositoryException("IOException while running", e);
                             }
@@ -365,7 +366,7 @@
         return false;
     }
 
-    protected void processNode(JspWriter out, Session session, Node node, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck) throws IOException, RepositoryException {
+    protected void processNode(JspWriter out, Session session, Node node, Map<String, Long> results, boolean fix, boolean referencesCheck, boolean binaryCheck, boolean missingReferencesCheck) throws IOException, RepositoryException {
         long nodesRead = results.get("nodesRead");
         // first let's try to read all the properties
         try {
@@ -376,18 +377,20 @@
             }
             results.put("nodesRead", nodesRead);
 
-            // Report missing node which refer to this node
-            PropertyIterator weekRefs = node.getWeakReferences();
-            PropertyIterator refs = node.getReferences();
-            PropertyIterator[] iterators = new PropertyIterator[]{refs, weekRefs};
+            if (missingReferencesCheck) {
+                // Report missing nodes which refer to this node
+                PropertyIterator weekRefs = node.getWeakReferences();
+                PropertyIterator refs = node.getReferences();
+                PropertyIterator[] iterators = new PropertyIterator[]{refs, weekRefs};
 
-            for (PropertyIterator it : iterators) {
-                while (it.hasNext()) {
-                    Property p = it.nextProperty();
-                    try {
-                        session.getNodeByIdentifier(p.getParent().getIdentifier());
-                    } catch (Exception e) {
-                        println(out, "Referencing node " + p.getParent().getPath() + " no longer exists for referenced node: " + node.getPath(), null, true);
+                for (PropertyIterator it : iterators) {
+                    while (it.hasNext()) {
+                        Property p = it.nextProperty();
+                        try {
+                            session.getNodeByIdentifier(p.getParent().getIdentifier());
+                        } catch (Exception e) {
+                            println(out, "Referencing node " + p.getParent().getPath() + " no longer exists for referenced node: " + node.getPath(), null, true);
+                        }
                     }
                 }
             }
@@ -423,7 +426,7 @@
                 if (childNode.getName().equals("jcr:system")) {
                     println(out, "Ignoring jcr:system node and it's child objects");
                 } else {
-                    processNode(out, session, childNode, results, fix, referencesCheck, binaryCheck);
+                    processNode(out, session, childNode, results, fix, referencesCheck, binaryCheck, missingReferencesCheck);
                 }
             }
         } catch (ValueFormatException vfe) {
@@ -472,6 +475,7 @@
             out.println("(you can lookup UUID in JCR Browser: " + "<a title=\"Lookup UUID in JCR Browser\" href=\"jcrBrowser.jsp\" target=\"_blank\"><img src=\"/icons/search.png\" width=\"16\"height=\"16\" alt=\"lookup\" title=\"Lookup UUID in JCR Browser\"></a>)<br/>");
             renderRadio(out, "runJCRTest", "Run Java Content Repository integrity check", true);
             renderCheckbox(out, "noReferencesCheck", "Do not check reference properties", false);
+            renderCheckbox(out, "missingReferencesCheck", "Check for missing references (node still keeps track of no longer existing nodes which referenced it)", false);
             renderCheckbox(out, "noBinariesCheck", "Do not check binary properties", true);
             renderRadio(out, "fixJCR", "Fix full Java Content Repository integrity (also performs check). DO NOT RUN IF PLATFORM IS ACTIVE (USERS, BACKGROUND JOBS ARE RUNNING !). Also this operation WILL DELETE node with invalid references so please backup your data before running this fix!", false);
             out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
