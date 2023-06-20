@@ -34,7 +34,7 @@
         attrs.putValue("Bundle-Name", "CKEditor Custom Configuration");
         attrs.putValue("Bundle-SymbolicName", "ckeditor-config");
         attrs.putValue("Bundle-Version", version);
-        attrs.putValue("Jahia-Required-Version", Jahia.getFullProductVersion());
+        attrs.putValue("Jahia-Required-Version", Jahia.getReleaseNumber());
         attrs.putValue("Fragment-Host", "ckeditor");
         JarOutputStream jarOutputStream = new JarOutputStream(os, manifest);
 
