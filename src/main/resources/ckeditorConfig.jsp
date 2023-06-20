@@ -2,6 +2,7 @@
 %>
 <%@ page import="org.osgi.framework.Bundle" %>
 <%@ page import="org.osgi.framework.Version" %>
+<%@page import="org.jahia.bin.Jahia"%>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.FileOutputStream" %>
 <%@ page import="java.io.IOException" %>
@@ -33,6 +34,7 @@
         attrs.putValue("Bundle-Name", "CKEditor Custom Configuration");
         attrs.putValue("Bundle-SymbolicName", "ckeditor-config");
         attrs.putValue("Bundle-Version", version);
+        attrs.putValue("Jahia-Required-Version", Jahia.getFullProductVersion());
         attrs.putValue("Fragment-Host", "ckeditor");
         JarOutputStream jarOutputStream = new JarOutputStream(os, manifest);
 
@@ -88,8 +90,10 @@
         <p>Paste here your custom CKEditor configuration:</p>
         <p><textarea rows="20" cols="120" id="config" name="config"><c:if test="${empty param.config}">
             CKEDITOR.editorConfig = function( config ) {
-            config.extraPlugins='mathjax';
-            config.toolbar_Full[8]=['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Mathjax'];
+                // Remove Source, New Page and Preview
+                config.toolbar_Basic[0].splice(0, 4);
+                // Remove New Page and Preview
+                config.toolbar_Full[0].splice(2, 2);
             }
         </c:if><c:if test="${not empty param.config}">${param.config}</c:if></textarea></p>
         <p><input type="submit" name="action" value="Create and download configuration"/><input type="submit" name="action"
