@@ -230,7 +230,6 @@ public class GroovyConsoleHelper {
         code.append("import org.jahia.bin.errors.*\n");
         code.append("import org.jahia.data.*\n");
         code.append("import org.jahia.data.applications.*\n");
-        code.append("import org.jahia.data.beans.portlets.*\n");
         code.append("import org.jahia.data.templates.*\n");
         code.append("import org.jahia.data.viewhelper.principal.*\n");
         code.append("import org.jahia.defaults.config.spring.*\n");
