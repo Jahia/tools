@@ -3,8 +3,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
-<%@ page import="org.hibernate.ScrollableResults" %>
-<%@ page import="org.hibernate.StatelessSession" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
