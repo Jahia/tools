@@ -44,6 +44,7 @@
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
         <jahia-module-signature>MCwCFBUugYOr7CShoIP3+MKVItULTKS2AhQ4Hs8MmvzGxIfc6WjstyArG6AUdA==</jahia-module-signature>
+        <jahia.plugin.version>6.9</jahia.plugin.version>
     </properties>
 
     <repositories>
@@ -110,6 +111,7 @@
                             org.apache.jackrabbit.commons,
                             org.apache.jackrabbit.core.stats,
                             org.apache.jackrabbit.stats,
+                            org.apache.logging.log4j,
                             org.jahia.tools,
                             org.quartz.utils,
                             org.springframework.beans,
@@ -140,7 +142,7 @@
                     </instructions>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>

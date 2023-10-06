@@ -9,7 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%!
 
-    private ClassLoader webappClassLoader = this.getClass().getClassLoader().getParent().getParent().getParent().getParent();
+    private ClassLoader webappClassLoader = this.getClass().getClassLoader().getParent().getParent().getParent();
     private Class<?> logManagerClass = null;
     private Class<?> levelClass = null;
     private Method toLevelMethod = null;
@@ -68,7 +68,7 @@
             loggerName = (String) method.invoke(logger);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
-        } 
+        }
         return loggerName;
     }
 
