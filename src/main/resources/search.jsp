@@ -18,18 +18,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <%@ include file="css.jspf" %>
     <title>Search Engine Manager</title>
-    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.detailsLink').fancybox({
-                        'hideOnContentClick': false,
-                        'titleShow' : false,
-                        'transitionOut' : 'none'
-                    });
-        });
-    </script>
 </head>
 <body>
 <h1>Search Engine Management</h1>
@@ -126,7 +114,7 @@
         </select>
         &nbsp;&nbsp;
         <label for="reindexTreeUuid">start with node (UUID):&nbsp;</label><input type="text" id="reindexTreeUuid" name="reindexTreeUuid" value="${not empty param.uuid ? fn:escapeXml(param.uuid) : ''}" style="width: 270px"/>
-        (you can lookup UUID in JCR Browser: 
+        (you can lookup UUID in JCR Browser:
         <a title="Lookup UUID in JCR Browser" href="<c:url value='jcrBrowser.jsp'/>" target="_blank"><img src="<c:url value='/icons/search.png'/>" width="16"height="16" alt="lookup" title="Lookup UUID in JCR Browser"></a>)
         <c:if test="${treeReindexNodeNotFound}">
             <span style="color: red;"><strong>Node not found. Please, provide an existing UUID.</strong></span>
@@ -174,5 +162,6 @@
 </ul>
 </fieldset>
 <%@ include file="gotoIndex.jspf" %>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>

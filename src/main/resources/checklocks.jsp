@@ -43,14 +43,14 @@
                 elem = document.layers[whichLayer];
             vis = elem.style;
             // if the style.display value is blank we try to figure it out here
-            if (vis.display == '' && elem.offsetWidth != undefined && elem.offsetHeight != undefined)
-                vis.display = (elem.offsetWidth != 0 && elem.offsetHeight != 0) ? 'block' : 'none';
-            vis.display = (vis.display == '' || vis.display == 'block') ? 'none' : 'block';
+            if (vis.display === '' && elem.offsetWidth !== undefined && elem.offsetHeight !== undefined)
+                vis.display = (elem.offsetWidth !== 0 && elem.offsetHeight !== 0) ? 'block' : 'none';
+            vis.display = (vis.display === '' || vis.display === 'block') ? 'none' : 'block';
         }
     </script>
     <style type="text/css">
         div.hiddenDetails {
-            margin: 0px 20px 0px 20px;
+            margin: 0 20px 0 20px;
             display: none;
         }
 
@@ -161,7 +161,7 @@
             long nodesRead = results.get("nodesRead");
             totalTime = System.currentTimeMillis() - startTime;
             println(out, "Total time to process all JCR " + nodesRead + " nodes data : " + totalTime + "ms");
-            
+
             if (fix && !lockFiles.isEmpty()) {
                 System.out.println("Please shutdown Jahia, rename existing locks file to locks.backup and rename the following files to 'locks':");
                 out.append("<fieldset><legend>WARNING!</legend>");
@@ -222,7 +222,7 @@
     private void errorPrintln(JspWriter out, String message, Throwable t) {
         errorPrintln(out, message, t, false);
     }
-    
+
     private void errorPrintln(JspWriter out, String message, Throwable t, boolean warning) {
         System.out.println("ERROR: " + message);
         if (t != null) {
@@ -285,7 +285,7 @@
         boolean hasLockIsDeep = node.hasProperty("jcr:lockIsDeep");
         boolean hasLockOwner = node.hasProperty("jcr:lockOwner");
         boolean isJmixLockable = node.isNodeType("jmix:lockable");
-        
+
         // check special case for locked translation nodes
         if ((hasLockIsDeep || hasLockOwner) && node.isNodeType("jnt:translation")) {
             // we are in a locked translation node, we need to check the status of the parent.
@@ -411,7 +411,7 @@
             }
         }
     }
-    
+
     protected void checkLockFile(JspWriter out, LinkedHashMap<String, LockData> locks, Session session, boolean fix) {
         println(out, "Checking lock file data...");
         Set<String> locksToRemove = new LinkedHashSet<String>();
@@ -494,7 +494,7 @@
         }
         return false;
     }
-    
+
     private File getLocksFile(String workspaceName) throws IOException {
         File repoHome = ((SpringJackrabbitRepository) SpringContextSingleton.getBean("jackrabbit")).getHomeDir().getFile();
         if (!repoHome.isDirectory()) {
@@ -675,7 +675,7 @@
         public long getTimeoutHint() {
             return timeoutHint;
         }
-        
+
         public boolean equals(Object obj) {
             if (super.equals(obj)) {
                 return true;
@@ -684,10 +684,10 @@
                 LockData other = (LockData) obj;
                 return other.getUuid().equals(getUuid()) && other.getToken().equals(getToken());
             }
-            
+
             return false;
         }
-        
+
         public int hashCode() {
             return (17 * 37 + uuid.hashCode()) * 37 + token.hashCode();
         }

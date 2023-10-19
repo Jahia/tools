@@ -34,28 +34,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>JCR Query Tool</title>
     <%@ include file="css.jspf" %>
-    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#helpLink').fancybox({
-                'hideOnContentClick': false,
-                'titleShow': false,
-                'transitionOut': 'none'
-            });
-        });
-        function go(id1, value1, id2, value2, id3, value3) {
-            document.getElementById(id1).value = value1;
-            if (id2) {
-                document.getElementById(id2).value = value2;
-            }
-            if (id3) {
-                document.getElementById(id3).value = value3;
-            }
-            document.getElementById('navigateForm').submit();
-        }
-    </script>
 </head>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="locale" value="${functions:default(fn:escapeXml(param.locale), 'en')}"/>
@@ -113,7 +91,7 @@
                   onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey) document.getElementById('navigateForm').submit();"
                 >${not empty param.query ? param.query : 'SELECT * FROM [nt:file]'}</textarea>
         <span>
-        <span style="position: absolute;"><a id="helpLink" title="Help" href="#helpArea"><img
+        <span style="position: absolute;"><a id="helpLink" title="Help" data-src="#helpArea" data-fancybox><img
                 src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"></a></span>
         <br/>
         <select name="lang" id="lang">
@@ -577,5 +555,6 @@
         </ul>
     </div>
 </div>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>

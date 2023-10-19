@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
-%><%@ page import="java.io.File, org.jahia.modules.tools.SupportInfoHelper" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile(); 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
+%><%@ page import="java.io.File, org.jahia.modules.tools.SupportInfoHelper" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
 %><c:if test="${param.action == 'download' || param.action == 'server'}"><% SupportInfoHelper.exportInfo(targetDir, request, response); %></c:if><c:if test="${param.action != 'download'}"><%@ page contentType="text/html;charset=UTF-8" language="java"
 %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -12,17 +12,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <%@ include file="css.jspf" %>
-    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('a.fancybox-link').fancybox({
-                'hideOnContentClick': false,
-                'titleShow': false,
-                'transitionOut': 'none'
-            });
-        });
+        function selectAll(selector) {
+            var ele = document.querySelectorAll(selector);
+            for (var i = 0; i < ele.length; i++) {
+                ele[i].checked = true;
+            }
+        }
+
+        function deSelectAll(selector) {
+            var ele = document.querySelectorAll(selector);
+            for (var i = 0; i < ele.length; i++) {
+                ele[i].checked = false;
+
+            }
+        }
     </script>
 <title>Export Support Information</title>
 </head>
@@ -33,7 +37,7 @@
 	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
 	Please, note, that no information is sent directly to Jahia support when using this action. You will be able to review and adjust the resulted file.<br/>
 	We are filtering out Jahia sensitive information (usernames, passwords, etc.) before generating the ZIP file
-	<a class="fancybox-link" title="Sensitive information" href="#infoArea"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="Sensitive information" title="Sensitive information"></a><br/>
+	<a class="fancybox-link" title="Sensitive information" href="#infoArea" data-src="#infoArea" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="Sensitive information" title="Sensitive information"></a><br/>
 	Please ensure that no custom sensitive information appear in the ZIP file (<code>jahia.properties</code>, etc.). If so, please hide them (using <code>***</code>) before sending the ZIP file to Jahia.
 </fieldset>
 <c:if test="${not empty generatedInfo}">
@@ -46,11 +50,11 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 <form id="support" action="<c:url value='support.jsp'/>" method="get">
     <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 <p>
-<a href="#all-on" title="Select all" onclick="$('.cbProbe').prop('checked', true); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe').prop('checked', false); return false;">unselect all</a>
+<a href="#all-on" title="Select all" onclick="selectAll('.cbProbe'); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="deSelectAll('.cbProbe'); return false;">unselect all</a>
 <c:forEach var="probesPerCategory" items="${allProbes}">
 <fieldset>
     <legend>&nbsp;${fn:escapeXml(probesPerCategory.key == 'jcr' ? 'JCR' : functions:capitalize(probesPerCategory.key))}&nbsp;
-    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-${probesPerCategory.key}').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-${probesPerCategory.key}').prop('checked', false); return false;">none</a>) 
+    (<a href="#all-on" title="Select all" onclick="selectAll('.cbProbe.category-${probesPerCategory.key}'); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="deSelectAll('.cbProbe.category-${probesPerCategory.key}'); return false;">none</a>)
     </legend>
     <c:forEach var="probe" items="${probesPerCategory.value}">
         <c:set var="probeKey" value="${probe.category}|${probe.key}"/>
@@ -60,7 +64,7 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 </c:forEach>
 <fieldset>
     <legend>&nbsp;Configuration files&nbsp;
-    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-cfg').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-cfg').prop('checked', false); return false;">none</a>) 
+    (<a href="#all-on" title="Select all" onclick="selectAll('.cbProbe.category-cfg'); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="deSelectAll('.cbProbe.category-cfg'); return false;">none</a>)
     </legend>
     <input type="checkbox" name="digital-factory-config" id="digital-factory-config" class="cbProbe category-cfg" ${empty param.do || not empty param['digital-factory-config'] ? 'checked="checked"' : ''}/><label for="digital-factory-config">digital-factory-config</label><br/>
     <input type="checkbox" name="digital-factory-data" id="digital-factory-data" class="cbProbe category-cfg" ${empty param.do || not empty param['digital-factory-data'] ? 'checked="checked"' : ''}/><label for="digital-factory-data">digital-factory-data (configuration only)</label><br/>
@@ -93,7 +97,7 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
         	<li><code>&lt;digital-factory-data&gt;/karaf/etc/users.properties</code></li>
         </ul>
         </p>
-        
+
         <h4>Filtered out information</h4>
         <p>
         The following values are replaced in the corresponding files with <code>***</code>:
@@ -106,6 +110,7 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
         </p>
     </div>
 </div>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>
 </c:if>

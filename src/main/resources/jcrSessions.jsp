@@ -12,7 +12,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%@ include file="css.jspf" %>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <title>JCR Sessions</title>
 </head>
 <body>
@@ -22,15 +21,6 @@
 There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
 
 <p>List of session not hold/created by this page/request:</p>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $(".exception").click(function(){
-            $(".exceptionCode").hide();
-            var exceptionToDisplay=$(this).data("session");
-            $("#"+exceptionToDisplay).show();
-        })
-    })
-</script>
 <ol>
     <%
         final PrintWriter s = new PrintWriter(pageContext.getOut());
@@ -64,5 +54,6 @@ There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sess
 
 </ol>
 <%@ include file="gotoIndex.jspf" %>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/session.tools.bundle.js'/>"></script>
 </body>
 </html>

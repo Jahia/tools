@@ -19,24 +19,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%@ include file="css.jspf" %>
-    <c:if test="${showConfig}">
-        <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-        <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-        <script type="text/javascript"
-                src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.configLink').fancybox({
-                    'hideOnContentClick': false,
-                    'titleShow': false,
-                    'transitionOut': 'none',
-                    'autoDimensions': false,
-                    'width': 800,
-                    'height': 600
-                });
-            });
-        </script>
-    </c:if>
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             if (id1) {
@@ -129,7 +111,7 @@
     <h2>Cache Manager: ${manager.name}
         <c:if test="${showConfig}">
             &nbsp;
-            <a class="configLink" title="Cache configuration details" href="#managerconfig-${managerStatus.index}"><img
+            <a class="configLink" title="Cache configuration details" data-src="#managerconfig-${managerStatus.index}" data-fancybox><img
                     src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?"
                     title="Cache configuration details"/></a>
 
@@ -196,8 +178,7 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${showConfig}">
                     <td align="center">
-                        <a class="configLink" title="Cache configuration details"
-                           href="#config-${managerStatus.index}-${status.index}"><img
+                        <a class="configLink" title="Cache configuration details" data-src="#config-${managerStatus.index}-${status.index}" data-fancybox><img
                                 src="<c:url value='/icons/help.png'/>" width="16" height="16"
                                 alt="?" title="Cache configuration details"/></a>
 
@@ -228,7 +209,7 @@
                 <td align="center">${cache.accessCount}</td>
                 <td align="center">${cache.hitCount}</td>
                 <td align="center">${cache.missCount}</td>
-                
+
                 <c:set var="cacheEfficiency" value="${cache.hitRatio}"/>
                 <c:set var="effColour" value="#222222"/>
                 <c:choose>
@@ -282,5 +263,8 @@
     </table>
 </c:forEach>
 <%@ include file="gotoIndex.jspf" %>
+<c:if test="${showConfig}">
+    <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
+</c:if>
 </body>
 </html>

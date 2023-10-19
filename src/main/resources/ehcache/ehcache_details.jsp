@@ -8,7 +8,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.lang.instrument.Instrumentation" %>
 <%--
   Output cache monitoring JSP.
   User: rincevent
@@ -26,47 +25,6 @@
 </c:if>
 <html>
 <head>
-    <style type="text/css" title="currentStyle">
-        @import "../css/demo_page.css";
-        @import "../css/demo_table_jui.css";
-        @import "../css/TableTools_JUI.css";
-        @import "../css/le-frog/jquery-ui-1.8.13.custom.css";
-    </style>
-    <script type="text/javascript" src="../javascript/jquery.min.js"></script>
-    <script type="text/javascript" src="../javascript/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="../javascript/ZeroClipboard.js"></script>
-    <script type="text/javascript" src="../javascript/TableTools.js"></script>
-    <title>Display content of module output cache</title>
-    <script type="text/javascript">
-        var myTable = $(document).ready(function () {
-            $('#cacheTable').dataTable({
-                "bLengthChange": true,
-                "bFilter": true,
-                "bSort": true,
-                "bInfo": false,
-                "bAutoWidth": true,
-                "bStateSave": true,
-                "bJQueryUI": true,
-                "sPaginationType": "full_numbers",
-                "aLengthMenu": [
-                    [50, 100, 200, -1],
-                    [50, 100, 200, "All"]
-                ],
-                "sDom": '<"H"Tlfr>t<"F"p>',
-                "oTableTools": {
-                    "sSwfPath": "../swf/copy_cvs_xls.swf",
-                    "aButtons": [
-                        "copy", "csv", "xls",
-                        {
-                            "sExtends": "collection",
-                            "sButtonText": "Save",
-                            "aButtons": [ "csv", "xls" ]
-                        }
-                    ]
-                }
-            });
-        });
-    </script>
 </head>
 <%
 
@@ -82,7 +40,7 @@
     EhCacheStatisticsWrapper ehCacheStatisticsWrapper = new EhCacheStatisticsWrapper(cache.getStatistics());
     pageContext.setAttribute("stats", ehCacheStatisticsWrapper);
 %>
-<body id="dt_example">
+<body id="dt_example" class="container-fluid">
 <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
 <a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
 <div id="statistics">
@@ -95,7 +53,7 @@
     <span><%=ehCacheStatisticsWrapper%></span><br/>
 </div>
 <div id="keys">
-    <table id="cacheTable" class="display">
+    <table id="cacheTable" class="table table-striped compact" data-table="dataTable">
         <thead>
         <tr>
             <th>Key</th>
@@ -116,13 +74,13 @@
 
                 <td><%= element1 != null
                         ? (expirationTime == Long.MAX_VALUE
-                            ? "Never expires"
-                            : SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(expirationTime))
-                        )
+                        ? "Never expires"
+                        : SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(expirationTime))
+                )
                         : "Element not found in cache or just expired" %>
                 </td>
                 <%
-                    if(element1 != null) {
+                    if (element1 != null) {
                         cacheSize += element1.getSerializedSize();
                     }
                 %>
@@ -142,12 +100,11 @@
             </tr>
         </c:forEach>
         <script type="text/javascript">
-            $(document).ready(function () {
-                $("#cacheSize").before("<%= FileUtils.byteCountToDisplaySize(cacheSize) %>");
-            });
+            document.getElementById("cacheSize").innerText = "<%= FileUtils.byteCountToDisplaySize(cacheSize) %>";
         </script>
         </tbody>
     </table>
 </div>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
 </body>
 </html>

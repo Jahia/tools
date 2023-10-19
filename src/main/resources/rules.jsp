@@ -16,14 +16,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Business Rules</title>
     <%@ include file="css.jspf" %>
-    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.popupLink').fancybox();
-        });
-    </script>
 </head>
 <body>
     <h1>Business Rules</h1>
@@ -33,8 +25,8 @@
     </p>
     <p>
         Note, please, the enable/disable actions here are not persistent, meaning they influence the state of a rule only till the next server restart and only on this current cluster node.<br/>
-        If you would like to <strong>permanently disable some rules</strong>, please use the configuration approach: 
-        <a class="popupLink" title="How to permanently disable rules?" href="#disablingRules"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="How to permanently disable rules?"/></a>
+        If you would like to <strong>permanently disable some rules</strong>, please use the configuration approach:
+        <a class="popupLink" title="How to permanently disable rules?" href="#disablingRules" data-src="#disablingRules" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="How to permanently disable rules?"/></a>
     </p>
     <div style="display: none;">
         <div id="disablingRules">
@@ -68,7 +60,7 @@
 	    <li>
 	        <c:set var="contentId" value="packageContent-${listenerStatus.index}-${pkgStatus.index}"/>
 	        <c:set var="packageName" value="${pkg.name} [${pkg.origin}]"/>
-	        <a class="popupLink" title="View package content" href="#${contentId}"><img src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="?" title="View package content"/></a>
+	        <a class="popupLink" title="View package content" data-src="#${contentId}" data-fancybox href="#${contentId}"><img src="<c:url value='/icons/filePreview.png'/>" width="16" height="16" alt="?" title="View package content"/></a>
 	        <strong>${fn:escapeXml(packageName)}</strong>
 	        <ul>
 	        <c:forEach var="rule" items="${pkg.rules}">
@@ -90,5 +82,6 @@
 	</c:forEach>
 
 <%@ include file="gotoIndex.jspf" %>
+    <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>
