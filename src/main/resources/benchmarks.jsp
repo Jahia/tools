@@ -1,15 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
-        %><?xml version="1.0" encoding="UTF-8" ?>
+%>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.apache.commons.lang.StringUtils"%>
-<%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
-<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@page import="org.apache.jackrabbit.core.id.NodeId" %>
+<%@ page import="org.jahia.modules.tools.benchmark.DatabaseBenchmark" %>
 <%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="org.jahia.utils.DatabaseUtils" %>
 <%@ page import="org.jahia.utils.DateUtils" %>
-<%@ page import="org.jahia.modules.tools.benchmark.DatabaseBenchmark" %>
 <%@ page import="javax.jcr.*" %>
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="java.io.*" %>
@@ -19,15 +17,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
-<%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <%@ include file="css.jspf" %>
     <title>System Benchmark Tool</title>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript">
+        function selectAll(selector) {
+            var ele = document.querySelectorAll(selector);
+            for (var i = 0; i < ele.length; i++) {
+                    ele[i].checked = true;
+            }
+        }
+
+        function deSelectAll(selector) {
+            var ele = document.querySelectorAll(selector);
+            for (var i = 0; i < ele.length; i++) {
+                    ele[i].checked = false;
+
+            }
+        }
+
         function toggleLayer(whichLayer) {
             var elem, vis;
             if (document.getElementById) // this is the way the standards work
@@ -38,14 +50,14 @@
                 elem = document.layers[whichLayer];
             vis = elem.style;
             // if the style.display value is blank we try to figure it out here
-            if (vis.display == '' && elem.offsetWidth != undefined && elem.offsetHeight != undefined)
-                vis.display = (elem.offsetWidth != 0 && elem.offsetHeight != 0) ? 'block' : 'none';
-            vis.display = (vis.display == '' || vis.display == 'block') ? 'none' : 'block';
+            if (vis.display === '' && elem.offsetWidth !== undefined && elem.offsetHeight !== undefined)
+                vis.display = (elem.offsetWidth !== 0 && elem.offsetHeight !== 0) ? 'block' : 'none';
+            vis.display = (vis.display === '' || vis.display === 'block') ? 'none' : 'block';
         }
     </script>
     <style type="text/css">
         div.hiddenDetails {
-            margin: 0px 20px 0px 20px;
+            margin: 0 20px 0 20px;
             display: none;
         }
 
@@ -72,7 +84,8 @@
     You can re-run a test simply by reloading the JSP.
 </p>
 
-<%!public static String getDatabaseType() {
+<%!
+    public static String getDatabaseType() {
         return DatabaseUtils.getDatabaseType().name();
     }
 
@@ -194,9 +207,9 @@
 
         if (keyTypeLongLong) {
             readAllEditDataSQL = "SELECT NODE_ID_HI,NODE_ID_LO,BUNDLE_DATA FROM " + readEditTableName;
-            readEditRowSQL = "SELECT BUNDLE_DATA FROM "+readEditTableName+" WHERE NODE_ID_HI=? AND NODE_ID_LO=?";
+            readEditRowSQL = "SELECT BUNDLE_DATA FROM " + readEditTableName + " WHERE NODE_ID_HI=? AND NODE_ID_LO=?";
             readAllLiveDataSQL = "SELECT NODE_ID_HI,NODE_ID_LO,BUNDLE_DATA FROM " + readLiveTableName;
-            readLiveRowSQL = "SELECT BUNDLE_DATA FROM "+readLiveTableName+" WHERE NODE_ID_HI=? AND NODE_ID_LO=?";
+            readLiveRowSQL = "SELECT BUNDLE_DATA FROM " + readLiveTableName + " WHERE NODE_ID_HI=? AND NODE_ID_LO=?";
         }
 
         long nbRandomLoops = 30000;
@@ -350,7 +363,7 @@
                                     String nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
 
                                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                            JCRNodeWrapper n = session.getNode(fPath).addNode("benchmark"+threadId+"_"+iterationId);
+                                            JCRNodeWrapper n = session.getNode(fPath).addNode("benchmark" + threadId + "_" + iterationId);
                                             synchronized (results) {
                                                 long nodesWrite = results.get("nodesWrite");
                                                 nodesWrite++;
@@ -374,13 +387,13 @@
                                 e.printStackTrace();
                             }
                             try {
-                                println(out, "  ..  benchmark thread "+threadId + " ended.");
+                                println(out, "  ..  benchmark thread " + threadId + " ended.");
                             } catch (IOException e) {
                                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
                         }
 
-                    }, "benchmark"+i);
+                    }, "benchmark" + i);
                     l.add(t);
                     t.start();
                 }
@@ -556,92 +569,123 @@
             }
         }
         return true;
-    }%>
-<c:if test="${not empty param.do}">
-<p style="color: blue">Running tests...</p>
-<%
-    long startTime = System.currentTimeMillis();
+    }
 %>
-<c:if test="${not empty param.runDBStats || not empty param.runDBTestDefault || not empty param.runDBTestLive}">
+<c:if test="${not empty param.do}">
+    <p style="color: blue">Running tests...</p>
     <%
-        printTestName(out, "Database");
-        printDBInfo(out);
+        long startTime = System.currentTimeMillis();
     %>
-    <c:if test="${not empty param.runDBStats}">
+    <c:if test="${not empty param.runDBStats || not empty param.runDBTestDefault || not empty param.runDBTestLive}">
         <%
-        Map<String, Map<String, Object>> dbStats = DatabaseBenchmark.perform();
-        System.out.println(DatabaseBenchmark.statsToString(dbStats));
-        pageContext.setAttribute("dbStats", dbStats);
+            printTestName(out, "Database");
+            printDBInfo(out);
         %>
-        <h4>Database connection speed</h4>
-        <ul>
-        <c:forEach var="dbStatEntry" items="${dbStats}">
-            <li>Query: <strong>${fn:escapeXml(dbStatEntry.key)}</strong>
-                <c:set var="stat" value="${dbStatEntry.value}"/>
-                <ul>
-                    <li>50% line: <strong>${stat.percentiles[50].millis} ms (${stat.percentiles[50].nanos} ns)</strong></li>
-                    <li>90% line: ${stat.percentiles[90].millis} ms (${stat.percentiles[90].nanos} ns)</li>
-                    <li>99% line: ${stat.percentiles[99].millis} ms (${stat.percentiles[99].nanos} ns)</li>
-                    <li>min: ${stat.min.millis} ms (${stat.min.nanos} ns)</li>
-                    <li>average: ${stat.mean.millis} ms (${stat.mean.nanos} ns)</li>
-                    <li>max: ${stat.max.millis} ms (${stat.max.nanos} ns)</li>
-                    <li>execution count: ${stat.count}</li>
-                </ul>
-            </li>
-        </c:forEach>
-        </ul>
+        <c:if test="${not empty param.runDBStats}">
+            <%
+                Map<String, Map<String, Object>> dbStats = DatabaseBenchmark.perform();
+                System.out.println(DatabaseBenchmark.statsToString(dbStats));
+                pageContext.setAttribute("dbStats", dbStats);
+            %>
+            <h4>Database connection speed</h4>
+            <ul>
+                <c:forEach var="dbStatEntry" items="${dbStats}">
+                    <li>Query: <strong>${fn:escapeXml(dbStatEntry.key)}</strong>
+                        <c:set var="stat" value="${dbStatEntry.value}"/>
+                        <ul>
+                            <li>50% line: <strong>${stat.percentiles[50].millis} ms (${stat.percentiles[50].nanos}
+                                ns)</strong></li>
+                            <li>90% line: ${stat.percentiles[90].millis} ms (${stat.percentiles[90].nanos} ns)</li>
+                            <li>99% line: ${stat.percentiles[99].millis} ms (${stat.percentiles[99].nanos} ns)</li>
+                            <li>min: ${stat.min.millis} ms (${stat.min.nanos} ns)</li>
+                            <li>average: ${stat.mean.millis} ms (${stat.mean.nanos} ns)</li>
+                            <li>max: ${stat.max.millis} ms (${stat.max.nanos} ns)</li>
+                            <li>execution count: ${stat.count}</li>
+                        </ul>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:if>
+        <c:if test="${not empty param.runDBTestDefault || not empty param.runDBTestLive}">
+            <% runDBTest(request.getParameter("runDBTestDefault") != null, request.getParameter("runDBTestLive") != null, out); %>
+        </c:if>
     </c:if>
-    <c:if test="${not empty param.runDBTestDefault || not empty param.runDBTestLive}">
-        <% runDBTest(request.getParameter("runDBTestDefault") != null, request.getParameter("runDBTestLive") != null, out); %>
+    <c:if test="${not empty param.runFileSystemTest}">
+        <% runFileSystemTest(out); %>
     </c:if>
-</c:if>
-<c:if test="${not empty param.runFileSystemTest}">
-    <% runFileSystemTest(out); %>
-</c:if>
-<c:if test="${not empty param.runJCRTest}">
-    <% runJCRTest(out, request, pageContext); %>
-</c:if>
-<c:if test="${not empty param.runJCRWriteTest}">
-    <% runJCRWriteTest(out, request, pageContext); %>
-</c:if>
-<% pageContext.setAttribute("timeTaken", DateUtils.formatDurationWords(System.currentTimeMillis() - startTime)); %>
-<p style="color: blue">Benchmark completed in <strong>${timeTaken}</strong>.</p>
+    <c:if test="${not empty param.runJCRTest}">
+        <% runJCRTest(out, request, pageContext); %>
+    </c:if>
+    <c:if test="${not empty param.runJCRWriteTest}">
+        <% runJCRWriteTest(out, request, pageContext); %>
+    </c:if>
+    <% pageContext.setAttribute("timeTaken", DateUtils.formatDurationWords(System.currentTimeMillis() - startTime)); %>
+    <p style="color: blue">Benchmark completed in <strong>${timeTaken}</strong>.</p>
 </c:if>
 
 <form id="benchmarks" action="<c:url value='benchmarks.jsp'/>" method="get">
     <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
-<h2>Choose the tests to run:</h2>
-<p>
-<a href="#all-on" title="Select all" onclick="$('.cbProbe').prop('checked', true); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe').prop('checked', false); return false;">unselect all</a>
-</p>
-<p>
-<fieldset>
-    <legend>&nbsp;Database&nbsp;
-    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-db').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-db').prop('checked', false); return false;">none</a>) 
-    </legend>
-    <input type="checkbox" name="runDBStats" id="runDBStats" class="cbProbe category-db" ${empty param.do || not empty param.runDBStats ? 'checked="checked"' : ''}/><label for="runDBStats">Database connection speed</label><br/>
-    <input type="checkbox" name="runDBTestDefault" id="runDBTestDefault" class="cbProbe category-db" ${empty param.do || not empty param.runDBTestDefault ? 'checked="checked"' : ''}/><label for="runDBTestDefault">Table JR_DEFAULT_BUNDLE</label><br/>
-    <input type="checkbox" name="runDBTestLive" id="runDBTestLive" class="cbProbe category-db" ${empty param.do || not empty param.runDBTestLive ? 'checked="checked"' : ''}/><label for="runDBTestLive">Table JR_LIVE_BUNDLE</label>
-</fieldset>
+    <h2>Choose the tests to run:</h2>
+    <p>
+        <a href="#all-on" title="Select all" onclick="selectAll('.cbProbe'); return false;">select
+            all</a>
+        | <a href="#all-off" title="Unselect all"
+             onclick="deSelectAll('.cbProbe'); return false;">unselect
+        all</a>
+    </p>
+    <p>
+    <fieldset>
+        <legend>&nbsp;Database&nbsp;
+            (<a href="#all-on" title="Select all"
+                onclick="selectAll('.cbProbe.category-db'); return false;">all</a> | <a
+                    href="#all-off"
+                    title="Unselect all"
+                    onclick="deSelectAll('.cbProbe.category-db'); return false;">none</a>)
+        </legend>
+        <input type="checkbox" name="runDBStats" id="runDBStats"
+               class="cbProbe category-db" ${empty param.do || not empty param.runDBStats ? 'checked="checked"' : ''}/><label
+            for="runDBStats">Database connection speed</label><br/>
+        <input type="checkbox" name="runDBTestDefault" id="runDBTestDefault"
+               class="cbProbe category-db" ${empty param.do || not empty param.runDBTestDefault ? 'checked="checked"' : ''}/><label
+            for="runDBTestDefault">Table JR_DEFAULT_BUNDLE</label><br/>
+        <input type="checkbox" name="runDBTestLive" id="runDBTestLive"
+               class="cbProbe category-db" ${empty param.do || not empty param.runDBTestLive ? 'checked="checked"' : ''}/><label
+            for="runDBTestLive">Table JR_LIVE_BUNDLE</label>
+    </fieldset>
 
-<fieldset>
-    <legend>&nbsp;File system&nbsp;
-    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-fs').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-fs').prop('checked', false); return false;">none</a>) 
-    </legend>
-    <input type="checkbox" name="runFileSystemTest" id="runFileSystemTest" class="cbProbe category-fs" ${empty param.do || not empty param.runFileSystemTest ? 'checked="checked"' : ''}/><label for="runFileSystemTest">File system read/write</label>
-</fieldset>
+    <fieldset>
+        <legend>&nbsp;File system&nbsp;
+            (<a href="#all-on" title="Select all"
+                onclick="selectAll('.cbProbe.category-fs'); return false;">all</a> | <a
+                    href="#all-off"
+                    title="Unselect all"
+                    onclick="deSelectAll('.cbProbe.category-fs'); return false;">none</a>)
+        </legend>
+        <input type="checkbox" name="runFileSystemTest" id="runFileSystemTest"
+               class="cbProbe category-fs" ${empty param.do || not empty param.runFileSystemTest ? 'checked="checked"' : ''}/><label
+            for="runFileSystemTest">File system read/write</label>
+    </fieldset>
 
-<fieldset>
-    <legend>&nbsp;Java Content Repository&nbsp;
-    (<a href="#all-on" title="Select all" onclick="$('.cbProbe.category-jcr').prop('checked', true); return false;">all</a> | <a href="#all-off" title="Unselect all" onclick="$('.cbProbe.category-jcr').prop('checked', false); return false;">none</a>) 
-    </legend>
-    <input type="checkbox" name="runJCRTest" id="runJCRTest" class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRTest ? 'checked="checked"' : ''}/><label for="runJCRTest">JCR read</label><br/>
-    <input type="checkbox" name="runJCRWriteTest" id="runJCRWriteTest" class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRWriteTest ? 'checked="checked"' : ''}/><label for="runJCRWriteTest">JCR write</label>
-</fieldset>
-</p>
-<p>
-    <input type="submit" name="do" value="Run tests" title="Performs the execution of chosen benchmark tests" onclick="if (!confirm('Would you like to execute the chosen benchmark tests now?')) { return false; }"/>
-</p>
+    <fieldset>
+        <legend>&nbsp;Java Content Repository&nbsp;
+            (<a href="#all-on" title="Select all"
+                onclick="selectAll('.cbProbe.category-jcr'); return false;">all</a> | <a
+                    href="#all-off"
+                    title="Unselect all"
+                    onclick="deSelectAll('.cbProbe.category-jcr'); return false;">none</a>)
+        </legend>
+        <input type="checkbox" name="runJCRTest" id="runJCRTest"
+               class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRTest ? 'checked="checked"' : ''}/><label
+            for="runJCRTest">JCR read</label><br/>
+        <input type="checkbox" name="runJCRWriteTest" id="runJCRWriteTest"
+               class="cbProbe category-jcr" ${empty param.do || not empty param.runJCRWriteTest ? 'checked="checked"' : ''}/><label
+            for="runJCRWriteTest">JCR write</label>
+    </fieldset>
+    </p>
+    <p>
+        <input type="submit" name="do" value="Run tests" title="Performs the execution of chosen benchmark tests"
+               onclick="if (!confirm('Would you like to execute the chosen benchmark tests now?')) { return false; }"/>
+    </p>
 </form>
 <%@ include file="gotoIndex.jspf" %>
 </body>

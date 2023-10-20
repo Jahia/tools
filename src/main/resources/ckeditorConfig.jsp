@@ -10,6 +10,7 @@
 <%@ page import="java.util.jar.JarEntry" %>
 <%@ page import="java.util.jar.JarOutputStream" %>
 <%@ page import="java.util.jar.Manifest" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %>
 <%!
@@ -37,7 +38,7 @@
         JarOutputStream jarOutputStream = new JarOutputStream(os, manifest);
 
         jarOutputStream.putNextEntry(new JarEntry("javascript/config.js"));
-        jarOutputStream.write(cfg.getBytes(Charsets.UTF_8));
+        jarOutputStream.write(cfg.getBytes(StandardCharsets.UTF_8));
         jarOutputStream.closeEntry();
         jarOutputStream.close();
     }

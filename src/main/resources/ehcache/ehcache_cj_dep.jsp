@@ -27,46 +27,7 @@
 <c:if test="${empty param.key}">
     <html>
     <head>
-        <style type="text/css" title="currentStyle">
-            @import "../css/demo_page.css";
-            @import "../css/demo_table_jui.css";
-            @import "../css/TableTools_JUI.css";
-            @import "../css/le-frog/jquery-ui-1.8.13.custom.css";
-        </style>
-        <script type="text/javascript" src="../javascript/jquery.min.js" language="JavaScript"></script>
-        <script type="text/javascript" src="../javascript/jquery.dataTables.min.js" language="JavaScript"></script>
-        <script type="text/javascript" src="../javascript/ZeroClipboard.js"></script>
-        <script type="text/javascript" src="../javascript/TableTools.js"></script>
         <title>Display content of module cache dependencies</title>
-        <script type="text/javascript">
-            var myTable = $(document).ready(function () {
-                $('#cacheTable').dataTable({
-                    "bLengthChange": true,
-                    "bFilter": true,
-                    "bSort": true,
-                    "bInfo": false,
-                    "bAutoWidth": true,
-                    "bStateSave": true,
-                    "sPaginationType": "full_numbers",
-                    "bJQueryUI": true,
-                    "aLengthMenu": [
-                        [50, 100, 200, -1],
-                        [50, 100, 200, "All"]
-                    ],
-                    "sDom": '<"H"Tlfr>t<"F"p>',
-                    "oTableTools": {
-                        "sSwfPath": "../swf/copy_cvs_xls.swf",
-                        "aButtons": [
-                            "copy", "csv", "xls", {
-                                "sExtends": "collection",
-                                "sButtonText": "Save",
-                                "aButtons": [ "csv", "xls" ]
-                            }
-                        ]
-                    }
-                });
-            });
-        </script>
     </head>
     <%
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
@@ -84,13 +45,13 @@
         pageContext.setAttribute("keys", keys);
         pageContext.setAttribute("cache", cache);
     %>
-    <body id="dt_example">
+    <body id="dt_example" class="container-fluid">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
     <a href="?flush=true&toolAccessToken=${toolAccessToken}"
        onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
        title="flush the content of the module output cache">flush</a>&nbsp;
     <div id="keys">
-        <table id="cacheTable" class="display">
+        <table id="cacheTable" class="table table-striped compact" data-table="dataTable">
             <thead>
             <tr>
                 <th>Key</th>
@@ -123,6 +84,7 @@
             </tbody>
         </table>
     </div>
+    <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
     </body>
     </html>
 </c:if>

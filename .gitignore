@@ -4,3 +4,6 @@
 /.settings
 /.idea
 *.iml
+node
+node_modules
+/src/main/resources/javascript/apps/

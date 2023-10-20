@@ -148,7 +148,7 @@
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             document.getElementById(id1).value=value1;
-            if ('path' == id1) {
+            if ('path' === id1) {
                 document.getElementById('uuid').value='';
             }
             if (id2 != null) {

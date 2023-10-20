@@ -19,17 +19,7 @@ pageContext.setAttribute("fullReadOnlyMode", Objects.equals(ReadOnlyModeControll
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
     <%@ include file="css.jspf" %>
-    <link type="text/css" href="<c:url value='/modules/assets/css/jquery.fancybox.css'/>" rel="stylesheet"/>
-    <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
-    <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.fancybox.pack.js'/>"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('.dataLink').fancybox({
-                        'hideOnContentClick': false,
-                        'titleShow' : false,
-                        'transitionOut' : 'none'
-                    });
-        });
         function go(id1, value1, id2, value2, id3, value3) {
         	if (id1) {
         		document.getElementById(id1).value=value1;
@@ -165,7 +155,7 @@ for (JobDetail job : allJobs) {
             break;
          }
          limitCount++;
-         
+
 	     jobs.add(new Object[] {job, triggers.length > 0 ? triggers[0] : null});
 	}
 }
@@ -209,7 +199,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
         <tr style="${'executing' == state ? 'color: green; font-weight: bold;' : ''}">
             <td><strong>${status.index + 1}</strong></td>
             <td>
-                <a class="dataLink" title="Job data" href="#jobData${status.index}"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Job data"/></a>
+                <a class="dataLink" title="Job data" data-src="#jobData${status.index}" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Job data"/></a>
                 <div style="display: none;">
                     <div id="jobData${status.index}">
                         <h3>${fn:escapeXml(job.fullName)}</h3>
@@ -300,5 +290,6 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
 </p>
 </c:if>
 <%@ include file="gotoIndex.jspf" %>
+    <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>

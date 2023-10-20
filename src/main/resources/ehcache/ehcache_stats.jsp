@@ -33,13 +33,6 @@
 <c:if test="${empty param.key}">
     <html>
     <head>
-        <style type="text/css" title="currentStyle">
-            @import "../css/demo_page.css";
-            @import "../css/demo_table_jui.css";
-            @import "../css/TableTools_JUI.css";
-            @import "../css/le-frog/jquery-ui-1.8.13.custom.css";
-        </style>
-        <script type="text/javascript" src="../javascript/jquery.min.js"></script>
         <title>Display content of module output cache</title>
     </head>
     <%
@@ -58,7 +51,7 @@
         pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
         pageContext.setAttribute("depstats", new EhCacheStatisticsWrapper(depCache.getStatistics()));
     %>
-    <body id="dt_example">
+    <body id="dt_example" class="container-fluid">
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
     <a href="?refresh&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
     <a href="?flush=true&toolAccessToken=${toolAccessToken}"
@@ -82,5 +75,6 @@
         <span>Object counts: ${depstats.size}</span><br/>
     </div>
     </body>
+    <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
     </html>
 </c:if>

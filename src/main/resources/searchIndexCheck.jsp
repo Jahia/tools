@@ -30,12 +30,12 @@ int hash = indexRoot.getPath().hashCode();
         <span style="color: ${ok ? 'green' : (obsolete ? 'black' : 'red')}">
             ${ok ? 'OK' : (obsolete ? 'Obsolete' : '<strong>Problem</strong>')}
         <c:if test="${obsolete}">
-            <a class="detailsLink" title="Obsolete index hint" href="#obsolete-hint">*</a>
+            <a class="detailsLink" title="Obsolete index hint" href="#obsolete-hint" data-src="#obsolete-hint" data-fancybox>*</a>
         </c:if>
         </span>
         </td>
         <td>
-        <a class="detailsLink" title="Show details" href="#details-<%=hash%>-<%=count%>"><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
+        <a class="detailsLink" title="Show details" href="#details-<%=hash%>-<%=count%>" data-src="#details-<%=hash%>-<%=count%>" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?" title="Show details"/></a>
         <div style="display: none;">
             <div id="details-<%=hash%>-<%=count%>">
                 <h3>Index <%= folder.getPath() %></h3>
@@ -51,7 +51,7 @@ int hash = indexRoot.getPath().hashCode();
 <div style="display: none;">
     <div id="obsolete-hint">
         <h3>Hint</h3>
-        <p>Obsolete index folders will be automatically removed later by the application (at latest on the next application startup).</p> 
+        <p>Obsolete index folders will be automatically removed later by the application (at latest on the next application startup).</p>
     </div>
 </div>
 </c:if>
