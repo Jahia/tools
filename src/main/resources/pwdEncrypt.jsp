@@ -3,8 +3,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<%@ page import="org.jahia.utils.EncryptionUtils" %>
 <%@ page import="org.jahia.services.pwd.PasswordService" %>
+<%@ page import="org.jahia.utils.EncryptionUtils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
@@ -51,20 +51,22 @@
 <%@ include file="gotoIndex.jspf" %>
 <c:if test="${not empty param.pwd}">
     <script type="text/javascript">
-        document.querySelector('.copy-to-clipboard').addEventListener('click', (event) => {
-            if (!navigator.clipboard) {
-                return
-            }
-            const digest = event.target.innerText;
-            console.log('Copying to clipboard', digest);
-            navigator.clipboard.writeText(digest);
-        });
-        document.querySelector('.empty-clipboard').addEventListener('click', (event) => {
-            if (!navigator.clipboard) {
-                return
-            }
-            console.log('Emptying clipboard');
-            navigator.clipboard.writeText('');
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.copy-to-clipboard').addEventListener('click', (event) => {
+                if (!navigator.clipboard) {
+                    return
+                }
+                const digest = event.target.innerText;
+                console.log('Copying to clipboard', digest);
+                navigator.clipboard.writeText(digest);
+            });
+            document.querySelector('.empty-clipboard').addEventListener('click', (event) => {
+                if (!navigator.clipboard) {
+                    return
+                }
+                console.log('Emptying clipboard');
+                navigator.clipboard.writeText('');
+            });
         });
     </script>
 </c:if>

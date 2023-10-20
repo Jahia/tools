@@ -132,8 +132,10 @@
                 </tr>
             </c:forEach>
             <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById("cacheSize").innerText = "<%= FileUtils.byteCountToDisplaySize(cacheSize) %>";
-                    document.getElementById("depsCacheSize").innerText= "<%= FileUtils.byteCountToDisplaySize(globalDepsCacheSize) %>";
+                    document.getElementById("depsCacheSize").innerText = "<%= FileUtils.byteCountToDisplaySize(globalDepsCacheSize) %>";
+                });
             </script>
             </tbody>
         </table>
