@@ -95,6 +95,13 @@
             <version>${osgi.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Embed dependencies -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.utils</artifactId>
+            <version>${felix.utils.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -147,6 +154,7 @@
                             org.jahia.modules.tools.modules.*,
                             org.jahia.modules.tools.karaf.*
                         </_dsannotations>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
