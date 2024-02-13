@@ -26,7 +26,7 @@ import org.osgi.framework.VersionRange;
 import java.util.*;
 
 /**
- * Utility class for the OSGI Import-Package checker.
+ * Utility class for the OSGI Import-Package, Export-Package checker.
  *
  * @author jkevan
  */
@@ -89,6 +89,15 @@ public class OSGIPackageHeaderChecker {
         return results;
     }
 
+    /**
+     * Perform the OSGI Export-Package checker. This method will check all bundles in the OSGI
+     * framework and return a list of matching export packages.
+     *
+     * @param regex The regular expression to match against the export package name.
+     * @param duplicates If true, will only return export packages found multiple times.
+     *
+     * @return The result of the export package checker.
+     */
     public static FindExportPackage findExportPackages(String regex, boolean duplicates) {
         // Collect export packages
         Map<String, List<BundleWithExportPackage>> packages = new HashMap<>();
