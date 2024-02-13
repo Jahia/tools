@@ -7,7 +7,7 @@ import graphql.annotations.annotationTypes.GraphQLName;
 import java.util.ArrayList;
 import java.util.List;
 
-@GraphQLName("ImportPackageInspectorResultParent")
+@GraphQLName("FindExportPackage")
 @GraphQLDescription("Result of the export package inspector operation.")
 public class FindExportPackage {
     int totalCount = 0;

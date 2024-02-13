@@ -22,7 +22,7 @@ import graphql.annotations.annotationTypes.GraphQLName;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@GraphQLName("ExportPackageInspectorResult")
+@GraphQLName("ExportPackages")
 @GraphQLDescription("Result of the export package inspector operation.")
 public class ExportPackages {
     String packageName;
