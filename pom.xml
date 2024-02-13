@@ -40,6 +40,7 @@
     </scm>
 
     <properties>
+        <jahia-depends/>
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
@@ -96,6 +97,20 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>graphql-dxm-provider</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Embed dependencies -->
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -137,6 +152,13 @@
                             org.springframework.core.io,
                             org.springframework.core.io.support,
                             org.springframework.web.context,
+                            graphql.annotations.annotationTypes;version="[7.2,99)";resolution:=optional,
+                            graphql.schema;version="[13.0,22)";resolution:=optional,
+                            org.jahia.modules.graphql.provider.dxm;version="[2.7,4)";resolution:=optional,
+                            org.jahia.modules.graphql.provider.dxm.admin;version="[2.7,4)";resolution:=optional,
+                            org.jahia.modules.graphql.provider.dxm.node;version="[2.7,4)";resolution:=optional,
+                            org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[2.7,4)";resolution:=optional,
+                            org.jahia.modules.graphql.provider.dxm.util;version="[2.7,4)";resolution:=optional,
                             ${jahia.plugin.projectPackageImport},
                             *
                         </Import-Package>
@@ -152,7 +174,8 @@
                             org.jahia.modules.tools.probe.runtime.impl.*,
                             org.jahia.modules.tools.probe.statistics.impl.*,
                             org.jahia.modules.tools.modules.*,
-                            org.jahia.modules.tools.karaf.*
+                            org.jahia.modules.tools.karaf.*,
+                            org.jahia.modules.tools.gql.*
                         </_dsannotations>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                     </instructions>

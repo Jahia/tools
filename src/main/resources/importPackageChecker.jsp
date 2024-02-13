@@ -1,10 +1,9 @@
-<%@ page import="org.jahia.modules.tools.ImportPackageChecker" %>
-<%@ page import="java.util.List" %>
+<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %>
+<%@ page import="org.jahia.modules.tools.gql.admin.osgi.FindImportPackage" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="importPackageChecker" class="org.jahia.modules.tools.ImportPackageChecker"/>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -54,7 +53,7 @@
 
     <c:if test="${not empty param.do}">
         <%
-            ImportPackageChecker.ImportPackageCheckerResult result = importPackageChecker.performChecker(request.getParameter("regexp"), request.getParameter("version"), request.getParameter("matchVersionRangeMissing") != null);
+            FindImportPackage result = OSGIPackageHeaderChecker.findImportPackages(request.getParameter("regexp"), request.getParameter("version"), request.getParameter("matchVersionRangeMissing") != null);
             pageContext.setAttribute("result", result);
         %>
 
@@ -62,21 +61,18 @@
             <legend><strong>(${result.totalMatchCount})</strong> Matching Import-Package</legend>
 
             <c:choose>
-                <c:when test="${empty param.regexp}">
-                    <strong>Please provide at least a regExp to get results</strong>
-                </c:when>
-                <c:when test="${empty result.entries}">
+                <c:when test="${empty result.bundles}">
                     <strong>No matching Import-Package found</strong>
                 </c:when>
             </c:choose>
 
             <ul>
-                <c:forEach items="${result.entries}" var="entry">
+                <c:forEach items="${result.bundles}" var="entry">
                     <li>
                         <a href="<c:url value='/tools/osgi/console/bundles/${entry.bundleId}'/>" title="See details">
                             [${entry.bundleId}]
                         </a>
-                        <strong>${entry.bundleName} [${entry.bundleId}]</strong>
+                        <strong>${entry.bundleDisplayName} [${entry.bundleId}]</strong>
 
                         <ul>
                             <c:forEach items="${entry.matchingImportedPackage}" var="importedPackage">

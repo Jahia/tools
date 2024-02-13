@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jahia.modules.tools;
+package org.jahia.modules.tools.gql.admin.osgi;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
@@ -23,80 +23,36 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Utility class for the OSGI Import-Package checker page.
+ * Utility class for the OSGI Import-Package checker.
  *
- * @author Sergiy Shyrkov
+ * @author jkevan
  */
-public class ImportPackageChecker {
+public class OSGIPackageHeaderChecker {
 
-    public class ImportPackageCheckerResult {
-
-        int totalMatchCount = 0;
-        List<ImportPackageCheckerResultEntry> entries = new ArrayList<>();
-
-        public void add(ImportPackageCheckerResultEntry entry) {
-            entries.add(entry);
-            totalMatchCount += entry.getMatchingImportedPackage().size();
-        }
-
-        public int getTotalMatchCount() {
-            return totalMatchCount;
-        }
-
-        public List<ImportPackageCheckerResultEntry> getEntries() {
-            return entries;
-        }
-    }
-
-    public class ImportPackageCheckerResultEntry {
-        private String bundleName;
-        private long bundleId;
-        private Set<String> matchingImportedPackage = new HashSet<>();
-
-        public ImportPackageCheckerResultEntry(Bundle bundle) {
-            this.bundleName = bundle.getHeaders().get("Bundle-Name") != null ?
-                    bundle.getHeaders().get("Bundle-Name") + " (" + bundle.getSymbolicName() + ")" :
-                    bundle.getSymbolicName();
-            this.bundleId = bundle.getBundleId();
-        }
-
-        public String getBundleName() {
-            return bundleName;
-        }
-
-        public long getBundleId() {
-            return bundleId;
-        }
-
-        public Set<String> getMatchingImportedPackage() {
-            return matchingImportedPackage;
-        }
-
-        public void addMatchingImportedPackage(String importedPackage) {
-            matchingImportedPackage.add(importedPackage);
-        }
-    }
-
-    public ImportPackageCheckerResult performChecker(String regex, String matchVersion, boolean matchVersionRangeMissing) {
-        ImportPackageCheckerResult results = new ImportPackageCheckerResult();
-        if (StringUtils.isEmpty(regex)) {
-            return results;
-        }
+    /**
+     * Perform the OSGI Import-Package checker. This method will check all bundles in the OSGI
+     * framework and return a list of matching import packages.
+     *
+     * @param regex The regular expression to match against the import package name.
+     * @param matchVersion The version to match against the import package version.
+     * @param matchVersionRangeMissing If true, will only return import packages that are missing a version range.
+     *
+     * @return The result of the import package checker.
+     */
+    public static FindImportPackage findImportPackages(String regex, String matchVersion, boolean matchVersionRangeMissing) {
+        FindImportPackage results = new FindImportPackage();
 
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
-            ImportPackageCheckerResultEntry entry = new ImportPackageCheckerResultEntry(bundle);
+            BundleWithImportPackages entry = new BundleWithImportPackages(bundle);
             String importPackageHeader = bundle.getHeaders().get("Import-Package");
             if (importPackageHeader != null) {
                 Clause[] importedPackages = Parser.parseHeader(importPackageHeader);
                 for (Clause importedPackageClause : importedPackages) {
-                    if (importedPackageClause.getName().matches(regex)) {
+                    if (StringUtils.isEmpty(regex) || importedPackageClause.getName().matches(regex)) {
                         String versionStr = importedPackageClause.getAttribute("version");
 
                         // Version missing check
@@ -128,6 +84,39 @@ public class ImportPackageChecker {
             }
             if (!entry.getMatchingImportedPackage().isEmpty()) {
                 results.add(entry);
+            }
+        }
+        return results;
+    }
+
+    public static FindExportPackage findExportPackages(String regex, boolean duplicates) {
+        // Collect export packages
+        Map<String, List<BundleWithExportPackage>> packages = new HashMap<>();
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            String exportPackageHeader = bundle.getHeaders().get("Export-Package");
+            if (exportPackageHeader != null) {
+                Clause[] exportPackages = Parser.parseHeader(exportPackageHeader);
+                for (Clause exportPackage : exportPackages) {
+                    if (StringUtils.isEmpty(regex) || exportPackage.getName().matches(regex)) {
+                        BundleWithExportPackage resultEntry = new BundleWithExportPackage(exportPackage.toString(), bundle);
+                        if (packages.containsKey(exportPackage.getName())) {
+                            packages.get(exportPackage.getName()).add(resultEntry);
+                        } else {
+                            packages.put(exportPackage.getName(), new ArrayList<>(Collections.singletonList(resultEntry)));
+                        }
+                    }
+                }
+            }
+        }
+
+        // filter duplicates if needed
+        FindExportPackage results = new FindExportPackage();
+        for (Map.Entry<String, List<BundleWithExportPackage>> packageEntries : packages.entrySet()) {
+            if (!duplicates || packageEntries.getValue().size() > 1) {
+                ExportPackages result = new ExportPackages(packageEntries.getKey());
+                result.setExportPackages(packageEntries.getValue());
+                results.add(result);
             }
         }
         return results;
