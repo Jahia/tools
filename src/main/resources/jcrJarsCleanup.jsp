@@ -94,6 +94,7 @@
             <c:if test="${!param.doCleanup}">
                 <hr/>
                 <form method="post">
+                    <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
                     <button type="submit" name="doCleanup" value="true" >Do it</button>
                 </form>
             </c:if>
