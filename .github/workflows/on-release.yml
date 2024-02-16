@@ -37,7 +37,7 @@ jobs:
         name: Release Module
         with:
           github_slug: Jahia/tools
-          primary_release_branch: master
+          primary_release_branch: 4_x
           release_id: ${{ github.event.release.id }}
           release_version: ${{ github.event.release.tag_name }}
           github_api_token: ${{ secrets.GH_API_TOKEN }}
