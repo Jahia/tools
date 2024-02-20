@@ -30,7 +30,7 @@ public class ToolsGraphQL {
     public FindImportPackage findMatchingImportPackages(
             @GraphQLName("RegExp") @GraphQLDescription("will return only import-package matching the RegExp") String regExp,
             @GraphQLName("version") @GraphQLDescription("will return only import-package matching the given version") String version,
-            @GraphQLName("versionMissing") @GraphQLDescription("will return only import-package matching the given version") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean versionMissing
+            @GraphQLName("versionMissing") @GraphQLDescription("will return only import-package with no version range limitations") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean versionMissing
     ) {
         return OSGIPackageHeaderChecker.findImportPackages(regExp, version, versionMissing);
     }

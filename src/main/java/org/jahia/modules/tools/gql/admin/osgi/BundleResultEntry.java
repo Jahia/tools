@@ -20,6 +20,10 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.osgi.framework.Bundle;
 
+/**
+ * An abstract class that provide basic bundle information for a GQL result that would involve bundle.
+ * Can be implemented to automatically provide bundle GQL fields.
+ */
 public abstract class BundleResultEntry {
     private final String bundleName;
     private final String bundleSymbolicName;
