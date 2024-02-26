@@ -24,6 +24,7 @@ import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for the OSGI Import-Package, Export-Package checker.
@@ -95,10 +96,11 @@ public class OSGIPackageHeaderChecker {
      *
      * @param regex The regular expression to match against the export package name.
      * @param duplicates If true, will only return export packages found multiple times.
+     * @param location If true, will return the modules that import the package.
      *
      * @return The result of the export package checker.
      */
-    public static FindExportPackage findExportPackages(String regex, boolean duplicates) {
+    public static FindExportPackage findExportPackages(String regex, boolean duplicates, boolean location) {
         // Collect export packages
         Map<String, List<BundleWithExportPackage>> packages = new HashMap<>();
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
@@ -109,6 +111,10 @@ public class OSGIPackageHeaderChecker {
                 for (Clause exportPackage : exportPackages) {
                     if (StringUtils.isEmpty(regex) || exportPackage.getName().matches(regex)) {
                         BundleWithExportPackage resultEntry = new BundleWithExportPackage(exportPackage.toString(), bundle);
+                        //TODO include the location
+                        if (location) {
+                            //resultEntry.setExportPackageLocations();
+                        }
                         if (packages.containsKey(exportPackage.getName())) {
                             packages.get(exportPackage.getName()).add(resultEntry);
                         } else {
@@ -129,5 +135,55 @@ public class OSGIPackageHeaderChecker {
             }
         }
         return results;
+    }
+
+    public static List<BundleResultEntry> findPackages(String filter, boolean duplicates, boolean imports, boolean exports) {
+        List<BundleResultEntry> bundles = loadBundles();
+        List<BundleResultEntry> result = bundles.stream().filter(b ->
+                (imports && b.getBundleImports().stream().filter(p -> p.getName().matches(filter)).count() > ((duplicates) ? 1 : 0)) ||
+                (exports && b.getBundleExports().stream().filter(p -> p.getName().matches(filter)).count() > ((duplicates) ? 1 : 0))).map(
+                        e -> new BundleResultEntry(e.getBundleId(), e.getBundleName(), e.getBundleSymbolicName(),
+                                e.getBundleDisplayName(), (imports)?
+                                e.getBundleImports().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):
+                                Collections.emptyList(), (exports)?
+                                e.getBundleExports().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):
+                                Collections.emptyList())).collect(Collectors.toList());
+        return result;
+    }
+
+    /**
+     * Load all bundles in the OSGI framework and return a list of them.
+     *
+     * @return The list of bundles.
+     */
+    public static List<BundleResultEntry> loadBundles() {
+        List<BundleResultEntry> entries = new ArrayList<>();
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            BundleResultEntry entry = new BundleResultEntry(bundle);
+            String importPackageHeader = bundle.getHeaders().get("Import-Package");
+            if (importPackageHeader != null) {
+                Clause[] importedPackages = Parser.parseHeader(importPackageHeader);
+                for (Clause importedPackageClause : importedPackages) {
+                    String name = importedPackageClause.getName();
+                    String version = importedPackageClause.getAttribute("version");
+                    entry.addImport(importedPackageClause.toString(), name, version);
+                }
+            }
+            String exportPackageHeader = bundle.getHeaders().get("Export-Package");
+            if (exportPackageHeader != null) {
+                Clause[] exportPackages = Parser.parseHeader(exportPackageHeader);
+                for (Clause exportPackageClause : exportPackages) {
+                    String name = exportPackageClause.getName();
+                    String version = exportPackageClause.getAttribute("version");
+                    String clause = exportPackageClause.getDirective("uses");
+                    List<String> uses = (clause!=null)?
+                            Arrays.stream(exportPackageClause.getDirective("uses").split(",")).map(String::trim).collect(Collectors.toList()):Collections.emptyList();
+                    entry.addExport(exportPackageClause.toString(), name, version, uses);
+                }
+            }
+            entries.add(entry);
+        }
+        return entries;
     }
 }

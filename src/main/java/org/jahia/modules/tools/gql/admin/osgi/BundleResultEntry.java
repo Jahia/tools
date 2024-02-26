@@ -20,15 +20,17 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.osgi.framework.Bundle;
 
-/**
- * An abstract class that provide basic bundle information for a GQL result that would involve bundle.
- * Can be implemented to automatically provide bundle GQL fields.
- */
-public abstract class BundleResultEntry {
+import java.util.ArrayList;
+import java.util.List;
+
+public class BundleResultEntry {
+    private final long bundleId;
     private final String bundleName;
     private final String bundleSymbolicName;
     private final String bundleDisplayName;
-    private final long bundleId;
+    private final List<BundleResultImport> bundleImports = new ArrayList<>();
+    private final List<BundleResultExport> bundleExports = new ArrayList<>();
+
 
     public BundleResultEntry(Bundle bundle) {
         this.bundleName = bundle.getHeaders().get("Bundle-Name");
@@ -37,6 +39,16 @@ public abstract class BundleResultEntry {
                 bundleName + " (" + bundleSymbolicName + ")" :
                 bundleSymbolicName;
         this.bundleId = bundle.getBundleId();
+    }
+
+    public BundleResultEntry(long bundleId, String bundleName, String bundleSymbolicName, String bundleDisplayName,
+            List<BundleResultImport> bundleImports, List<BundleResultExport> bundleExports) {
+        this.bundleId = bundleId;
+        this.bundleName = bundleName;
+        this.bundleSymbolicName = bundleSymbolicName;
+        this.bundleDisplayName = bundleDisplayName;
+        this.bundleImports.addAll(bundleImports);
+        this.bundleExports.addAll(bundleExports);
     }
 
     @GraphQLField
@@ -65,5 +77,104 @@ public abstract class BundleResultEntry {
     @GraphQLDescription("ID of the bundle.")
     public long getBundleId() {
         return bundleId;
+    }
+
+    @GraphQLField
+    @GraphQLName("bundleImports")
+    @GraphQLDescription("Imports of the bundle.")
+    public List<BundleResultImport> getBundleImports() {
+        return bundleImports;
+    }
+
+    @GraphQLField
+    @GraphQLName("bundleExports")
+    @GraphQLDescription("Exports of the bundle.")
+    public List<BundleResultExport> getBundleExports() {
+        return bundleExports;
+    }
+
+    public void addImport(String clause, String name, String version) {
+        bundleImports.add(new BundleResultImport(clause, name, version));
+    }
+
+    public void addExport(String clause, String name, String version, List<String> uses) {
+        bundleExports.add(new BundleResultExport(clause, name, version, uses));
+    }
+
+    public static class BundleResultImport {
+
+        private final String clause;
+        private final String name;
+        private final String version;
+
+        public BundleResultImport(String clause, String name, String version) {
+            this.clause = clause;
+            this.name = name;
+            this.version = version;
+        }
+
+        @GraphQLField
+        @GraphQLName("importPackageClause")
+        @GraphQLDescription("Display full import clause.")
+        public String getClause() {
+            return clause;
+        }
+
+        @GraphQLField
+        @GraphQLName("importPackageName")
+        @GraphQLDescription("Display import package name.")
+        public String getName() {
+            return name;
+        }
+
+        @GraphQLField
+        @GraphQLName("importPackageVersion")
+        @GraphQLDescription("Display import package version.")
+        public String getVersion() {
+            return version;
+        }
+    }
+
+    public static class BundleResultExport {
+
+        private final String clause;
+        private final String name;
+        private final String version;
+        private final List<String> uses;
+
+        public BundleResultExport(String clause, String name, String version, List<String> uses) {
+            this.clause = clause;
+            this.name = name;
+            this.version = version;
+            this.uses = uses;
+        }
+
+        @GraphQLField
+        @GraphQLName("exportPackageClause")
+        @GraphQLDescription("Display full export clause.")
+        public String getClause() {
+            return clause;
+        }
+
+        @GraphQLField
+        @GraphQLName("exportPackageName")
+        @GraphQLDescription("Display export package name.")
+        public String getName() {
+            return name;
+        }
+
+        @GraphQLField
+        @GraphQLName("exportPackageVersion")
+        @GraphQLDescription("Display export package version.")
+        public String getVersion() {
+            return version;
+        }
+
+        @GraphQLField
+        @GraphQLName("exportPackageUses")
+        @GraphQLDescription("Display export package uses.")
+        public List<String> getUses() {
+            return uses;
+            }
     }
 }
