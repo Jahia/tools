@@ -137,8 +137,8 @@ public class OSGIPackageHeaderChecker {
         return results;
     }
 
-    public static List<BundleResultEntry> findPackages(String filter, String version, boolean imports, boolean exports,
-            boolean duplicates) {
+    public static List<BundleResultEntry> findPackages(String filter, String version, boolean duplicates, boolean imports,
+            boolean exports, boolean subtree) {
         final List<BundleResultEntry> bundles = loadBundles();
         //Filter bundles that have only matching import or export packages depending on options set
         List<BundleResultEntry> results = bundles.stream().filter(b ->
@@ -161,8 +161,14 @@ public class OSGIPackageHeaderChecker {
         //Remove the bundles that have no more matching import or export packages
         results.removeIf(b -> b.getImports().size() == 0 && b.getExports().size() == 0);
         //Populate the imports and exports with the bundles that export or import the package
-        results.forEach(b -> b.getImports().getDetailed().forEach(p -> p.addExports(bundles.stream().filter(b2 -> b2.getExports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName()))).collect(Collectors.toSet()))));
-        results.forEach(b -> b.getExports().getDetailed().forEach(p -> p.addImports(bundles.stream().filter(b2 -> b2.getImports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName()))).collect(Collectors.toSet()))));
+        if (subtree) {
+            results.forEach(b -> b.getImports().getDetailed().forEach(p -> p.addExports(
+                    bundles.stream().filter(b2 -> b2.getExports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName())))
+                            .collect(Collectors.toSet()))));
+            results.forEach(b -> b.getExports().getDetailed().forEach(p -> p.addImports(
+                    bundles.stream().filter(b2 -> b2.getImports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName())))
+                            .collect(Collectors.toSet()))));
+        }
         return results;
     }
 

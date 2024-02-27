@@ -49,8 +49,9 @@ public class ToolsGraphQL {
             @GraphQLName("version") @GraphQLDescription("Package version should match") String version,
             @GraphQLName("duplicates") @GraphQLDescription("Only return if matched packages contains duplicates") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates,
             @GraphQLName("imports") @GraphQLDescription("Only search for package matching in bundle imports") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class) boolean imports,
-            @GraphQLName("exports") @GraphQLDescription("Only search for package matching in bundle exports") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class) boolean exports
+            @GraphQLName("exports") @GraphQLDescription("Only search for package matching in bundle exports") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class) boolean exports,
+            @GraphQLName("subtree") @GraphQLDescription("Include for each package (import/export) other bundle usage") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean subtree
     ) {
-        return new FindPackageResult(OSGIPackageHeaderChecker.findPackages(filter, version, duplicates, imports, exports));
+        return new FindPackageResult(OSGIPackageHeaderChecker.findPackages(filter, version, duplicates, imports, exports, subtree));
     }
 }
