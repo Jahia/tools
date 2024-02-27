@@ -139,7 +139,8 @@ public class OSGIPackageHeaderChecker {
 
     public static List<BundleResultEntry> findPackages(String filter, String version, boolean imports, boolean exports,
             boolean duplicates) {
-        List<BundleResultEntry> bundles = loadBundles();
+        final List<BundleResultEntry> bundles = loadBundles();
+        //Filter bundles that have only matching import or export packages depending on options set
         List<BundleResultEntry> results = bundles.stream().filter(b ->
                 (imports && b.getImports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))) ||
                 (exports && b.getExports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))))
@@ -147,10 +148,23 @@ public class OSGIPackageHeaderChecker {
                         (imports)?e.getImports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):Collections.emptyList(),
                         (exports)?e.getExports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):Collections.emptyList()))
                 .collect(Collectors.toList());
+        //Apply a version filtering if needed
+        if (StringUtils.isNotEmpty(version)) {
+            results.forEach(b -> b.getExports().filterExportsForVersion(version));
+            results.forEach(b -> b.getImports().filterImportsForVersion(version));
+        }
+        //Apply a duplicates only filtering if needed
         if (duplicates) {
+            results.forEach(b -> b.getExports().keepDuplicateNamesOnly());
+            results.forEach(b -> b.getImports().keepDuplicateNamesOnly());
             results = results.stream().filter(b -> b.getImports().size() > 1 || b.getExports().size() > 1).collect(Collectors.toList());
         }
-        return results.stream().filter(b -> b.getImports().size() > 0 || b.getExports().size() > 0).collect(Collectors.toList());
+        //Remove the bundles that have no more matching import or export packages
+        results.removeIf(b -> b.getImports().size() == 0 && b.getExports().size() == 0);
+        //Populate the imports and exports with the bundles that export or import the package
+        results.forEach(b -> b.getImports().getDetailed().forEach(p -> p.addExports(bundles.stream().filter(b2 -> b2.getExports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName()))).collect(Collectors.toSet()))));
+        results.forEach(b -> b.getExports().getDetailed().forEach(p -> p.addImports(bundles.stream().filter(b2 -> b2.getImports().getDetailed().stream().anyMatch(p2 -> p2.getName().equals(p.getName()))).collect(Collectors.toSet()))));
+        return results;
     }
 
     /**

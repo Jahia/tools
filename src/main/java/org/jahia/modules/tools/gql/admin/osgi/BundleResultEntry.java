@@ -23,9 +23,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BundleResultEntry {
@@ -119,7 +117,7 @@ public class BundleResultEntry {
             imports.add(new BundleImport(clause, name, version));
         }
 
-        public void filterExportsForVersion(String version) {
+        public void filterImportsForVersion(String version) {
             List<BundleImport> evict = imports.stream()
                     .filter(i -> i.getVersion() != null && !(new VersionRange(i.getVersion()).includes(Version.parseVersion(version))))
                     .collect(Collectors.toList());
@@ -127,8 +125,10 @@ public class BundleResultEntry {
         }
 
         public void keepDuplicateNamesOnly() {
-            List<String> singles = imports.stream().map(BundleImport::getName).distinct().collect(Collectors.toList());
-            imports.removeIf(e -> singles.contains(e.getName()));
+            Set<String> elements = new HashSet<>();
+            List<String> duplicates =
+                    imports.stream().map(BundleImport::getName).filter(n -> !elements.add(n)).collect(Collectors.toList());
+            imports.removeIf(e -> !duplicates.contains(e.getName()));
         }
 
         public int size() {
@@ -163,6 +163,10 @@ public class BundleResultEntry {
             this.name = name;
             this.version = version;
             this.exports = new ArrayList<>();
+        }
+
+        public void addExports(Set<BundleResultEntry> bundles) {
+            this.exports.addAll(bundles);
         }
 
         @GraphQLField
@@ -207,14 +211,15 @@ public class BundleResultEntry {
 
         public void filterExportsForVersion(String version) {
             List<BundleExport> evict = exports.stream()
-                            .filter(e -> e.getVersion() != null && !(new VersionRange(e.getVersion()).includes(Version.parseVersion(version))))
+                            .filter(e -> e.getVersion() != null && !e.getVersion().startsWith(version))
                             .collect(Collectors.toList());
             exports.removeIf(evict::contains);
         }
 
         public void keepDuplicateNamesOnly() {
-            List<String> singles = exports.stream().map(BundleExport::getName).distinct().collect(Collectors.toList());
-            exports.removeIf(e -> singles.contains(e.getName()));
+            Set<String> elements = new HashSet<>();
+            List<String> duplicates = exports.stream().map(BundleExport::getName).filter(n -> !elements.add(n)).collect(Collectors.toList());
+            exports.removeIf(e -> !duplicates.contains(e.getName()));
         }
 
         public int size() {
@@ -251,6 +256,10 @@ public class BundleResultEntry {
             this.version = version;
             this.uses = uses;
             this.imports = new ArrayList<>();
+        }
+
+        public void addImports(Set<BundleResultEntry> bundles) {
+            this.imports.addAll(bundles);
         }
 
         @GraphQLField
