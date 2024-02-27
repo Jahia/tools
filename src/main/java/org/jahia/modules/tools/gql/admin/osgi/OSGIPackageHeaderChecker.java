@@ -137,18 +137,20 @@ public class OSGIPackageHeaderChecker {
         return results;
     }
 
-    public static List<BundleResultEntry> findPackages(String filter, boolean duplicates, boolean imports, boolean exports) {
+    public static List<BundleResultEntry> findPackages(String filter, String version, boolean imports, boolean exports,
+            boolean duplicates) {
         List<BundleResultEntry> bundles = loadBundles();
-        List<BundleResultEntry> result = bundles.stream().filter(b ->
-                (imports && b.getBundleImports().stream().filter(p -> p.getName().matches(filter)).count() > ((duplicates) ? 1 : 0)) ||
-                (exports && b.getBundleExports().stream().filter(p -> p.getName().matches(filter)).count() > ((duplicates) ? 1 : 0))).map(
-                        e -> new BundleResultEntry(e.getBundleId(), e.getBundleName(), e.getBundleSymbolicName(),
-                                e.getBundleDisplayName(), (imports)?
-                                e.getBundleImports().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):
-                                Collections.emptyList(), (exports)?
-                                e.getBundleExports().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):
-                                Collections.emptyList())).collect(Collectors.toList());
-        return result;
+        List<BundleResultEntry> results =  bundles.stream().filter(b ->
+                (imports && b.getImports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))) ||
+                (exports && b.getExports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))))
+                .map(e -> new BundleResultEntry(e.getBundleId(), e.getBundleName(), e.getBundleSymbolicName(), e.getBundleDisplayName(),
+                        e.getImports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()),
+                        e.getExports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+        if (duplicates) {
+            //remove all distinct of all list
+        }
+        return results;
     }
 
     /**

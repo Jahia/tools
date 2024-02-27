@@ -18,6 +18,7 @@ package org.jahia.modules.tools.gql.admin.osgi;
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.Bundle;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class BundleResultEntry {
     private final String bundleName;
     private final String bundleSymbolicName;
     private final String bundleDisplayName;
-    private final List<BundleResultImport> bundleImports = new ArrayList<>();
-    private final List<BundleResultExport> bundleExports = new ArrayList<>();
+    private final BundleImports imports;
+    private final BundleExports exports;
 
 
     public BundleResultEntry(Bundle bundle) {
@@ -39,16 +40,18 @@ public class BundleResultEntry {
                 bundleName + " (" + bundleSymbolicName + ")" :
                 bundleSymbolicName;
         this.bundleId = bundle.getBundleId();
+        this.imports = new BundleImports(new ArrayList<>());
+        this.exports = new BundleExports(new ArrayList<>());
     }
 
     public BundleResultEntry(long bundleId, String bundleName, String bundleSymbolicName, String bundleDisplayName,
-            List<BundleResultImport> bundleImports, List<BundleResultExport> bundleExports) {
+            List<BundleImport> importPackages, List<BundleExport> exportPackages) {
         this.bundleId = bundleId;
         this.bundleName = bundleName;
         this.bundleSymbolicName = bundleSymbolicName;
         this.bundleDisplayName = bundleDisplayName;
-        this.bundleImports.addAll(bundleImports);
-        this.bundleExports.addAll(bundleExports);
+        this.imports = new BundleImports(importPackages);
+        this.exports = new BundleExports(exportPackages);
     }
 
     @GraphQLField
@@ -80,101 +83,181 @@ public class BundleResultEntry {
     }
 
     @GraphQLField
-    @GraphQLName("bundleImports")
-    @GraphQLDescription("Imports of the bundle.")
-    public List<BundleResultImport> getBundleImports() {
-        return bundleImports;
+    @GraphQLName("imports")
+    @GraphQLDescription("Import packages of the bundle.")
+    public BundleImports getImports() {
+        return imports;
     }
 
     @GraphQLField
-    @GraphQLName("bundleExports")
-    @GraphQLDescription("Exports of the bundle.")
-    public List<BundleResultExport> getBundleExports() {
-        return bundleExports;
+    @GraphQLName("exports")
+    @GraphQLDescription("Export packages of the bundle.")
+    public BundleExports getExports() {
+        return exports;
     }
 
     public void addImport(String clause, String name, String version) {
-        bundleImports.add(new BundleResultImport(clause, name, version));
+        imports.add(clause, name, version);
     }
 
     public void addExport(String clause, String name, String version, List<String> uses) {
-        bundleExports.add(new BundleResultExport(clause, name, version, uses));
+        exports.add(clause, name, version, uses);
     }
 
-    public static class BundleResultImport {
+    public static class BundleImports {
+        private final List<BundleImport> imports;
+
+        public BundleImports(List<BundleImport> imports) {
+            this.imports = imports;
+        }
+
+        public void add(String clause, String name, String version) {
+            imports.add(new BundleImport(clause, name, version));
+        }
+
+        public int size() {
+            return imports.size();
+        }
+
+        @GraphQLField
+        @GraphQLName("compact")
+        @GraphQLDescription("Import packages of the bundle in a compact form.")
+        public String[] getCompact() {
+            return imports.stream().map(i -> i.getName().concat((StringUtils.isNotEmpty(i.getVersion()))?"":
+                    ",".concat(i.getVersion()))).toArray(String[]::new);
+        }
+
+        @GraphQLField
+        @GraphQLName("detailed")
+        @GraphQLDescription("Import packages of the bundle in a detailed form.")
+        public List<BundleImport> getDetailed() {
+            return imports;
+        }
+    }
+
+    public static class BundleImport {
 
         private final String clause;
         private final String name;
         private final String version;
+        private final List<BundleResultEntry> exports;
 
-        public BundleResultImport(String clause, String name, String version) {
+        public BundleImport(String clause, String name, String version) {
             this.clause = clause;
             this.name = name;
             this.version = version;
+            this.exports = new ArrayList<>();
         }
 
         @GraphQLField
-        @GraphQLName("importPackageClause")
-        @GraphQLDescription("Display full import clause.")
+        @GraphQLName("clause")
+        @GraphQLDescription("Display full import package clause.")
         public String getClause() {
             return clause;
         }
 
         @GraphQLField
-        @GraphQLName("importPackageName")
+        @GraphQLName("name")
         @GraphQLDescription("Display import package name.")
         public String getName() {
             return name;
         }
 
         @GraphQLField
-        @GraphQLName("importPackageVersion")
+        @GraphQLName("version")
         @GraphQLDescription("Display import package version.")
         public String getVersion() {
             return version;
         }
+
+        @GraphQLField
+        @GraphQLName("exports")
+        @GraphQLDescription("Bundles that exports that package")
+        public List<BundleResultEntry> getExports() {
+            return exports;
+        }
     }
 
-    public static class BundleResultExport {
+    public static class BundleExports {
+        private final List<BundleExport> exports;
+
+        public BundleExports(List<BundleExport> exports) {
+            this.exports = exports;
+        }
+
+        public void add(String clause, String name, String version, List<String> uses) {
+            exports.add(new BundleExport(clause, name, version, uses));
+        }
+
+        public int size() {
+            return exports.size();
+        }
+
+        @GraphQLField
+        @GraphQLName("compact")
+        @GraphQLDescription("Export packages of the bundle in a compact form.")
+        public String[] getCompact() {
+            return exports.stream().map(e -> e.getName().concat((StringUtils.isNotEmpty(e.getVersion()))?"":
+                    ",".concat(e.getVersion()))).toArray(String[]::new);
+        }
+
+        @GraphQLField
+        @GraphQLName("detailed")
+        @GraphQLDescription("Export packages of the bundle in a detailed form.")
+        public List<BundleExport> getDetailed() {
+            return exports;
+        }
+    }
+
+    public static class BundleExport {
 
         private final String clause;
         private final String name;
         private final String version;
         private final List<String> uses;
+        private final List<BundleResultEntry> imports;
 
-        public BundleResultExport(String clause, String name, String version, List<String> uses) {
+        public BundleExport(String clause, String name, String version, List<String> uses) {
             this.clause = clause;
             this.name = name;
             this.version = version;
             this.uses = uses;
+            this.imports = new ArrayList<>();
         }
 
         @GraphQLField
-        @GraphQLName("exportPackageClause")
-        @GraphQLDescription("Display full export clause.")
+        @GraphQLName("clause")
+        @GraphQLDescription("Display full export package clause.")
         public String getClause() {
             return clause;
         }
 
         @GraphQLField
-        @GraphQLName("exportPackageName")
+        @GraphQLName("name")
         @GraphQLDescription("Display export package name.")
         public String getName() {
             return name;
         }
 
         @GraphQLField
-        @GraphQLName("exportPackageVersion")
+        @GraphQLName("version")
         @GraphQLDescription("Display export package version.")
         public String getVersion() {
             return version;
         }
 
         @GraphQLField
-        @GraphQLName("exportPackageUses")
+        @GraphQLName("uses")
         @GraphQLDescription("Display export package uses.")
         public List<String> getUses() {
             return uses;
-            }
+        }
+
+        @GraphQLField
+        @GraphQLName("imports")
+        @GraphQLDescription("List of bundles that import that package")
+        public List<BundleResultEntry> imports() {
+            return imports;
+        }
     }
 }

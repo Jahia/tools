@@ -17,12 +17,7 @@ package org.jahia.modules.tools.gql.admin;
 
 import graphql.annotations.annotationTypes.*;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
-import org.jahia.modules.tools.gql.admin.osgi.BundleResultEntry;
-import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
-import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
-import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
-
-import java.util.List;
+import org.jahia.modules.tools.gql.admin.osgi.*;
 
 @GraphQLName("AdminTools")
 @GraphQLDescription("Jahia admin tools")
@@ -49,13 +44,13 @@ public class ToolsGraphQL {
 
     @GraphQLField
     @GraphQLDescription("Will search packages in bundles applying name filter (regexp) in the exported and/or imported ones")
-    public List<BundleResultEntry> packages(
+    public FindPackageResult findPackages(
             @GraphQLName("filter") @GraphQLDescription("Package name should match the filter (regexp)") String filter,
+            @GraphQLName("version") @GraphQLDescription("Package version should match") String version,
             @GraphQLName("duplicates") @GraphQLDescription("Only return if matched packages contains duplicates") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates,
             @GraphQLName("imports") @GraphQLDescription("Only search for package matching in bundle imports") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class) boolean imports,
             @GraphQLName("exports") @GraphQLDescription("Only search for package matching in bundle exports") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class) boolean exports
     ) {
-        //TODO add version filter
-        return OSGIPackageHeaderChecker.findPackages(filter, duplicates, imports, exports);
+        return new FindPackageResult(OSGIPackageHeaderChecker.findPackages(filter, version, duplicates, imports, exports));
     }
 }
