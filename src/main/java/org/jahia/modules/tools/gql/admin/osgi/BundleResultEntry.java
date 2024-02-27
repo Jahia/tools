@@ -140,18 +140,18 @@ public class BundleResultEntry {
         @GraphQLDescription("Import packages of the bundle in a compact form.")
         public String[] getCompact() {
             return imports.stream().map(i -> i.getName().concat((StringUtils.isNotEmpty(i.getVersion()))?
-                    ",".concat(i.getVersion()):"")).toArray(String[]::new);
+                    ",".concat(i.getVersion()):"")).sorted().toArray(String[]::new);
         }
 
         @GraphQLField
         @GraphQLName("detailed")
         @GraphQLDescription("Import packages of the bundle in a detailed form.")
         public List<BundleImport> getDetailed() {
-            return imports;
+            return imports.stream().sorted().collect(Collectors.toList());
         }
     }
 
-    public static class BundleImport {
+    public static class BundleImport implements Comparable<BundleImport> {
 
         private final String clause;
         private final String name;
@@ -167,6 +167,11 @@ public class BundleResultEntry {
 
         public void addExports(Set<BundleResultEntry> bundles) {
             this.exports.addAll(bundles);
+        }
+
+        @Override
+        public int compareTo(BundleImport bundle) {
+            return Comparator.comparing(BundleImport::getName).thenComparing(BundleImport::getVersion).compare(this, bundle);
         }
 
         @GraphQLField
@@ -231,18 +236,18 @@ public class BundleResultEntry {
         @GraphQLDescription("Export packages of the bundle in a compact form.")
         public String[] getCompact() {
             return exports.stream().map(e -> e.getName().concat((StringUtils.isNotEmpty(e.getVersion()))?
-                    ",".concat(e.getVersion()):"")).toArray(String[]::new);
+                    ",".concat(e.getVersion()):"")).sorted().toArray(String[]::new);
         }
 
         @GraphQLField
         @GraphQLName("detailed")
         @GraphQLDescription("Export packages of the bundle in a detailed form.")
         public List<BundleExport> getDetailed() {
-            return exports;
+            return exports.stream().sorted().collect(Collectors.toList());
         }
     }
 
-    public static class BundleExport {
+    public static class BundleExport implements Comparable<BundleExport> {
 
         private final String clause;
         private final String name;
@@ -260,6 +265,11 @@ public class BundleResultEntry {
 
         public void addImports(Set<BundleResultEntry> bundles) {
             this.imports.addAll(bundles);
+        }
+
+        @Override
+        public int compareTo(BundleExport bundle) {
+            return Comparator.comparing(BundleExport::getName).thenComparing(BundleExport::getVersion).compare(this, bundle);
         }
 
         @GraphQLField

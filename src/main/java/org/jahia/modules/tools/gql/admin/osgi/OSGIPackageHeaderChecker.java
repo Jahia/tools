@@ -157,7 +157,6 @@ public class OSGIPackageHeaderChecker {
         if (duplicates) {
             results.forEach(b -> b.getExports().keepDuplicateNamesOnly());
             results.forEach(b -> b.getImports().keepDuplicateNamesOnly());
-            results = results.stream().filter(b -> b.getImports().size() > 1 || b.getExports().size() > 1).collect(Collectors.toList());
         }
         //Remove the bundles that have no more matching import or export packages
         results.removeIf(b -> b.getImports().size() == 0 && b.getExports().size() == 0);
