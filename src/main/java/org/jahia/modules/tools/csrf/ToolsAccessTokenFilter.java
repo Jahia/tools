@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
@@ -45,34 +46,40 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         if (request.getPathInfo() != null && TOOLS_REGEXP.matcher(request.getPathInfo()).matches()) {
-            if (servletRequest.getParameterMap().size() > 0) {
-                validateToken(request);
+            if (!servletRequest.getParameterMap().isEmpty()) {
+                try {
+                    validateToken(request);
+                } catch (MissingTokenException e) {
+                    throw new ServletException(e.getMessage());
+                }
             } else {
                 String token = generateAndStoreToken(request);
-
                 if (request.getMethod().equals(TOKEN_METHOD) && request.getRequestURI().endsWith(TOKEN_URI)) {
                     HttpServletResponse response = (HttpServletResponse) servletResponse;
+                    String body = "{\"token\":\"" + token + "\"}";
                     PrintWriter out = response.getWriter();
                     response.setContentType(TOKEN_CONTENT_TYPE);
+                    response.setContentLength(body.length());
                     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                    out.print("{\"token\":\"" + token + "\"}");
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    out.print(body);
                     out.flush();
+                    return;
                 }
             }
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    @SuppressWarnings("unchecked")
-    private void validateToken(HttpServletRequest httpReq) throws ServletException {
+    private void validateToken(HttpServletRequest httpReq) throws MissingTokenException {
         if (SettingsBean.getInstance().isDevelopmentMode()) {
             return;
         }
         String token = httpReq.getParameter(CSRF_TOKEN_ATTR);
 
         if (token == null || getCache(httpReq).get(token) == null || getCache(httpReq).get(token) < (System.currentTimeMillis() - tokenExpiration * 60L * 1000L)) {
-            throw new ServletException("Missing token: " + httpReq.getRequestURL() + (StringUtils.isNotEmpty(httpReq.getQueryString()) ? ("?" + httpReq.getQueryString()) : ""));
+            throw new MissingTokenException("Missing token: " + httpReq.getRequestURL() + (StringUtils.isNotEmpty(httpReq.getQueryString()) ?
+                    ("?" + httpReq.getQueryString()) : ""));
         }
 
         // keep same token
@@ -85,6 +92,10 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
         String token = UUID.randomUUID().toString();
         HashMap<String, Long> tokens = getCache(httpReq);
         tokens.put(token, System.currentTimeMillis());
+
+        //Purge stale tokens
+        tokens = tokens.entrySet().stream().filter(e -> e.getValue() > (System.currentTimeMillis() - tokenExpiration * 60L * 1000L))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));
 
         if (tokens.size() > MAX_TOKENS) {
             tokens.remove(tokens.entrySet().stream().min(Map.Entry.comparingByValue()).orElseThrow(ArrayIndexOutOfBoundsException::new).getKey());
