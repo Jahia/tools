@@ -66,6 +66,7 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
                     response.setStatus(HttpServletResponse.SC_OK);
                     out.print(body);
                     out.flush();
+                    //return here to avoid calling filter chain and cause an exception because writing in an already flushed response writer
                     return;
                 }
             }
