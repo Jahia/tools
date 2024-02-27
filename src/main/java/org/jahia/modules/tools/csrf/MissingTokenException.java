@@ -24,7 +24,7 @@
 package org.jahia.modules.tools.csrf;
 
 /**
- * Dedicated exception to avoid masquareding of businnes exception inside a protocol one.
+ * Dedicated exception to avoid masquerading of a business exception inside a protocol one.
  *
  * @author Jerome Blanchard
  */
