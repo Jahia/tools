@@ -54,6 +54,8 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
                 }
             } else {
                 String token = generateAndStoreToken(request);
+                //Token generation is performed if the request is a POST on the specific path, in that case filter chain is not called
+                //a better approach would be to use a dedicated endpoint for token generation
                 if (request.getMethod().equals(TOKEN_METHOD) && request.getRequestURI().endsWith(TOKEN_URI)) {
                     HttpServletResponse response = (HttpServletResponse) servletResponse;
                     String body = "{\"token\":\"" + token + "\"}";
