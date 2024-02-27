@@ -140,17 +140,17 @@ public class OSGIPackageHeaderChecker {
     public static List<BundleResultEntry> findPackages(String filter, String version, boolean imports, boolean exports,
             boolean duplicates) {
         List<BundleResultEntry> bundles = loadBundles();
-        List<BundleResultEntry> results =  bundles.stream().filter(b ->
+        List<BundleResultEntry> results = bundles.stream().filter(b ->
                 (imports && b.getImports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))) ||
                 (exports && b.getExports().getDetailed().stream().anyMatch(p -> p.getName().matches(filter))))
                 .map(e -> new BundleResultEntry(e.getBundleId(), e.getBundleName(), e.getBundleSymbolicName(), e.getBundleDisplayName(),
-                        e.getImports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()),
-                        e.getExports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList())))
+                        (imports)?e.getImports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):Collections.emptyList(),
+                        (exports)?e.getExports().getDetailed().stream().filter(p -> p.getName().matches(filter)).collect(Collectors.toList()):Collections.emptyList()))
                 .collect(Collectors.toList());
         if (duplicates) {
-            //remove all distinct of all list
+            results = results.stream().filter(b -> b.getImports().size() > 1 || b.getExports().size() > 1).collect(Collectors.toList());
         }
-        return results;
+        return results.stream().filter(b -> b.getImports().size() > 0 || b.getExports().size() > 0).collect(Collectors.toList());
     }
 
     /**

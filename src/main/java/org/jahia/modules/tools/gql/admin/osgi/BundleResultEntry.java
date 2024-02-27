@@ -20,9 +20,13 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BundleResultEntry {
     private final long bundleId;
@@ -115,6 +119,18 @@ public class BundleResultEntry {
             imports.add(new BundleImport(clause, name, version));
         }
 
+        public void filterExportsForVersion(String version) {
+            List<BundleImport> evict = imports.stream()
+                    .filter(i -> i.getVersion() != null && !(new VersionRange(i.getVersion()).includes(Version.parseVersion(version))))
+                    .collect(Collectors.toList());
+            imports.removeIf(evict::contains);
+        }
+
+        public void keepDuplicateNamesOnly() {
+            List<String> singles = imports.stream().map(BundleImport::getName).distinct().collect(Collectors.toList());
+            imports.removeIf(e -> singles.contains(e.getName()));
+        }
+
         public int size() {
             return imports.size();
         }
@@ -123,8 +139,8 @@ public class BundleResultEntry {
         @GraphQLName("compact")
         @GraphQLDescription("Import packages of the bundle in a compact form.")
         public String[] getCompact() {
-            return imports.stream().map(i -> i.getName().concat((StringUtils.isNotEmpty(i.getVersion()))?"":
-                    ",".concat(i.getVersion()))).toArray(String[]::new);
+            return imports.stream().map(i -> i.getName().concat((StringUtils.isNotEmpty(i.getVersion()))?
+                    ",".concat(i.getVersion()):"")).toArray(String[]::new);
         }
 
         @GraphQLField
@@ -189,6 +205,18 @@ public class BundleResultEntry {
             exports.add(new BundleExport(clause, name, version, uses));
         }
 
+        public void filterExportsForVersion(String version) {
+            List<BundleExport> evict = exports.stream()
+                            .filter(e -> e.getVersion() != null && !(new VersionRange(e.getVersion()).includes(Version.parseVersion(version))))
+                            .collect(Collectors.toList());
+            exports.removeIf(evict::contains);
+        }
+
+        public void keepDuplicateNamesOnly() {
+            List<String> singles = exports.stream().map(BundleExport::getName).distinct().collect(Collectors.toList());
+            exports.removeIf(e -> singles.contains(e.getName()));
+        }
+
         public int size() {
             return exports.size();
         }
@@ -197,8 +225,8 @@ public class BundleResultEntry {
         @GraphQLName("compact")
         @GraphQLDescription("Export packages of the bundle in a compact form.")
         public String[] getCompact() {
-            return exports.stream().map(e -> e.getName().concat((StringUtils.isNotEmpty(e.getVersion()))?"":
-                    ",".concat(e.getVersion()))).toArray(String[]::new);
+            return exports.stream().map(e -> e.getName().concat((StringUtils.isNotEmpty(e.getVersion()))?
+                    ",".concat(e.getVersion()):"")).toArray(String[]::new);
         }
 
         @GraphQLField
