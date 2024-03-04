@@ -154,11 +154,6 @@
                             org.springframework.web.context,
                             graphql.annotations.annotationTypes;version="[7.2,99)";resolution:=optional,
                             graphql.schema;version="[13.0,22)";resolution:=optional,
-                            org.jahia.modules.graphql.provider.dxm;version="[2.7,4)";resolution:=optional,
-                            org.jahia.modules.graphql.provider.dxm.admin;version="[2.7,4)";resolution:=optional,
-                            org.jahia.modules.graphql.provider.dxm.node;version="[2.7,4)";resolution:=optional,
-                            org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[2.7,4)";resolution:=optional,
-                            org.jahia.modules.graphql.provider.dxm.util;version="[2.7,4)";resolution:=optional,
                             ${jahia.plugin.projectPackageImport},
                             *
                         </Import-Package>
