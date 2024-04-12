@@ -21,6 +21,13 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     steps:
+      # This seems to be necessary, for unclear reasons, but a similar setup
+      # was done on the ckeditor repo
+      - name: Add safe directory
+        shell: bash
+        run: |
+          git config --global --add safe.directory /__w/tools/tools
+
       # Providing the SSH PRIVATE of a user part of an admin group
       # is necessary to bypass PR checks
       - uses: actions/checkout@v3
