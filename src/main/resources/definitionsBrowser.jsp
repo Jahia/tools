@@ -130,9 +130,10 @@
                 <td align="center">${pstatus.count}</td>
                 <td><a name="${pkg}" href="modulesBrowser.jsp?#${pkg}">${pkg}</a>
                     &nbsp;<a href="#delete"
-                             onclick="if (!confirm('You are about to delete all nodetypes from module ${pkg} and all associated content. Continue?')) return false; $('#action').val('deleteModule');$('#module').val('${pkg}'); $('#navigateForm').submit();"
-                             title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16" width="16"
-                                                 title="Delete" border="0" style="vertical-align: middle;"/></a>
+                             class="delete-definitions"
+                             title="Delete">
+                        <img src="<c:url value='/icons/delete.png'/>" height="16" width="16"
+                                                 title="Delete" border="0" style="vertical-align: middle;" data-package="${pkg}"/></a>
                 </td>
                 <td>
                     <ol>
@@ -141,10 +142,14 @@
                             <li><a href="#${defFileName}" class="defFileLink" data-src="#${defFileName}"
                                    data-fancybox>${dep.name}</a>
                                 &nbsp;<a href="#delete"
-                                         onclick="if (!confirm('You are about to delete the nodetype ${dep.name} and all associated content. Continue?')) return false;  $('#action').val('deleteNodeType');$('#module').val('${pkg}'); $('#nodetype').val('${dep.name}'); $('#navigateForm').submit();"
-                                         title="Delete"><img src="<c:url value='/icons/delete.png'/>" height="16"
+                                         class="delete-nodetype"
+                                         title="Delete">
+                                    <img src="<c:url value='/icons/delete.png'/>" height="16"
                                                              width="16"
-                                                             title="Delete" border="0" style="vertical-align: middle;"/></a>
+                                                             title="Delete" border="0" style="vertical-align: middle;"
+                                                             data-package="${pkg}"
+                                                             data-nodetype=${dep.name}
+                                    /></a>
                             </li>
                             <div style="display:none;">
                                 <div id="${defFileName}">
@@ -212,5 +217,6 @@
 </div>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
+<script  type="module" src="<c:url value='/modules/tools/javascript/apps/definitions.tools.bundle.js'/>"></script>
 </body>
 </html>
