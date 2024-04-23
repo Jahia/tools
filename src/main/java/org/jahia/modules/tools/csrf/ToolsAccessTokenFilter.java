@@ -93,12 +93,14 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private String generateAndStoreToken(HttpServletRequest httpReq) {
         // generate and store token
         String token = UUID.randomUUID().toString();
-        HashMap<String, Long> tokens = getCache(httpReq);
-        tokens.put(token, System.currentTimeMillis());
+        Map<String, Long> tokens = getCache(httpReq);
+        synchronized (this){
+            tokens.put(token, System.currentTimeMillis());
 
-        //Purge stale tokens
-        tokens = tokens.entrySet().stream().filter(e -> e.getValue() > (System.currentTimeMillis() - tokenExpiration * 60L * 1000L))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));
+            //Purge stale tokens
+            tokens = tokens.entrySet().stream().filter(e -> e.getValue() > (System.currentTimeMillis() - tokenExpiration * 60L * 1000L))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));
+        }
 
         if (tokens.size() > MAX_TOKENS) {
             tokens.remove(tokens.entrySet().stream().min(Map.Entry.comparingByValue()).orElseThrow(ArrayIndexOutOfBoundsException::new).getKey());
