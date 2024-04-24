@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 $(document).ready(function () {
-    $('.delete-definitions img').click(function (event) {
+    $(document).on('click', '.delete-definitions img', function (event) {
         const packageName = event.target.attributes['data-package'].value;
 
         // eslint-disable-next-line no-alert
@@ -12,7 +12,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.delete-nodetype img').click(function (event) {
+    $(document).on('click', '.delete-nodetype img', function (event) {
         const nodetype = event.target.attributes['data-nodetype'].value;
 
         // eslint-disable-next-line no-alert
