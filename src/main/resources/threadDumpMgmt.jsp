@@ -1,10 +1,8 @@
-<%@page import="org.jahia.utils.LoadAverage"%>
 <%@page import="org.jahia.services.SpringContextSingleton"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<%@page import="java.io.File"%>
 <%@page import="org.jahia.settings.SettingsBean"%>
 <%@page import="org.jahia.tools.jvm.ThreadMonitor" %>
 <%@page import="org.apache.commons.lang.StringUtils"%>
@@ -66,20 +64,6 @@ Thread dump task started<c:if test="${not empty outputFile}">. The output fill b
 <p>The Thread Dump Monitor is currently <strong>${threadDumpMonitorActive ? 'started' : 'stopped'}</strong>.<br/>
 Click to <a href="?threadDumpMonitorActive=${!threadDumpMonitorActive}&toolAccessToken=${toolAccessToken}">${threadDumpMonitorActive ? 'stop' : 'start'} the Thread Dump Monitor</a>&nbsp;**
 <p>
-
-<% pageContext.setAttribute("loadAverages", SpringContextSingleton.getBeansOfType(LoadAverage.class)); %>
-<h3>Load Averages</h3>
-<c:forEach var="loadAverageEntry" items="${loadAverages}">
-    <c:set var="loadAverage" value="${loadAverageEntry.value}"/>
-    <h4>${loadAverage.info}</h4>
-    <p>
-        Logging trigger value: <strong>${loadAverage.loggingTriggerValue}</strong><br/>
-        Thread dump trigger value: <strong>${loadAverage.threadDumpTriggerValue}</strong><br/>
-        Thread dump on high load: <strong>${loadAverage.threadDumpOnHighLoad ? 'ON' : 'OFF'}</strong><br/>
-        Click to <a href="?loadAverage=${loadAverageEntry.key}&threadDumpOnHighLoad=${loadAverage.threadDumpOnHighLoad ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${loadAverage.threadDumpOnHighLoad ? 'disable' : 'enable'} thread dumps on high load</a>&nbsp;**
-    </p>
-</c:forEach>
-
 
 <p>------------------------------------------------------------------------------------------------------------------------------------<br/>
 * - The thread dumps are performed into a folder:
