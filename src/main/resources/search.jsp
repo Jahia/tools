@@ -11,6 +11,7 @@
 <%@ page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
 <%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
 <%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
+<%@ page import="org.jahia.modules.tools.search.ReIndexProxy"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -37,10 +38,10 @@
         </c:when>
         <c:when test="${param.action == 'reindex-now'}">
         	<c:if test="${param.iws == 'all'}">
-            	<% ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).scheduleReindexing(Boolean.parseBoolean(request.getParameter("ccheck"))); %>
+            	<% ReIndexProxy.scheduleReindexing(Boolean.parseBoolean(request.getParameter("ccheck"))); %>
             </c:if>
         	<c:if test="${param.iws != 'all'}">
-            	<% ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).scheduleReindexing(request.getParameter("iws"), Boolean.parseBoolean(request.getParameter("ccheck"))); %>
+            	<% ReIndexProxy.scheduleReindexing(request.getParameter("iws"), Boolean.parseBoolean(request.getParameter("ccheck"))); %>
             </c:if>
             <p style="color: blue">Re-indexing of the repository content will be done now</p>
         </c:when>
@@ -123,8 +124,16 @@
             <option value="system" ${(empty param.iws || param.iws == 'system') ? 'selected="selected"' : ''}>system</option>
         </select>
         &nbsp;&nbsp;
-        <label for="reindexRepoConsistencyCheck">force consistency check:&nbsp;</label>
-        <input type="checkbox" id="reindexRepoConsistencyCheck" name="reindexRepoConsistencyCheck" value="${param.ccheck}"/>
+        <% pageContext.setAttribute("withCCheck", ReIndexProxy.supportConsistencyCheck()); %>
+        <c:choose>
+            <c:when test="${withCCheck}">
+                <label for="reindexRepoConsistencyCheck">force consistency check:&nbsp;</label>
+                <input type="checkbox" id="reindexRepoConsistencyCheck" name="reindexRepoConsistencyCheck" value="${param.ccheck}"/>
+            </c:when>
+            <c:otherwise>
+                <input type="checkbox" id="reindexRepoConsistencyCheck" name="reindexRepoConsistencyCheck" checked readonly style="visibility: hidden"/>
+            </c:otherwise>
+        </c:choose>
     </li>
     <li>
         <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace');
