@@ -11,6 +11,7 @@
 <%@ page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
 <%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
 <%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
+<%@ page import="org.jahia.modules.tools.search.ReIndexProxy"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,11 +49,11 @@
             <p style="color: blue">Re-indexing of the repository content undone</p>
         </c:when>
         <c:when test="${param.action == 'reindex-now'}">
-        	<c:if test="${param.ws == 'all'}">
-            	<% ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).scheduleReindexing(); %>
+        	<c:if test="${param.iws == 'all'}">
+            	<% ReIndexProxy.scheduleReindexing(Boolean.parseBoolean(request.getParameter("ccheck"))); %>
             </c:if>
-        	<c:if test="${param.ws != 'all'}">
-            	<% ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).scheduleReindexing(request.getParameter("ws")); %>
+        	<c:if test="${param.iws != 'all'}">
+            	<% ReIndexProxy.scheduleReindexing(request.getParameter("iws"), Boolean.parseBoolean(request.getParameter("ccheck"))); %>
             </c:if>
             <p style="color: blue">Re-indexing of the repository content will be done now</p>
         </c:when>
@@ -111,13 +112,48 @@
 <fieldset>
 <legend>Immediate</legend>
 <ul>
-    <li><a href="?action=reindex-now&ws=all&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the whole repository. Would you like to continue?')">Whole repository re-indexing</a> - Do whole repository (live, default and system indexes + spellchecker) re-indexing now</li>
-    <li><a href="?action=reindex-now&ws=live&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the live repository workspace. Would you like to continue?')">Live repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=reindex-now&ws=default&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the default repository workspace. Would you like to continue?')">Default repository re-indexing</a> - Do repository re-indexing now</li>
-    <li><a href="?action=reindex-now&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for re-indexing content of the system repository. Would you like to continue?')">System repository re-indexing</a> - Do repository re-indexing now</li>
     <li><a href="?action=updateSpellCheckerIndex&toolAccessToken=${toolAccessToken}" onclick="return confirm('This will schedule a background task for updating the spellchecker index for live and default workspaces. Would you like to continue?')">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
     <li>
-        <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace'); var ws = cbW.options[cbW.selectedIndex].value; var uuid = document.getElementById('reindexTreeUuid').value; if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; } if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid + '&amp;toolAccessToken=${toolAccessToken}'; return true; } else { return false; }">Re-index the sub-tree</a>
+        <a href="#reindex-repository" onclick="var clRepoWs = document.getElementById('reindexRepoWorkspace');
+                var repoWs = clRepoWs.options[clRepoWs.selectedIndex].value;
+                var ccheck = document.getElementById('reindexRepoConsistencyCheck').checked;
+                var mRepo = 'the whole repository (live, default and system indexes + spellchecker)'
+                switch (repoWs) {
+                    case 'all': mRepo = 'the whole repository (live, default and system indexes + spellchecker)'; break;
+                    case 'live': mRepo = 'the live repository workspace'; break;
+                    case 'default': mRepo = 'the default repository workspace'; break;
+                    case 'system': mRepo = 'the system repository'; break;
+                }
+                var confirmMessage = 'This will schedule a background task for re-indexing content of ' + mRepo + ((ccheck)?' with ':' without ') + 'consistency check. Would you like to continue?';
+                if (confirm(confirmMessage)) { this.href='?action=reindex-now' + ((repoWs === 'system')?'':'&amp;iws='+repoWs) + '&amp;ccheck=' + ccheck + '&amp;toolAccessToken=${toolAccessToken}'; return true; }
+                else { return false; }">Re-index repository</a>
+        &nbsp;&nbsp;
+        <label for="reindexRepoWorkspace">workspace:&nbsp;</label>
+        <select id="reindexRepoWorkspace" name="reindexRepoWorkspace">
+            <option value="all" ${param.iws == 'all' ? 'selected="selected"' : ''}>all: live, default, system + spellChecker</option>
+            <option value="live" ${param.iws == 'live' ? 'selected="selected"' : ''}>live</option>
+            <option value="default" ${param.iws == 'default' ? 'selected="selected"' : ''}>default</option>
+            <option value="system" ${(empty param.iws || param.iws == 'system') ? 'selected="selected"' : ''}>system</option>
+        </select>
+        &nbsp;&nbsp;
+        <% pageContext.setAttribute("withCCheck", ReIndexProxy.supportConsistencyCheck()); %>
+        <c:choose>
+            <c:when test="${withCCheck}">
+                <label for="reindexRepoConsistencyCheck">force consistency check:&nbsp;</label>
+                <input type="checkbox" id="reindexRepoConsistencyCheck" name="reindexRepoConsistencyCheck" value="${param.ccheck}"/>
+            </c:when>
+            <c:otherwise>
+                <input type="checkbox" id="reindexRepoConsistencyCheck" name="reindexRepoConsistencyCheck" checked readonly style="visibility: hidden"/>
+            </c:otherwise>
+        </c:choose>
+    </li>
+    <li>
+        <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace');
+                var ws = cbW.options[cbW.selectedIndex].value;
+                var uuid = document.getElementById('reindexTreeUuid').value;
+                if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; }
+                if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid + '&amp;toolAccessToken=${toolAccessToken}'; return true; }
+                else { return false; }">Re-index the sub-tree</a>
         &nbsp;&nbsp;
         <label for="reindexTreeWorkspace">workspace:&nbsp;</label>
         <select id="reindexTreeWorkspace" name="reindexTreeWorkspace">
