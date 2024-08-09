@@ -30,21 +30,21 @@ import graphql.annotations.annotationTypes.GraphQLName;
 import java.util.ArrayList;
 import java.util.List;
 
-@GraphQLName("FindRestrictivesDependencies")
+@GraphQLName("FindDependencies")
 @GraphQLDescription("Result of the dependency inspector operation.")
-public class FindRestrictiveDependency {
+public class FindDependencies {
 
     int totalCount = 0;
-    List<BundleWithRestrictiveDependencies> bundleWithRestrictiveDependencies = new ArrayList<>();
+    List<BundleWithDependencies> bundles = new ArrayList<>();
 
-    public void add(BundleWithRestrictiveDependencies bundleWithRestrictiveDependency) {
-        bundleWithRestrictiveDependencies.add(bundleWithRestrictiveDependency);
-        totalCount += bundleWithRestrictiveDependency.getRestrictiveDependencies().size();
+    public void add(BundleWithDependencies bundleWithDependencies) {
+        bundles.add(bundleWithDependencies);
+        totalCount += bundleWithDependencies.getDependencies().size();
     }
 
     @GraphQLField
     @GraphQLName("totalCount")
-    @GraphQLDescription("Total number of restrictive dependencies.")
+    @GraphQLDescription("Total number of dependencies.")
     public int getTotalCount() {
         return totalCount;
     }
@@ -52,7 +52,7 @@ public class FindRestrictiveDependency {
     @GraphQLField
     @GraphQLName("bundles")
     @GraphQLDescription("List of matching bundles.")
-    public List<BundleWithRestrictiveDependencies> getBundles() {
-        return bundleWithRestrictiveDependencies;
+    public List<BundleWithDependencies> getBundles() {
+        return bundles;
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.jahia.modules.tools.gql.admin.osgi;
 
+import com.drew.lang.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
@@ -28,6 +29,7 @@ import org.osgi.framework.VersionRange;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for the OSGI Import-Package, Export-Package, Jahia-Depends checker
@@ -136,183 +138,64 @@ public class OSGIPackageHeaderChecker {
     }
 
     /**
-     * Perform the OSGI Import-Package and Jahia-Depends checker. This method will check all bundles in the OSGI
-     * framework and return a list of bundles that contains restrictives dependencies. A restrictive dependency is
-     * either an imported package or a jahia-depends occurrence that enforce a version that will prevent dependent modules
-     * to be updated correctly on minor versions.
-     * The check is done only on Jahia Modules that are not uninstalled.
+     * Perform the OSGI dependency checker. This method will check all bundles in the OSGI
+     * framework and return a list of bundles dependencies of type Import-Package and Jahia-Depends. A dependency can
+     * be set on a strict version and will prevent dependent modules to be updated correctly on minor versions.
      *
      * @return The result of the restrictive dependencies checker.
      */
-    public static FindRestrictiveDependency findRestrictivesDependencies() {
-        FindRestrictiveDependency results = new FindRestrictiveDependency();
+    public static FindDependencies findRestrictivesDependencies(String bundleNameRegExp, boolean modulesOnly, boolean strictVersionsOnly) {
+        FindDependencies results = new FindDependencies();
 
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
-            boolean isModule = BundleUtils.isJahiaModuleBundle(bundle);
-            if (isModule && bundle.getState() != Bundle.UNINSTALLED) {
-                BundleWithRestrictiveDependencies entry = new BundleWithRestrictiveDependencies(bundle);
+            if (StringUtils.isNotEmpty(bundleNameRegExp) && !bundle.getSymbolicName().matches(bundleNameRegExp)) {
+                continue;
+            }
+            if (modulesOnly && !BundleUtils.isJahiaModuleBundle(bundle)) {
+                continue;
+            }
+            BundleWithDependencies entry = new BundleWithDependencies(bundle);
 
-                String importPackageHeader = bundle.getHeaders().get(Constants.IMPORT_PACKAGE);
-                if (importPackageHeader != null) {
-                    List<Dependency> dependencies = parseImportPackage(bundle.getSymbolicName(), importPackageHeader);
-                    for (Dependency dependency : dependencies) {
-                        if (dependency.hasVersion()) {
-                            if (!dependency.isRange()) {
-                                dependency.setMessage("Strict version dependency");
-                            }
-                            if (dependency.getVersion().isExact()) {
-                                dependency.setMessage("Single version range dependency");
-                            }
-                            if (dependency.cannotBumpMinorVersion()) {
-                                dependency.setMessage("Version range too restrictive to upgrade minor version");
-                            }
-                            if (dependency.isSuspicious()) {
-                                entry.addRestrictiveDependency(dependency.toString());
-                            }
-                        }
+            String importPackageHeader = bundle.getHeaders().get(Constants.IMPORT_PACKAGE);
+            if (importPackageHeader != null) {
+                List<Dependency> dependencies = Arrays.stream(Parser.parseHeader(importPackageHeader)).map(Dependency::parse).collect(Collectors.toList());
+                for (Dependency dependency : dependencies) {
+                    if (strictVersionsOnly && dependency.isStrictDependency()) {
+                        entry.addDependency(dependency);
+                    } else if (!strictVersionsOnly) {
+                        entry.addDependency(dependency);
                     }
                 }
+            }
 
-                String jahiaDependsHeader = bundle.getHeaders().get("Jahia-Depends");
-                if (jahiaDependsHeader != null) {
-                    List<Dependency> dependencies = parseJahiaDepends(bundle.getSymbolicName(), jahiaDependsHeader);
-                    for (Dependency dependency : dependencies) {
-                        if (dependency.hasVersion()) {
-                            if (dependency.getVersion().isExact()) {
-                                dependency.setMessage("Single version range dependency");
-                            }
-                            if (dependency.cannotBumpMinorVersion()) {
-                                dependency.setMessage("Version range too restrictive to upgrade minor version");
-                            }
-                            if (dependency.isSuspicious()) {
-                                entry.addRestrictiveDependency(dependency.toString());
-                            }
-                        }
+            String jahiaDependsHeader = bundle.getHeaders().get("Jahia-Depends");
+            if (jahiaDependsHeader != null) {
+                List<Dependency> dependencies = parseJahiaDepends(jahiaDependsHeader);
+                for (Dependency dependency : dependencies) {
+                    if (strictVersionsOnly && dependency.isStrictDependency()) {
+                        entry.addDependency(dependency);
+                    } else if (!strictVersionsOnly) {
+                        entry.addDependency(dependency);
                     }
                 }
+            }
 
-                if (!entry.getRestrictiveDependencies().isEmpty()) {
-                    results.add(entry);
-                }
+            if (!entry.getDependencies().isEmpty()) {
+                results.add(entry);
             }
         }
         return results;
     }
 
-    private static List<Dependency> parseImportPackage (String bundle, String importPackageHeader) {
-        List<Dependency> result = new ArrayList<>();
-        Clause[] importedPackageClauses = Parser.parseHeader(importPackageHeader);
-        for (Clause importedPackageClause : importedPackageClauses) {
-            try {
-                result.add(Dependency.parse(bundle, importedPackageClause));
-            } catch (IllegalArgumentException e) {
-                //LOGGER.warn("Unable to parse Jahia-Depends Header: {}", importedPackageClause.toString(), e);
-                //TODO add an error field in dependency to reflect parsing error
-            }
-        }
-        return result;
-    }
-
-    private static List<Dependency> parseJahiaDepends (String bundle, String jahiaDependsHeader) {
+    private static List<Dependency> parseJahiaDepends (String jahiaDependsHeader) {
         List<Dependency> result = new ArrayList<>();
         Pattern pattern = Pattern.compile("[^,\\[\\]()]+|\\[[^\\]]*\\]|\\([^)]*\\)");
         Matcher matcher = pattern.matcher(jahiaDependsHeader);
         while (matcher.find()) {
-            try {
-                result.add(Dependency.parse(bundle, matcher.group()));
-            } catch (IllegalArgumentException e) {
-                //LOGGER.warn("Unable to parse Jahia-Depends Header: {}", importedPackageClause.toString(), e);
-                //TODO add an error field in dependency to reflect parsing error
-            }
+            result.add(Dependency.parse(matcher.group()));
         }
         return result;
-    }
-
-    private static class Dependency {
-        private final String type;
-        private final String name;
-        private final boolean optional;
-        private final VersionRange version;
-        private String message;
-
-        public Dependency(String type, String name, VersionRange version, boolean optional) {
-            this.type = type;
-            this.name = name;
-            this.version = version;
-            this.optional = optional;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public VersionRange getVersion() {
-            return version;
-        }
-
-        public boolean isOptional() {
-            return optional;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public boolean hasVersion() {
-            return version != null;
-        }
-
-        public boolean isRange() {
-            return version.getRight() != null;
-        }
-
-        public boolean cannotBumpMinorVersion() {
-            if (version == null || version.isExact()) {
-                return true;
-            }
-            Version bumped = new Version(version.getLeft().getMajor(), version.getLeft().getMinor()+1, 0);
-            return !version.includes(bumped);
-        }
-
-        public boolean isSuspicious() {
-            return message != null && !message.isEmpty();
-        }
-
-        public static Dependency parse(String bundle, String dependency) {
-            String cleanedDep = dependency.replace(";optional", "");
-            cleanedDep = dependency.replace("optional", "");
-            boolean optional = !cleanedDep.equals(dependency);
-
-            String[] parts = dependency.split("=");
-            if (parts.length == 2) {
-                return new Dependency("Jahia-Depends", parts[0], VersionRange.valueOf(parts[1]), optional);
-            } else {
-                return new Dependency("Jahia-Depends", dependency, null, optional);
-            }
-        }
-
-        public static Dependency parse(String bundle, Clause importedPackageClause) {
-            String version = importedPackageClause.getAttribute(Constants.VERSION_ATTRIBUTE);
-            boolean optional = (importedPackageClause.getAttribute(Constants.RESOLUTION_OPTIONAL)!=null);
-            if (version != null) {
-                return new Dependency("Import-Package", importedPackageClause.getName(), VersionRange.valueOf(version), optional);
-            } else {
-                return new Dependency("Import-Package", importedPackageClause.getName(), null, optional);
-            }
-        }
-
-        @Override public String toString() {
-            return "type='" + type + '\'' + ", name='" + name + '\'' + ", version=" + version + ", explanation=" + message;
-        }
     }
 
 }

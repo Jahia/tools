@@ -28,28 +28,28 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.osgi.framework.Bundle;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-@GraphQLName("BundleWithRestrictiveDependencies")
+@GraphQLName("BundleWithDependencies")
 @GraphQLDescription("Result of the dependency inspector operation.")
-public class BundleWithRestrictiveDependencies extends BundleResultEntry{
+public class BundleWithDependencies extends BundleResultEntry{
 
-    private final Set<String> restrictiveDependencies = new HashSet<>();
+    private final List<Dependency> dependencies = new ArrayList<>();
 
-    public BundleWithRestrictiveDependencies(Bundle bundle) {
+    public BundleWithDependencies(Bundle bundle) {
         super(bundle);
     }
 
     @GraphQLField
-    @GraphQLName("restrictivesDependencies")
-    @GraphQLDescription("List of restrictives dependencies.")
-    public Set<String> getRestrictiveDependencies() {
-        return restrictiveDependencies;
+    @GraphQLName("dependencies")
+    @GraphQLDescription("List of bundle dependencies (packages and modules).")
+    public List<Dependency> getDependencies() {
+        return dependencies;
     }
 
-    public void addRestrictiveDependency(String restrictiveDependency) {
-        restrictiveDependencies.add(restrictiveDependency);
+    public void addDependency(Dependency dependency) {
+        dependencies.add(dependency);
     }
 
 }

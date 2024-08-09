@@ -18,7 +18,7 @@ package org.jahia.modules.tools.gql.admin;
 import graphql.annotations.annotationTypes.*;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
 import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
-import org.jahia.modules.tools.gql.admin.osgi.FindRestrictiveDependency;
+import org.jahia.modules.tools.gql.admin.osgi.FindDependencies;
 import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
 import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
 
@@ -46,8 +46,12 @@ public class ToolsGraphQL {
     }
 
     @GraphQLField
-    @GraphQLDescription("Will return all the dependencies of a bundle (modules or packages) that has a dependency version too restrictive to ensure correct updates of dependent modules")
-    public FindRestrictiveDependency findRestrictiveDependencies() {
-        return OSGIPackageHeaderChecker.findRestrictivesDependencies();
+    @GraphQLDescription("Will return dependencies of a bundle (modules or packages)")
+    public FindDependencies findDependencies(
+            @GraphQLName("RegExp") @GraphQLDescription("will return only bundle name matching the RegExp") String regExp,
+            @GraphQLName("ModulesOnly") @GraphQLDescription("will return only dependencies of Jahia modules (not bundles)") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class)  boolean modulesOnly,
+            @GraphQLName("StrictVersionOnly") @GraphQLDescription("will return only dependencies with a strict version specified (a version that reprobates upgrade of minor ones)") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class)  boolean strictVersionsOnly
+    ) {
+        return OSGIPackageHeaderChecker.findRestrictivesDependencies(regExp, modulesOnly, strictVersionsOnly);
     }
 }
