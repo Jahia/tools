@@ -18,6 +18,7 @@ package org.jahia.modules.tools.gql.admin;
 import graphql.annotations.annotationTypes.*;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
 import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
+import org.jahia.modules.tools.gql.admin.osgi.FindRestrictiveDependency;
 import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
 import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
 
@@ -42,5 +43,11 @@ public class ToolsGraphQL {
             @GraphQLName("duplicates") @GraphQLDescription("will return only export-package found multiple times for a same package name") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates
     ) {
         return OSGIPackageHeaderChecker.findExportPackages(regExp, duplicates);
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Will return all the dependencies of a bundle (modules or packages) that has a dependency version too restrictive to ensure correct updates of dependent modules")
+    public FindRestrictiveDependency findRestrictiveDependencies() {
+        return OSGIPackageHeaderChecker.findRestrictivesDependencies();
     }
 }
