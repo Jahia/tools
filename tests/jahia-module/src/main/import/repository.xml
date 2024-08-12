@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+    <modules jcr:primaryType="jnt:modules">
+        <tools-test-module j:dependencies="default"
+                           j:installedModules="tools-test-module"
+                           j:modulePriority="0"
+                           j:moduleType="templatesSet"
+                           j:title="tools-test-module"
+                           jcr:mixinTypes="jmix:hasExternalProviderExtension"
+                           jcr:primaryType="jnt:module">
+            <sources jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                     jcr:primaryType="jnt:moduleVersionFolder"
+                     j:staticMountPointProviderKey="tools-test-module-1.0.0-SNAPSHOT">
+                <src jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                     jcr:primaryType="jnt:folder">
+                    <main jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                          jcr:primaryType="jnt:folder">
+                        <resources jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                                   jcr:primaryType="jnt:folder">
+                            <jnt_template jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                                          jcr:primaryType="jnt:nodeTypeFolder">
+                                <html jcr:mixinTypes="jmix:sourceControl jmix:hasExternalProviderExtension"
+                                      jcr:primaryType="jnt:templateTypeFolder">
+                                    <template.simple.jsp jcr:mixinTypes="jmix:sourceControl"
+                                                         jcr:primaryType="jnt:templateFile"/>
+                                </html>
+                            </jnt_template>
+                        </resources>
+                    </main>
+                </src>
+            </sources>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder">
+                    <themes jcr:primaryType="jnt:folder">
+                        <default jcr:primaryType="jnt:folder"/>
+                    </themes>
+                </files>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+                <base j:theme="#/modules/tools-test-module/templates/files/themes/default"
+                      j:view="tools-test-module"
+                      jcr:mixinTypes="jmix:theme"
+                      jcr:primaryType="jnt:template">
+                    <simple j:hiddenTemplate="false"
+                            j:view="simple"
+                            jcr:primaryType="jnt:pageTemplate">
+                        <j:translation_en jcr:language="en"
+                                          jcr:mixinTypes="mix:title"
+                                          jcr:primaryType="jnt:translation"
+                                          jcr:title="simple"/>
+                    </simple>
+                </base>
+                <content-template j:applyOn="jnt:content"
+                                  j:hiddenTemplate="true"
+                                  j:priority="1"
+                                  j:view="tools-test-module"
+                                  jcr:primaryType="jnt:contentTemplate">
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <main-resource-display j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay"/>
+                    </pagecontent>
+                </content-template>
+            </templates>
+            <home j:isHomePage="true"
+                  j:templateName="simple"
+                  jcr:primaryType="jnt:page">
+                <j:translation_en jcr:language="en"
+                                  jcr:mixinTypes="mix:title"
+                                  jcr:primaryType="jnt:translation"
+                                  jcr:title="Home"/>
+            </home>
+        </tools-test-module>
+    </modules>
+</content>
