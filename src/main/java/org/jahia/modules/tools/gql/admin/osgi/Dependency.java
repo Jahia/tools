@@ -162,6 +162,7 @@ public class Dependency {
         cleanedDep = cleanedDep.replace("optional", "");
         boolean optional = !cleanedDep.equals(dependency);
 
+        if (cleanedDep.endsWith("=")) cleanedDep = cleanedDep.substring(0, cleanedDep.length() - 1);
         String[] parts = cleanedDep.split("=");
         Dependency instance;
         if (parts.length == 2) {
