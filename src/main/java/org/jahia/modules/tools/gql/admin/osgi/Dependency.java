@@ -58,8 +58,8 @@ public class Dependency {
                 this.status = Status.STRICT_NO_RANGE;
             } else if (versionRange.isExact()) {
                 this.status = Status.SINGLE_VERSION_RANGE;
-            } else if (!this.canBumpMinorVersion()) {
-                this.status = Status.RESTRICTIVE_RANGE;
+            } else if (this.canBumpMinorVersion()) {
+                this.status = Status.OPEN_RANGE;
             } else if (!this.rangeIncludesNextMajorVersion()) {
                 this.status = Status.RESTRICTIVE_RANGE;
             } else if (this.canBumpMinorVersion()) {
@@ -128,17 +128,21 @@ public class Dependency {
         return versionRange.getRight() != null;
     }
 
+    /*
+    * If we can bump the minor version to 20 (aka minor version up range is 99 or something like that we consider that the range is
+    * open for upgrade
+    */
     public boolean canBumpMinorVersion() {
         if (versionRange == null || versionRange.isExact()) {
             return false;
         }
-        Version bumped = new Version(versionRange.getLeft().getMajor(), versionRange.getLeft().getMinor() + 1, 0);
-        if (versionRange.getRight() != null && versionRange.getRight().getMajor() == versionRange.getLeft().getMajor()) {
-            bumped = new Version(versionRange.getRight().getMajor(), versionRange.getRight().getMinor() + 1, 0);
-        }
+        Version bumped = new Version(versionRange.getLeft().getMajor(), versionRange.getLeft().getMinor() + 20, 0);
         return versionRange.includes(bumped);
     }
 
+    /*
+     * If the up range is greater than the major version we consider that the range is open for upgrade
+     */
     public boolean rangeIncludesNextMajorVersion() {
         if (versionRange == null || versionRange.isExact()) {
             return false;
