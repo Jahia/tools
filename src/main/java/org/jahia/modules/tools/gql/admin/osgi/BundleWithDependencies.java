@@ -42,6 +42,13 @@ public class BundleWithDependencies extends BundleResultEntry{
     }
 
     @GraphQLField
+    @GraphQLName("dependenciesUpgradables")
+    @GraphQLDescription("Is module dependencies can be safely upgraded without breaking module wiring ?")
+    public boolean dependenciesUpgradables() {
+        return dependencies.stream().noneMatch(Dependency::isStrictDependency);
+    }
+
+    @GraphQLField
     @GraphQLName("dependencies")
     @GraphQLDescription("List of bundle dependencies (packages and modules).")
     public List<Dependency> getDependencies() {

@@ -60,6 +60,8 @@ public class Dependency {
                 this.status = Status.SINGLE_VERSION_RANGE;
             } else if (!this.canBumpMinorVersion()) {
                 this.status = Status.RESTRICTIVE_RANGE;
+            } else if (!this.rangeIncludesNextMajorVersion()) {
+                this.status = Status.RESTRICTIVE_RANGE;
             } else if (this.canBumpMinorVersion()) {
                 this.status = Status.OPEN_RANGE;
             } else {
@@ -131,7 +133,20 @@ public class Dependency {
             return false;
         }
         Version bumped = new Version(versionRange.getLeft().getMajor(), versionRange.getLeft().getMinor() + 1, 0);
+        if (versionRange.getRight() != null && versionRange.getRight().getMajor() == versionRange.getLeft().getMajor()) {
+            bumped = new Version(versionRange.getRight().getMajor(), versionRange.getRight().getMinor() + 1, 0);
+        }
         return versionRange.includes(bumped);
+    }
+
+    public boolean rangeIncludesNextMajorVersion() {
+        if (versionRange == null || versionRange.isExact()) {
+            return false;
+        }
+        if (type.equals(Type.JAHIA_DEPENDS) && versionRange.getRight() == null) {
+            return true;
+        }
+        return versionRange.getRight() != null && versionRange.getRight().getMajor() > versionRange.getLeft().getMajor();
     }
 
     public boolean isStrictDependency() {
@@ -140,7 +155,7 @@ public class Dependency {
 
     public static Dependency parse(String dependency) {
         String cleanedDep = dependency.replace(";optional", "");
-        cleanedDep = dependency.replace("optional", "");
+        cleanedDep = cleanedDep.replace("optional", "");
         boolean optional = !cleanedDep.equals(dependency);
 
         String[] parts = cleanedDep.split("=");
@@ -152,7 +167,7 @@ public class Dependency {
                 instance = new Dependency(Type.JAHIA_DEPENDS, parts[0], optional, "Error parsing version range: " + e.getMessage());
             }
         } else {
-            instance = new Dependency(Type.JAHIA_DEPENDS, dependency, null, optional);
+            instance = new Dependency(Type.JAHIA_DEPENDS, cleanedDep, null, optional);
         }
         return instance;
     }
@@ -201,7 +216,7 @@ public class Dependency {
         EMPTY("No version dependency"),
         STRICT_NO_RANGE("Strict version dependency"),
         SINGLE_VERSION_RANGE("Single version range dependency"),
-        RESTRICTIVE_RANGE("Version range is too restrictive to minor upgrade"),
+        RESTRICTIVE_RANGE("Version range is too restrictive to ensure safe minor upgrades"),
         OPEN_RANGE("Version is open to minor upgrade"),
         UNKNOWN("Unable to get version status");
 

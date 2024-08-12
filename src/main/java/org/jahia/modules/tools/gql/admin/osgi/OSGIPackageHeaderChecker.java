@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
  */
 public class OSGIPackageHeaderChecker {
 
+    private static final String JAHIA_DEPENDS_PARSE_REGEXP = ",(?![^\\[\\]()]*[\\]\\)])";
+
     /**
      * Perform the OSGI Import-Package checker. This method will check all bundles in the OSGI
      * framework and return a list of matching import packages.
@@ -190,10 +192,9 @@ public class OSGIPackageHeaderChecker {
 
     private static List<Dependency> parseJahiaDepends (String jahiaDependsHeader) {
         List<Dependency> result = new ArrayList<>();
-        Pattern pattern = Pattern.compile("[^,\\[\\]()]+|\\[[^\\]]*\\]|\\([^)]*\\)");
-        Matcher matcher = pattern.matcher(jahiaDependsHeader);
-        while (matcher.find()) {
-            result.add(Dependency.parse(matcher.group()));
+        String[] modules = jahiaDependsHeader.split(JAHIA_DEPENDS_PARSE_REGEXP);
+        for (String module : modules) {
+            result.add(Dependency.parse(module.trim()));
         }
         return result;
     }
