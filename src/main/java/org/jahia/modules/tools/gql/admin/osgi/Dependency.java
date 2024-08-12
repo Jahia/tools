@@ -28,6 +28,7 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
+import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
@@ -158,23 +159,8 @@ public class Dependency {
     }
 
     public static Dependency parse(String dependency) {
-        String cleanedDep = dependency.replace(";optional", "");
-        cleanedDep = cleanedDep.replace("optional", "");
-        boolean optional = !cleanedDep.equals(dependency);
-
-        if (cleanedDep.endsWith("=")) cleanedDep = cleanedDep.substring(0, cleanedDep.length() - 1);
-        String[] parts = cleanedDep.split("=");
-        Dependency instance;
-        if (parts.length == 2) {
-            try {
-                instance = new Dependency(Type.JAHIA_DEPENDS, parts[0], VersionRange.valueOf(parts[1]), optional);
-            } catch (IllegalArgumentException e) {
-                instance = new Dependency(Type.JAHIA_DEPENDS, parts[0], optional, "Error parsing version range: " + e.getMessage());
-            }
-        } else {
-            instance = new Dependency(Type.JAHIA_DEPENDS, cleanedDep, null, optional);
-        }
-        return instance;
+        JahiaDepends jahiaDepends = JahiaDepends.parse(dependency);
+        return new Dependency(Type.JAHIA_DEPENDS, jahiaDepends.getModuleName(), jahiaDepends.getVersionRange(), jahiaDepends.isOptional());
     }
 
     public static Dependency parse(Clause importedPackageClause) {
