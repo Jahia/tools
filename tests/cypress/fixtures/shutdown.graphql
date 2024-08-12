@@ -1,0 +1,7 @@
+mutation($timeout: Int, $force: Boolean, $dryRun: Boolean) {
+    admin {
+        jahia{
+            shutdown(timeout:$timeout, force:$force, dryRun:$dryRun)
+        }
+    }
+}
