@@ -18,15 +18,19 @@ package org.jahia.modules.tools.gql.admin.osgi;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Utility class for the OSGI Import-Package, Export-Package checker.
+ * Utility class for the OSGI Import-Package, Export-Package, Jahia-Depends checker
  *
  * @author jkevan
  */
@@ -130,4 +134,65 @@ public class OSGIPackageHeaderChecker {
         }
         return results;
     }
+
+    /**
+     * Perform the OSGI dependency checker. This method will check all bundles in the OSGI
+     * framework and return a list of bundles dependencies of type Import-Package and Jahia-Depends. A dependency can
+     * be set on a strict version and will prevent dependent modules to be updated correctly on minor versions.
+     *
+     * @return The result of the restrictive dependencies checker.
+     */
+    public static FindDependencies findRestrictivesDependencies(String bundleNameRegExp, boolean modulesOnly, boolean strictVersionsOnly) {
+        FindDependencies results = new FindDependencies();
+
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            if (StringUtils.isNotEmpty(bundleNameRegExp) && !bundle.getSymbolicName().matches(bundleNameRegExp)) {
+                continue;
+            }
+            if (modulesOnly && !BundleUtils.isJahiaModuleBundle(bundle)) {
+                continue;
+            }
+            BundleWithDependencies entry = new BundleWithDependencies(bundle);
+
+            String importPackageHeader = bundle.getHeaders().get(Constants.IMPORT_PACKAGE);
+            if (importPackageHeader != null) {
+                List<Dependency> dependencies = Arrays.stream(Parser.parseHeader(importPackageHeader)).map(Dependency::parse).collect(Collectors.toList());
+                for (Dependency dependency : dependencies) {
+                    if (strictVersionsOnly && dependency.isStrictDependency()) {
+                        entry.addDependency(dependency);
+                    } else if (!strictVersionsOnly) {
+                        entry.addDependency(dependency);
+                    }
+                }
+            }
+
+            String jahiaDependsHeader = bundle.getHeaders().get("Jahia-Depends");
+            if (jahiaDependsHeader != null) {
+                List<Dependency> dependencies = parseJahiaDepends(jahiaDependsHeader);
+                for (Dependency dependency : dependencies) {
+                    if (strictVersionsOnly && dependency.isStrictDependency()) {
+                        entry.addDependency(dependency);
+                    } else if (!strictVersionsOnly) {
+                        entry.addDependency(dependency);
+                    }
+                }
+            }
+
+            if (!entry.getDependencies().isEmpty()) {
+                results.add(entry);
+            }
+        }
+        return results;
+    }
+
+    private static List<Dependency> parseJahiaDepends (String jahiaDependsHeader) {
+        List<Dependency> result = new ArrayList<>();
+        String[] modules = ModuleUtils.toDependsArray(jahiaDependsHeader);
+        for (String module : modules) {
+            result.add(Dependency.parse(module.trim()));
+        }
+        return result;
+    }
+
 }
