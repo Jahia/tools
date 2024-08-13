@@ -15,20 +15,18 @@
  */
 package org.jahia.modules.tools.gql.admin.osgi;
 
-import com.drew.lang.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -37,8 +35,6 @@ import java.util.stream.Collectors;
  * @author jkevan
  */
 public class OSGIPackageHeaderChecker {
-
-    private static final String JAHIA_DEPENDS_PARSE_REGEXP = ",(?![^\\[\\]()]*[\\]\\)])";
 
     /**
      * Perform the OSGI Import-Package checker. This method will check all bundles in the OSGI
@@ -192,7 +188,7 @@ public class OSGIPackageHeaderChecker {
 
     private static List<Dependency> parseJahiaDepends (String jahiaDependsHeader) {
         List<Dependency> result = new ArrayList<>();
-        String[] modules = jahiaDependsHeader.split(JAHIA_DEPENDS_PARSE_REGEXP);
+        String[] modules = ModuleUtils.toDependsArray(jahiaDependsHeader);
         for (String module : modules) {
             result.add(Dependency.parse(module.trim()));
         }
