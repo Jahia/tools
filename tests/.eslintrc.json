@@ -2,7 +2,8 @@
     "parser": "@typescript-eslint/parser",
     "plugins": [
         "@typescript-eslint",
-        "json"
+        "json",
+        "cypress"
     ],
     "extends": [
         "@jahia",
