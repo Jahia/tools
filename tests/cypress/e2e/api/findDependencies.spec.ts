@@ -24,7 +24,7 @@ describe('Dependencies tool test', () => {
 
     describe('Test deployment of provider module and dependent modules to call the findDependencies tool', () => {
         before(() => {
-            console.log("Before test, install modules");
+            console.log('Before test, install modules');
             cy.installBundle('findDependenciesTool/module-provider-1.1.0.jar');
             cy.runProvisioningScript([{startBundle: 'module-provider/1.1.0'}]);
             cy.installBundle('findDependenciesTool/module-dependant-case10-1.0.0.jar');
@@ -57,7 +57,7 @@ describe('Dependencies tool test', () => {
         });
 
         after(() => {
-            console.log("After test, uninstall modules");
+            console.log('After test, uninstall modules');
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case10/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case11/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case21/1.0.0'}]);
