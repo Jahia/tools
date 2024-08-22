@@ -1,4 +1,4 @@
-name: Nightly - Jahia Release
+name: Nightly - Jahia Snapshot
 
 on:
   workflow_dispatch:
