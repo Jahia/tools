@@ -5,4 +5,4 @@ src/javascript/__tests__
 src/main/resources/javascript/
 src/javascript/publicPath.js
 webpack.config.js
-tests/**
+tests
