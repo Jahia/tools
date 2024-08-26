@@ -1,0 +1,23 @@
+query($regexp: String, $strictVersionsOnly: Boolean) {
+    admin {
+        tools {
+            findDependencies(RegExp: $regexp, StrictVersionOnly: $strictVersionsOnly) {
+                totalCount,
+                bundles {
+                    bundleDisplayName,
+                    bundleName,
+                    bundleSymbolicName
+                    dependenciesUpgradables,
+                    dependencies {
+                        type,
+                        name,
+                        version,
+                        optional,
+                        error,
+                        summary
+                    }
+                }
+            }
+        }
+    }
+}
