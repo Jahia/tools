@@ -8,7 +8,6 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
-    needs: build
     runs-on: self-hosted
     strategy:
       fail-fast: false
@@ -27,7 +26,7 @@ jobs:
           module_id: tools
           testrail_project: Tools
           incident_service: tools-JahiaRL
-          tests_manifest: provisioning-manifest-build.yml
+          tests_manifest: provisioning-manifest-snapshot.yml
           timeout_minutes: 20
           jahia_image: jahia/jahia-ee:8
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
