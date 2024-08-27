@@ -1,25 +1,9 @@
-import {findDependencies, healthCheck} from '../../support/gql';
+import {findDependencies} from '../../support/gql';
 
 describe('Dependencies tool test', () => {
-    const waitUntilOptions = {
-        interval: 500,
-        timeout: 10000,
-        errorMsg: 'Failed to verify configuration update'
-    };
-
-    const waitUntilHealth = (health: string, probeName: string) => {
-        cy.waitUntil(() =>
-            healthCheck({includes: probeName, severity: 'LOW'}).then(result => {
-                return result.probes.find(probe => probe.name === probeName).status.health === health;
-            }), waitUntilOptions);
-    };
-
-    it('Check that module state probe is green by default', () => {
-        healthCheck({includes: 'ModuleState', severity: 'LOW'}).should(r => {
-            expect(r.status.health).to.eq('GREEN');
-            const moduleSpringUsageProbe = r.probes.find(probe => probe.name === 'ModuleState');
-            expect(moduleSpringUsageProbe.status.health).to.eq('GREEN');
-        });
+    it('Wait until SAM returns GREEN for medium severity', () => {
+        // The timeout of 3mn (180) is there to allow for the cluster to finish its synchronization
+        waitUntilSAMStatusGreen('MEDIUM', 180000);
     });
 
     describe('Test deployment of provider module and dependent modules to call the findDependencies tool', () => {
@@ -53,7 +37,7 @@ describe('Dependencies tool test', () => {
             cy.runProvisioningScript([{startBundle: 'module-dependant-case33/1.0.0'}]);
             cy.installBundle('findDependenciesTool/module-dependant-case34-1.0.0.jar');
             cy.runProvisioningScript([{startBundle: 'module-dependant-case34/1.0.0'}]);
-            waitUntilHealth('GREEN', 'ModuleState');
+            waitUntilSAMStatusGreen('MEDIUM', 180000);
         });
 
         after(() => {
@@ -72,7 +56,7 @@ describe('Dependencies tool test', () => {
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case33/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case34/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-provider/1.1.0'}]);
-            waitUntilHealth('GREEN', 'ModuleState');
+            waitUntilSAMStatusGreen('MEDIUM', 180000);
         });
 
         it('Test finding module that prevent minor upgrades', () => {
