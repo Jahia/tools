@@ -1,7 +1,20 @@
-import {findDependencies} from '../../support/gql';
+import {findDependencies, healthCheck} from '../../support/gql';
 import {waitUntilSAMStatusGreen} from '@jahia/cypress';
 
 describe('Dependencies tool test', () => {
+    const waitUntilOptions = {
+        interval: 500,
+        timeout: 30000,
+        errorMsg: 'Failed to verify configuration update'
+    };
+
+    const waitUntilHealth = (health: string, probeName: string) => {
+        cy.waitUntil(() =>
+            healthCheck({includes: probeName, severity: 'LOW'}).then(result => {
+                return result.probes.find(probe => probe.name === probeName).status.health === health;
+            }), waitUntilOptions);
+    };
+
     it('Wait until SAM returns GREEN for medium severity', () => {
         // The timeout of 3mn (180) is there to allow for the cluster to finish its synchronization
         waitUntilSAMStatusGreen('MEDIUM', 180000);
@@ -38,7 +51,7 @@ describe('Dependencies tool test', () => {
             cy.runProvisioningScript([{startBundle: 'module-dependant-case33/1.0.0'}]);
             cy.installBundle('findDependenciesTool/module-dependant-case34-1.0.0.jar');
             cy.runProvisioningScript([{startBundle: 'module-dependant-case34/1.0.0'}]);
-            waitUntilSAMStatusGreen('MEDIUM', 180000);
+            waitUntilHealth('GREEN', 'ModuleState');
         });
 
         after(() => {
@@ -57,7 +70,7 @@ describe('Dependencies tool test', () => {
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case33/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-dependant-case34/1.0.0'}]);
             cy.runProvisioningScript([{uninstallBundle: 'module-provider/1.1.0'}]);
-            waitUntilSAMStatusGreen('MEDIUM', 180000);
+            waitUntilHealth('GREEN', 'ModuleState');
         });
 
         it('Test finding module that prevent minor upgrades', () => {
