@@ -2,7 +2,6 @@ import {findDependencies} from '../../support/gql';
 import {waitUntilSAMStatusGreen} from '@jahia/cypress';
 
 describe('Dependencies tool test', () => {
-
     it('Wait until SAM returns GREEN for medium severity', () => {
         // The timeout of 3mn (180) is there to allow for the cluster to finish its synchronization
         waitUntilSAMStatusGreen('MEDIUM', 180000);
