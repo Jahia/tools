@@ -85,8 +85,8 @@ public class Dependency {
     @GraphQLField
     @GraphQLName("type")
     @GraphQLDescription("The type of the dependency.")
-    public Type getType() {
-        return type;
+    public String getType() {
+        return type.toString();
     }
 
     @GraphQLField
@@ -119,6 +119,13 @@ public class Dependency {
     @GraphQLDescription("An error occurred during parsing dependency")
     public String getError() {
         return error;
+    }
+
+    @GraphQLField
+    @GraphQLName("status")
+    @GraphQLDescription("The status of that dependency.")
+    public String getStatus() {
+        return status.toString();
     }
 
     public boolean hasVersion() {
@@ -177,15 +184,6 @@ public class Dependency {
             instance = new Dependency(Type.IMPORT_PACKAGE, importedPackageClause.getName(), null, optional);
         }
         return instance;
-    }
-
-    @GraphQLField
-    @GraphQLName("summary")
-    @GraphQLDescription("The summary of dependency inspection")
-    @Override
-    public String toString() {
-        return "type='" + type.getMessage() + '\'' + ", name='" + name + '\'' + ", version=" + versionRange + ", status=" + status +
-                ((StringUtils.isNotEmpty(error))?", error=" + error:"");
     }
 
     public enum Type {

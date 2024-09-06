@@ -14,7 +14,7 @@ query($regexp: String, $strictVersionsOnly: Boolean) {
                         version,
                         optional,
                         error,
-                        summary
+                        status
                     }
                 }
             }
