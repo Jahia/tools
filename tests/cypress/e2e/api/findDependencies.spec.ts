@@ -71,7 +71,7 @@ describe('Dependencies tool test', () => {
                 expect(case10Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case10Import.optional).to.eq(false);
                 expect(case10Import.error).to.eq('');
-                expect(case10Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case10Import.status).to.eq('OPEN_RANGE');
 
                 const case11 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case11');
                 expect(case11.dependenciesUpgradables).to.eq(true);
@@ -80,7 +80,7 @@ describe('Dependencies tool test', () => {
                 expect(case11Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case11Import.optional).to.eq(false);
                 expect(case11Import.error).to.eq('');
-                expect(case11Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case11Import.status).to.eq('OPEN_RANGE');
 
                 const case21 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case21');
                 expect(case21.dependenciesUpgradables).to.eq(true);
@@ -89,13 +89,13 @@ describe('Dependencies tool test', () => {
                 expect(case21Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case21Import.optional).to.eq(false);
                 expect(case21Import.error).to.eq('');
-                expect(case21Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case21Import.status).to.eq('OPEN_RANGE');
                 const case21Depends = case21.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case21Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case21Depends.version).to.eq('');
                 expect(case21Depends.optional).to.eq(false);
                 expect(case21Depends.error).to.eq('');
-                expect(case21Depends.summary).to.contains('status=EMPTY');
+                expect(case21Depends.status).to.eq('EMPTY');
 
                 const case22 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case22');
                 expect(case22.dependenciesUpgradables).to.eq(true);
@@ -104,13 +104,13 @@ describe('Dependencies tool test', () => {
                 expect(case22Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case22Import.optional).to.eq(false);
                 expect(case22Import.error).to.eq('');
-                expect(case22Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case22Import.status).to.eq('OPEN_RANGE');
                 const case22Depends = case22.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case22Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case22Depends.version).to.eq('');
                 expect(case22Depends.optional).to.eq(true);
                 expect(case22Depends.error).to.eq('');
-                expect(case22Depends.summary).to.contains('status=EMPTY');
+                expect(case22Depends.status).to.eq('EMPTY');
 
                 const case23 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case23');
                 expect(case23.dependenciesUpgradables).to.eq(true);
@@ -119,13 +119,13 @@ describe('Dependencies tool test', () => {
                 expect(case23Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case23Import.optional).to.eq(false);
                 expect(case23Import.error).to.eq('');
-                expect(case23Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case23Import.status).to.eq('OPEN_RANGE');
                 const case23Depends = case23.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case23Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case23Depends.version).to.eq('1.1.0');
                 expect(case23Depends.optional).to.eq(false);
                 expect(case23Depends.error).to.eq('');
-                expect(case23Depends.summary).to.contains('status=OPEN_RANGE');
+                expect(case23Depends.status).to.eq('OPEN_RANGE');
 
                 const case24 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case24');
                 expect(case24.dependenciesUpgradables).to.eq(true);
@@ -134,13 +134,13 @@ describe('Dependencies tool test', () => {
                 expect(case24Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case24Import.optional).to.eq(false);
                 expect(case24Import.error).to.eq('');
-                expect(case24Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case24Import.status).to.eq('OPEN_RANGE');
                 const case24Depends = case24.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case24Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case24Depends.version).to.eq('1.1.0');
                 expect(case24Depends.optional).to.eq(true);
                 expect(case24Depends.error).to.eq('');
-                expect(case24Depends.summary).to.contains('status=OPEN_RANGE');
+                expect(case24Depends.status).to.eq('OPEN_RANGE');
 
                 const case25 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case25');
                 expect(case25.dependenciesUpgradables).to.eq(true);
@@ -149,13 +149,13 @@ describe('Dependencies tool test', () => {
                 expect(case25Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case25Import.optional).to.eq(false);
                 expect(case25Import.error).to.eq('');
-                expect(case25Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case25Import.status).to.eq('OPEN_RANGE');
                 const case25Depends = case25.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case25Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case25Depends.version).to.eq('1.1.1');
                 expect(case25Depends.optional).to.eq(true);
                 expect(case25Depends.error).to.eq('');
-                expect(case25Depends.summary).to.contains('status=OPEN_RANGE');
+                expect(case25Depends.status).to.eq('OPEN_RANGE');
 
                 const case26 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case26');
                 expect(case26.dependenciesUpgradables).to.eq(true);
@@ -164,7 +164,7 @@ describe('Dependencies tool test', () => {
                 expect(case26Import.version).to.eq('[1.0.0,2.0.0)');
                 expect(case26Import.optional).to.eq(false);
                 expect(case26Import.error).to.eq('');
-                expect(case26Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case26Import.status).to.eq('OPEN_RANGE');
 
                 const case27 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case27');
                 expect(case27.dependenciesUpgradables).to.eq(true);
@@ -173,7 +173,7 @@ describe('Dependencies tool test', () => {
                 expect(case27Import.version).to.eq('[1.0.0,1.99.0)');
                 expect(case27Import.optional).to.eq(false);
                 expect(case27Import.error).to.eq('');
-                expect(case27Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case27Import.status).to.eq('OPEN_RANGE');
 
                 const case31 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case31');
                 expect(case31.dependenciesUpgradables).to.eq(false);
@@ -182,7 +182,7 @@ describe('Dependencies tool test', () => {
                 expect(case31Import.version).to.eq('[1.1.0,1.2.0)');
                 expect(case31Import.optional).to.eq(false);
                 expect(case31Import.error).to.eq('');
-                expect(case31Import.summary).to.contains('status=RESTRICTIVE_RANGE');
+                expect(case31Import.status).to.eq('RESTRICTIVE_RANGE');
 
                 const case32 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case32');
                 expect(case32.dependenciesUpgradables).to.eq(false);
@@ -191,13 +191,13 @@ describe('Dependencies tool test', () => {
                 expect(case32Import.version).to.eq('[1.1.0,2.0.0)');
                 expect(case32Import.optional).to.eq(false);
                 expect(case32Import.error).to.eq('');
-                expect(case32Import.summary).to.contains('status=OPEN_RANGE');
+                expect(case32Import.status).to.eq('OPEN_RANGE');
                 const case32Depends = case32.dependencies.find(dep => dep.name === 'module-provider');
                 expect(case32Depends.type).to.eq('JAHIA_DEPENDS');
                 expect(case32Depends.version).to.eq('[1.0.0,1.2.0)');
                 expect(case32Depends.optional).to.eq(false);
                 expect(case32Depends.error).to.eq('');
-                expect(case32Depends.summary).to.contains('status=RESTRICTIVE_RANGE');
+                expect(case32Depends.status).to.eq('RESTRICTIVE_RANGE');
 
                 const case33 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case33');
                 expect(case33.dependenciesUpgradables).to.eq(false);
@@ -206,7 +206,7 @@ describe('Dependencies tool test', () => {
                 expect(case33Import.version).to.eq('1.1.0');
                 expect(case33Import.optional).to.eq(false);
                 expect(case33Import.error).to.eq('');
-                expect(case33Import.summary).to.contains('status=STRICT_NO_RANGE');
+                expect(case33Import.status).to.eq('STRICT_NO_RANGE');
 
                 const case34 = r.bundles.find(bundle => bundle.bundleSymbolicName === 'module-dependant-case34');
                 expect(case34.dependenciesUpgradables).to.eq(false);
@@ -215,7 +215,7 @@ describe('Dependencies tool test', () => {
                 expect(case34Import.version).to.eq('[1.1.0,1.2.0)');
                 expect(case34Import.optional).to.eq(false);
                 expect(case34Import.error).to.eq('');
-                expect(case34Import.summary).to.contains('status=RESTRICTIVE_RANGE');
+                expect(case34Import.status).to.eq('RESTRICTIVE_RANGE');
             });
         });
     });
