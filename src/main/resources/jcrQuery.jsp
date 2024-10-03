@@ -34,6 +34,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>JCR Query Tool</title>
     <%@ include file="css.jspf" %>
+    <script type="text/javascript">
+        function go(id1, value1, id2, value2, id3, value3) {
+            document.getElementById(id1).value = value1;
+            if (id2) {
+                document.getElementById(id2).value = value2;
+            }
+            if (id3) {
+                document.getElementById(id3).value = value3;
+            }
+            document.getElementById('navigateForm').submit();
+        }
+    </script>
 </head>
 <c:set var="workspace" value="${functions:default(fn:escapeXml(param.workspace), 'default')}"/>
 <c:set var="locale" value="${functions:default(fn:escapeXml(param.locale), 'en')}"/>
