@@ -33,23 +33,23 @@ import org.springframework.core.io.Resource;
 
 /**
  * Utility class for copying configuration files (used in the process of generating support information archive).
- * 
+ *
  * @see SupportInfoHelper
  * @author Sergiy Shyrkov
  */
 class ConfigurationCopier {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationCopier.class);
-    
+
     public static final String REPOSITORY_FOLDER  = "repository";
-    
+
     private ConfigurationCopier() {
         throw new IllegalAccessError("Utility class");
     }
 
     /**
      * Copies the configuration files specified, replacing the sensitive data like usernames, passwords etc..
-     * 
+     *
      * @param targetDir the parent directory, the config file will be copied to
      * @param fromDigitalFactoryConfig consider files from digital-factory-config folder?
      * @param fromDigitalFactoryData consider files from digital-factory-data folder?
@@ -103,7 +103,6 @@ class ConfigurationCopier {
             if (cfgDir != null) {
                 File destDir = new File(cfg, "digital-factory-config");
                 FileUtils.copyDirectory(cfgDir, destDir);
-                replaceSensitivePropertyValue(new File(destDir, "jahia/jahia.properties"), "jahiaToolManagerPassword");
             } else {
                 logger.warn("Unable to detect location of DX configuration folder. Skipping exporting config files.");
             }
