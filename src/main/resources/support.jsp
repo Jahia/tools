@@ -102,7 +102,6 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
         <p>
         The following values are replaced in the corresponding files with <code>***</code>:
         <ul>
-        	<li>Jahia Tools password hash: <code>&lt;digital-factory-config&gt;/jahia/jahia.properties</code> - <code>jahiaToolManagerPassword</code></li>
         	<li>Database username/password: <code>&lt;dx-webapp-dir&gt;/META-INF/context.xml</code> - attributes <code>username</code> and <code>password</code></li>
         	<li>Mail server configuration: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-mail-server.xml</code> - attribute <code>j:uri</code></li>
         	<li>Jahia root user password hash: <code>&lt;dx-webapp-dir&gt;/WEB-INF/etc/repository/root-user.xml</code> - attribute <code>j:password</code></li>
