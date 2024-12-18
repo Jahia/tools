@@ -1,0 +1,19 @@
+query($nameRegExp: String, $areModules: Boolean, $withUnsupportedDependenciesOnly: Boolean, $supported: Boolean, $statuses: [Status]) {
+    admin {
+        tools {
+            bundles(nameRegExp: $nameRegExp, areModules: $areModules, withUnsupportedDependenciesOnly: $withUnsupportedDependenciesOnly) {
+                bundleDisplayName,
+                bundleName,
+                bundleSymbolicName
+                dependencies(supported: $supported, statuses: $statuses) {
+                    type,
+                    name,
+                    version,
+                    optional,
+                    error,
+                    status
+                }
+            }
+        }
+    }
+}

@@ -15,12 +15,17 @@
  */
 package org.jahia.modules.tools.gql.admin;
 
-import graphql.annotations.annotationTypes.*;
+import graphql.annotations.annotationTypes.GraphQLDefaultValue;
+import graphql.annotations.annotationTypes.GraphQLDescription;
+import graphql.annotations.annotationTypes.GraphQLField;
+import graphql.annotations.annotationTypes.GraphQLName;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
+import org.jahia.modules.tools.gql.admin.osgi.BundleWithDependencies;
 import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
-import org.jahia.modules.tools.gql.admin.osgi.FindDependencies;
-import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
 import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
+import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
+
+import java.util.List;
 
 
 @GraphQLName("AdminTools")
@@ -46,12 +51,13 @@ public class ToolsGraphQL {
     }
 
     @GraphQLField
-    @GraphQLDescription("Will return dependencies of a bundle (modules or packages)")
-    public FindDependencies findDependencies(
-            @GraphQLName("RegExp") @GraphQLDescription("will return only bundle name matching the RegExp") String regExp,
-            @GraphQLName("ModulesOnly") @GraphQLDescription("will return only dependencies of Jahia modules (not bundles)") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class)  boolean modulesOnly,
-            @GraphQLName("StrictVersionOnly") @GraphQLDescription("will return only dependencies with a strict version specified (a version that reprobates upgrade of minor ones)") @GraphQLDefaultValue(GqlUtils.SupplierTrue.class)  boolean strictVersionsOnly
+    @GraphQLDescription("List of matching bundles.")
+    public List<BundleWithDependencies> bundles(
+            @GraphQLName("nameRegExp") @GraphQLDescription("Only return bundles whose symbolic names match the given regular expression") String nameRegExp,
+            @GraphQLName("areModules") @GraphQLDescription("Allows to filter on whether the bundles are Jahia modules or not. If the parameter is set to 'true', only bundles that are also Jahia modules are returned. If set to 'false', only bundles that are not Jahia modules are returned. By default, both Jahia modules and non Jahia modules are returned.") Boolean areModules,
+            @GraphQLName("withUnsupportedDependenciesOnly") @GraphQLDescription("Only return bundles that have 1 or more dependencies configured with an unsupported version range") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean withUnsupportedDependenciesOnly
     ) {
-        return OSGIPackageHeaderChecker.findRestrictivesDependencies(regExp, modulesOnly, strictVersionsOnly);
+        return OSGIPackageHeaderChecker.findBundles(nameRegExp, areModules, withUnsupportedDependenciesOnly);
     }
+
 }

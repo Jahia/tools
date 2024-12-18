@@ -139,11 +139,11 @@ public class OSGIPackageHeaderChecker {
      * Find all bundles in the OSGI framework that match the given parameters.
      *
      * @param nameRegExp                      Only return bundles whose names match the given regular expression.
-     * @param modulesOnly                     If <code>true</code>, will only return bundles that are also Jahia modules.
+     * @param areModules                      If <code>true</code>, will only return bundles that are also Jahia modules. If <code>false</code>, will only return bundles that are not Jahia modules. If <code>null</code>, will return all bundles.
      * @param withUnsupportedDependenciesOnly If <code>true</code>, will only return bundles that have 1 or more dependencies configured with an unsupported version range.
      * @return The list of bundles.
      */
-    public static List<BundleWithDependencies> findBundles(String nameRegExp, boolean modulesOnly, boolean withUnsupportedDependenciesOnly) {
+    public static List<BundleWithDependencies> findBundles(String nameRegExp, Boolean areModules, boolean withUnsupportedDependenciesOnly) {
 
         // validate and compile the regular expression
         final Pattern pattern;
@@ -159,7 +159,7 @@ public class OSGIPackageHeaderChecker {
         Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
         return Arrays.stream(bundles)
                 .filter(bundle -> pattern == null || (bundle.getSymbolicName() != null && pattern.matcher(bundle.getSymbolicName()).matches()))
-                .filter(bundle -> !modulesOnly || BundleUtils.isJahiaModuleBundle(bundle))
+                .filter(bundle -> areModules == null || (areModules == BundleUtils.isJahiaModuleBundle(bundle)))
                 .map(BundleWithDependencies::new)
                 .filter(entry -> !withUnsupportedDependenciesOnly || entry.hasUnsupportedDependencies())
                 .collect(Collectors.toList());
