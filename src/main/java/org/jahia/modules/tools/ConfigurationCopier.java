@@ -212,15 +212,4 @@ class ConfigurationCopier {
         return content.replaceAll(attributeName + "=\"[^\"]*\"", attributeName + "=\"***\"");
     }
 
-    private static void replaceSensitivePropertyValue(File file, String key) throws IOException {
-        String content = FileUtils.readFileToString(file, ENCODING);
-        int pos = content.indexOf(key);
-        if (pos == -1) {
-            return;
-        } else {
-            FileUtils.writeStringToFile(file, content.substring(0, content.indexOf('=', pos) + 1) + " ***"
-                    + content.substring(content.indexOf('\n', pos + key.length())), ENCODING);
-        }
-    }
-
 }

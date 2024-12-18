@@ -8,12 +8,13 @@ interface AuthMethod {
 }
 
 type FindDependenciesArguments = {
-    regexp: string,
+    nameRegExp: string,
     strictVersionsOnly?: boolean,
     auth?: AuthMethod
 }
 
-export const findDependencies = ({regexp, strictVersionsOnly, auth}: FindDependenciesArguments): Chainable<any> => {
+// TODO rename
+export const findDependencies = ({nameRegExp, strictVersionsOnly, auth}: FindDependenciesArguments): Chainable<any> => {
     if (auth) {
         cy.apolloClient(auth);
     }
@@ -21,11 +22,11 @@ export const findDependencies = ({regexp, strictVersionsOnly, auth}: FindDepende
     return cy
         .apollo({
             queryFile: 'findDependencies.graphql',
-            variables: {regexp, strictVersionsOnly},
+            variables: {nameRegExp, strictVersionsOnly},
             errorPolicy: 'all'
         })
         .then((response: any) => {
             console.log(response);
-            return response.data.admin.tools.findDependencies;
+            return response.data.admin.tools.bundles;
         });
 };

@@ -1,21 +1,17 @@
-query($regexp: String, $strictVersionsOnly: Boolean) {
+query($nameRegExp: String, $modulesOnly: Boolean, $withUnsupportedDependenciesOnly: Boolean) {
     admin {
         tools {
-            findDependencies(RegExp: $regexp, StrictVersionOnly: $strictVersionsOnly) {
-                totalCount,
-                bundles {
-                    bundleDisplayName,
-                    bundleName,
-                    bundleSymbolicName
-                    dependenciesUpgradables,
-                    dependencies {
-                        type,
-                        name,
-                        version,
-                        optional,
-                        error,
-                        status
-                    }
+            bundles(nameRegExp: $nameRegExp, modulesOnly: $modulesOnly, withUnsupportedDependenciesOnly: $withUnsupportedDependenciesOnly) {
+                bundleDisplayName,
+                bundleName,
+                bundleSymbolicName
+                dependencies {
+                    type,
+                    name,
+                    version,
+                    optional,
+                    error,
+                    status
                 }
             }
         }

@@ -26,7 +26,6 @@ package org.jahia.modules.tools.gql.admin.osgi;
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
-import org.apache.commons.lang.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.jahia.services.modulemanager.models.JahiaDepends;
 import org.osgi.framework.Constants;
@@ -100,7 +99,7 @@ public class Dependency {
     @GraphQLName("version")
     @GraphQLDescription("The version of the dependency (can be a range, a number or empty)")
     public String getVersion() {
-        return (versionRange!=null)?versionRange.toString():"";
+        return (versionRange != null) ? versionRange.toString() : "";
     }
 
     public VersionRange getVersionRange() {
@@ -124,8 +123,8 @@ public class Dependency {
     @GraphQLField
     @GraphQLName("status")
     @GraphQLDescription("The status of that dependency.")
-    public String getStatus() {
-        return status.toString();
+    public Status getStatus() {
+        return status;
     }
 
     public boolean hasVersion() {
@@ -137,9 +136,9 @@ public class Dependency {
     }
 
     /*
-    * If we can bump the minor version to 20 (aka minor version up range is 99 or something like that we consider that the range is
-    * open for upgrade
-    */
+     * If we can bump the minor version to 20 (aka minor version up range is 99 or something like that we consider that the range is
+     * open for upgrade
+     */
     public boolean canBumpMinorVersion() {
         if (versionRange == null || versionRange.isExact()) {
             return false;
@@ -202,17 +201,26 @@ public class Dependency {
     }
 
     public enum Status {
-        EMPTY("No version dependency"),
-        STRICT_NO_RANGE("Strict version dependency"),
-        SINGLE_VERSION_RANGE("Single version range dependency"),
-        RESTRICTIVE_RANGE("Version range is too restrictive to ensure safe minor upgrades"),
-        OPEN_RANGE("Version is open to minor upgrade"),
-        UNKNOWN("Unable to get version status");
+        EMPTY(false, "No version dependency"),
+        STRICT_NO_RANGE(false, "Strict version dependency"),
+        SINGLE_VERSION_RANGE(false, "Single version range dependency"),
+        RESTRICTIVE_RANGE(false, "Version range is too restrictive to ensure safe minor upgrades"),
+        OPEN_RANGE(true, "Version is open to minor upgrade"),
+        UNKNOWN(false, "Unable to get version status");
 
+        private final boolean supported;
         private final String message;
 
-        Status(String message) {
+        Status(boolean supported, String message) {
             this.message = message;
+            this.supported = supported;
+        }
+
+        public boolean isSupported() {
+            return supported;
+        }
+        public boolean isUnsupported() {
+            return !supported;
         }
 
         public String getMessage() {
