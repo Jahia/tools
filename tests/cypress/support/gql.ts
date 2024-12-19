@@ -1,32 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Chainable = Cypress.Chainable
 
-type FindDependenciesArguments = {
+type GetBundlesArguments = {
     nameRegExp?: string,
+    areModules?: boolean,
     withUnsupportedDependenciesOnly?: boolean,
     supported?: boolean,
     statuses?: Status[],
 }
 
 export enum Status {
-    EMPTY,
-    STRICT_NO_RANGE,
-    SINGLE_VERSION_RANGE,
-    RESTRICTIVE_RANGE,
-    OPEN_RANGE,
-    UNKNOWN
+    EMPTY = 'EMPTY',
+    STRICT_NO_RANGE = 'STRICT_NO_RANGE',
+    SINGLE_VERSION_RANGE = 'SINGLE_VERSION_RANGE',
+    RESTRICTIVE_RANGE = 'RESTRICTIVE_RANGE',
+    OPEN_RANGE = 'OPEN_RANGE',
+    UNKNOWN = 'UNKNOWN'
 }
 
 export const getBundles = ({
     nameRegExp,
+    areModules,
     withUnsupportedDependenciesOnly,
     supported,
     statuses
-}: FindDependenciesArguments): Chainable<any> => {
+}: GetBundlesArguments): Chainable<any> => {
     return cy
         .apollo({
             queryFile: 'getBundles.graphql',
-            variables: {nameRegExp, withUnsupportedDependenciesOnly, supported, statuses},
+            variables: {nameRegExp, areModules, withUnsupportedDependenciesOnly, supported, statuses},
             errorPolicy: 'all'
         });
 };

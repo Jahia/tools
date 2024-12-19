@@ -151,7 +151,7 @@ describe('Dependencies tool test', () => {
         });
 
         it('Test both parameters "supported" and "statuses" can not be used together', () => {
-            const statuses = [Status.RESTRICTIVE_RANGE, Status.OPEN_RANGE].map(status => Status[status]);
+            const statuses = [Status.RESTRICTIVE_RANGE, Status.OPEN_RANGE];
             getBundles({supported: true, statuses: statuses}).should(result => {
                 console.log('result', result);
                 expect(result).to.have.property('errors');
@@ -195,7 +195,7 @@ describe('Dependencies tool test', () => {
             });
         });
         it('Test "statuses" parameter set to valid value with result', () => {
-            const statuses = [Status.OPEN_RANGE].map(status => Status[status]);
+            const statuses = [Status.OPEN_RANGE];
             getBundles({nameRegExp: 'module-dependant-case10', statuses: statuses}).should(result => {
                 console.log('result', result);
                 expect(result).to.have.property('data');
@@ -210,7 +210,7 @@ describe('Dependencies tool test', () => {
             });
         });
         it('Test "statuses" parameter set to valid value with no result', () => {
-            const statuses = [Status.SINGLE_VERSION_RANGE].map(status => Status[status]);
+            const statuses = [Status.SINGLE_VERSION_RANGE];
             getBundles({nameRegExp: 'module-dependant-case10', statuses: statuses}).should(result => {
                 console.log('result', result);
                 expect(result).to.have.property('data');

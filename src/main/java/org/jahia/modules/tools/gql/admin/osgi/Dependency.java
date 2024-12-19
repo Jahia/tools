@@ -219,6 +219,7 @@ public class Dependency {
         public boolean isSupported() {
             return supported;
         }
+
         public boolean isUnsupported() {
             return !supported;
         }
