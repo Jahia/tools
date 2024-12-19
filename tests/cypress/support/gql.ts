@@ -1,31 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Chainable = Cypress.Chainable
 
-interface AuthMethod {
-    token?: string
-    username?: string
-    password?: string
+type GetBundlesArguments = {
+    nameRegExp?: string,
+    areModules?: boolean,
+    withUnsupportedDependenciesOnly?: boolean,
+    supported?: boolean,
+    statuses?: Status[],
 }
 
-type FindDependenciesArguments = {
-    regexp: string,
-    strictVersionsOnly?: boolean,
-    auth?: AuthMethod
+export enum Status {
+    EMPTY = 'EMPTY',
+    STRICT_NO_RANGE = 'STRICT_NO_RANGE',
+    SINGLE_VERSION_RANGE = 'SINGLE_VERSION_RANGE',
+    RESTRICTIVE_RANGE = 'RESTRICTIVE_RANGE',
+    OPEN_RANGE = 'OPEN_RANGE',
+    UNKNOWN = 'UNKNOWN'
 }
 
-export const findDependencies = ({regexp, strictVersionsOnly, auth}: FindDependenciesArguments): Chainable<any> => {
-    if (auth) {
-        cy.apolloClient(auth);
-    }
-
+export const getBundles = ({
+    nameRegExp,
+    areModules,
+    withUnsupportedDependenciesOnly,
+    supported,
+    statuses
+}: GetBundlesArguments): Chainable<any> => {
     return cy
         .apollo({
-            queryFile: 'findDependencies.graphql',
-            variables: {regexp, strictVersionsOnly},
+            queryFile: 'getBundles.graphql',
+            variables: {nameRegExp, areModules, withUnsupportedDependenciesOnly, supported, statuses},
             errorPolicy: 'all'
-        })
-        .then((response: any) => {
-            console.log(response);
-            return response.data.admin.tools.findDependencies;
         });
 };
