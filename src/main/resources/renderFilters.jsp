@@ -17,7 +17,7 @@
 
     if (beanName != null) {
         for (RenderFilter f : RenderService.getInstance().getRenderChainInstance().getFilters()) {
-            if (f.getClass().getName().equals(beanName) && (p == 0 || p == f.getPriority())) {
+            if (f.getName().equals(beanName) && (p == 0 || p == f.getPriority())) {
                 System.out.print("processing render filter " + beanName + "(" + f.getName() + ")");
                 if ("true".equals(s)) {
                     f.setDisabled(!f.isDisabled());
@@ -72,8 +72,8 @@
             <td>${fn:escapeXml(filter.conditionsSummary)}</td>
             <td>${filter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</td>
             <td>
-                <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}&toolAccessToken=${toolAccessToken}">${filter.disabled ? "enable" : "disable"}</a>
-                <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}&toolAccessToken=${toolAccessToken}">down</a>
+                <a href="renderFilters.jsp?bean=${fn:escapeXml(filter.name)}&switch=true&priority=${filter.priority}&toolAccessToken=${toolAccessToken}">${filter.disabled ? "enable" : "disable"}</a>
+                <a href="renderFilters.jsp?bean=${fn:escapeXml(filter.name)}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}&toolAccessToken=${toolAccessToken}">down</a>
             </td>
         </tr>
         <c:set var="previousPriority" value="${filter.priority}"/>
