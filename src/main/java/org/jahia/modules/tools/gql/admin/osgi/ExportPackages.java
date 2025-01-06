@@ -52,7 +52,7 @@ public class ExportPackages {
     @GraphQLDescription("Flat list of exported packages")
     public List<String> getMatchingPackages() {
         return exportPackages.stream().map(
-                (BundleWithExportPackage entry) -> entry.getPackage() + " EXPOSED BY " + entry.getBundleDisplayName()
+                (BundleWithExportPackage entry) -> entry.getPackage() + " EXPOSED BY " + entry.getDisplayName()
         ).collect(Collectors.toList());
     }
 

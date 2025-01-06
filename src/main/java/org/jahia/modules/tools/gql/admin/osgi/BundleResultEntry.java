@@ -15,6 +15,7 @@
  */
 package org.jahia.modules.tools.gql.admin.osgi;
 
+import graphql.annotations.annotationTypes.GraphQLDeprecate;
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
@@ -25,45 +26,82 @@ import org.osgi.framework.Bundle;
  * Can be implemented to automatically provide bundle GQL fields.
  */
 public abstract class BundleResultEntry {
-    private final String bundleName;
-    private final String bundleSymbolicName;
-    private final String bundleDisplayName;
-    private final long bundleId;
+    private final String name;
+    private final String symbolicName;
+    private final String displayName;
+    private final long id;
 
     public BundleResultEntry(Bundle bundle) {
-        this.bundleName = bundle.getHeaders().get("Bundle-Name");
-        this.bundleSymbolicName = bundle.getSymbolicName();
-        this.bundleDisplayName = bundleName != null ?
-                bundleName + " (" + bundleSymbolicName + ")" :
-                bundleSymbolicName;
-        this.bundleId = bundle.getBundleId();
+        this.name = bundle.getHeaders().get("Bundle-Name");
+        this.symbolicName = bundle.getSymbolicName();
+        this.displayName = name != null ?
+                name + " (" + symbolicName + ")" :
+                symbolicName;
+        this.id = bundle.getBundleId();
+    }
+
+    @GraphQLField
+    @GraphQLName("name")
+    @GraphQLDescription("Name of the bundle.")
+    public String getName() {
+        return name;
     }
 
     @GraphQLField
     @GraphQLName("bundleName")
     @GraphQLDescription("Name of the bundle.")
+    @GraphQLDeprecate("Use name instead")
+    @Deprecated
     public String getBundleName() {
-        return bundleName;
+        return name;
+    }
+
+    @GraphQLField
+    @GraphQLName("symbolicName")
+    @GraphQLDescription("Symbolic name of the bundle.")
+    public String getSymbolicName() {
+        return symbolicName;
     }
 
     @GraphQLField
     @GraphQLName("bundleSymbolicName")
     @GraphQLDescription("Symbolic name of the bundle.")
+    @GraphQLDeprecate("Use symbolicName instead")
+    @Deprecated
     public String getBundleSymbolicName() {
-        return bundleSymbolicName;
+        return symbolicName;
+    }
+
+    @GraphQLField
+    @GraphQLName("displayName")
+    @GraphQLDescription("Display name of the bundle.")
+    public String getDisplayName() {
+        return displayName;
     }
 
     @GraphQLField
     @GraphQLName("bundleDisplayName")
     @GraphQLDescription("Display name of the bundle.")
+    @GraphQLDeprecate("Use displayName instead")
+    @Deprecated
     public String getBundleDisplayName() {
-        return bundleDisplayName;
+        return displayName;
+    }
+
+    @GraphQLField
+    @GraphQLName("id")
+    @GraphQLDescription("ID of the bundle.")
+    public long getId() {
+        return id;
     }
 
     @GraphQLField
     @GraphQLName("bundleId")
     @GraphQLDescription("ID of the bundle.")
+    @GraphQLDeprecate("Use id instead")
+    @Deprecated
     public long getBundleId() {
-        return bundleId;
+        return id;
     }
+
 }
