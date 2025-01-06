@@ -70,7 +70,7 @@
                 ${fn:escapeXml(filter.description)}
             </td>
             <td>${fn:escapeXml(filter.conditionsSummary)}</td>
-            <td>${filter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</td>
+            <td>${filter.disabled?"<font color='red'>disabled</font>":"<font color='green'>enabled</font>"}</td>
             <td>
                 <a href="renderFilters.jsp?bean=${fn:escapeXml(filter.name)}&switch=true&priority=${filter.priority}&toolAccessToken=${toolAccessToken}">${filter.disabled ? "enable" : "disable"}</a>
                 <a href="renderFilters.jsp?bean=${fn:escapeXml(filter.name)}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority ? previousPriority : filter.priority) -1}&toolAccessToken=${toolAccessToken}">down</a>
