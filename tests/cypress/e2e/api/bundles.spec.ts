@@ -2,7 +2,7 @@ import {getBundles, Status} from '../../support/gql';
 import {waitUntilSAMStatusGreen} from '@jahia/cypress';
 
 function testBundle(bundles, bundleName: string, version: string, status: string) {
-    const bundle = bundles.find(b => b.bundleSymbolicName === bundleName);
+    const bundle = bundles.find(b => b.symbolicName === bundleName);
     console.log('testing bundle', bundle);
     const bundleImport = bundle.dependencies.find(dep => dep.name === 'org.external.modules.provider');
     expect(bundleImport.type).to.eq('IMPORT_PACKAGE');
@@ -13,7 +13,7 @@ function testBundle(bundles, bundleName: string, version: string, status: string
 }
 
 function testBundleAndDependency(bundles, bundleName: string, dependsIsOptional: boolean, dependsVersion: string, dependsStatus: string) {
-    const bundle = bundles.find(b => b.bundleSymbolicName === bundleName);
+    const bundle = bundles.find(b => b.symbolicName === bundleName);
     console.log('testing bundle and dependency', bundle);
     const bundleImport = bundle.dependencies.find(dep => dep.name === 'org.external.modules.provider');
     expect(bundleImport.type).to.eq('IMPORT_PACKAGE');
@@ -144,7 +144,7 @@ describe('Dependencies tool test', () => {
                     'module-dependant-case33'
                 ];
                 expectedBundles.forEach(bundleName => {
-                    const bundleExists = result.data.admin.tools.bundles.some(b => b.bundleSymbolicName === bundleName);
+                    const bundleExists = result.data.admin.tools.bundles.some(b => b.symbolicName === bundleName);
                     expect(bundleExists).to.be.true;
                 });
             });

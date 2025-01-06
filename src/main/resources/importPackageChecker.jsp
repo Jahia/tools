@@ -69,10 +69,10 @@
             <ul>
                 <c:forEach items="${result.bundles}" var="entry">
                     <li>
-                        <a href="<c:url value='/tools/osgi/console/bundles/${entry.bundleId}'/>" title="See details">
-                            [${entry.bundleId}]
+                        <a href="<c:url value='/tools/osgi/console/bundles/${entry.id}'/>" title="See details">
+                            [${entry.id}]
                         </a>
-                        <strong>${entry.bundleDisplayName} [${entry.bundleId}]</strong>
+                        <strong>${entry.displayName} [${entry.id}]</strong>
 
                         <ul>
                             <c:forEach items="${entry.matchingImportedPackage}" var="importedPackage">

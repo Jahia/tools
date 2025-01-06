@@ -2,9 +2,9 @@ query($nameRegExp: String, $areModules: Boolean, $withUnsupportedDependenciesOnl
     admin {
         tools {
             bundles(nameRegExp: $nameRegExp, areModules: $areModules, withUnsupportedDependenciesOnly: $withUnsupportedDependenciesOnly) {
-                bundleDisplayName,
-                bundleName,
-                bundleSymbolicName
+                displayName,
+                name,
+                symbolicName
                 dependencies(supported: $supported, statuses: $statuses) {
                     type,
                     name,
