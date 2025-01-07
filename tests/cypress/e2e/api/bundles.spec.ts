@@ -229,5 +229,20 @@ describe('Dependencies tool test', () => {
                 expect(result.errors[0].message).to.eq('At least one status must be provided (via the \'statuses\' parameter)');
             });
         });
+        it('Test bundle fields are present', () => {
+            getBundles({nameRegExp: 'module-provider'}).should(result => {
+                console.log('result', result);
+                expect(result).to.have.property('data');
+                expect(result.data).to.have.property('admin');
+                expect(result.data.admin).to.have.property('tools');
+                expect(result.data.admin.tools).to.have.property('bundles');
+                expect(result.data.admin.tools.bundles).to.have.length(1);
+                const bundle = result.data.admin.tools.bundles[0];
+                expect(bundle.name).to.eq('ModuleProvider');
+                expect(bundle.displayName).to.eq('ModuleProvider (module-provider)');
+                expect(bundle.symbolicName).to.eq('module-provider');
+                expect(bundle.version).to.eq('1.1.0');
+            });
+        });
     });
 });

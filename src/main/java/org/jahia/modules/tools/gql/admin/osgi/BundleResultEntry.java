@@ -20,6 +20,7 @@ import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * An abstract class that provide basic bundle information for a GQL result that would involve bundle.
@@ -30,6 +31,7 @@ public abstract class BundleResultEntry {
     private final String symbolicName;
     private final String displayName;
     private final long id;
+    private final Version version;
 
     public BundleResultEntry(Bundle bundle) {
         this.name = bundle.getHeaders().get("Bundle-Name");
@@ -38,6 +40,7 @@ public abstract class BundleResultEntry {
                 name + " (" + symbolicName + ")" :
                 symbolicName;
         this.id = bundle.getBundleId();
+        this.version = bundle.getVersion();
     }
 
     @GraphQLField
@@ -104,4 +107,10 @@ public abstract class BundleResultEntry {
         return id;
     }
 
+    @GraphQLField
+    @GraphQLName("version")
+    @GraphQLDescription("Version of the bundle.")
+    public String getVersion() {
+        return version.toString();
+    }
 }

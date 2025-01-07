@@ -4,7 +4,8 @@ query($nameRegExp: String, $areModules: Boolean, $withUnsupportedDependenciesOnl
             bundles(nameRegExp: $nameRegExp, areModules: $areModules, withUnsupportedDependenciesOnly: $withUnsupportedDependenciesOnly) {
                 displayName,
                 name,
-                symbolicName
+                symbolicName,
+                version
                 dependencies(supported: $supported, statuses: $statuses) {
                     type,
                     name,
