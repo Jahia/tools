@@ -200,6 +200,7 @@ public class Dependency {
         }
     }
 
+    @GraphQLDescription("List of available statuses for a dependency")
     public enum Status {
         EMPTY(false, "No version dependency"),
         STRICT_NO_RANGE(false, "Strict version dependency"),
