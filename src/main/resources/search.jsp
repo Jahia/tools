@@ -12,6 +12,8 @@
 <%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
 <%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
 <%@ page import="org.jahia.modules.tools.search.ReIndexProxy"%>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="javax.jcr.RepositoryException" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -46,22 +48,24 @@
             <p style="color: blue">Re-indexing of the repository content will be done now</p>
         </c:when>
         <c:when test="${param.action == 'reindex-tree'}">
-            <c:if test="${(param.ws == 'default' || param.ws == 'live') && not empty param.uuid}">
+            <c:if test="${(param.ws == 'default' || param.ws == 'live') && not empty param.uuidOrPath}">
                 <%
                 try {
+
                     long treeReindexStartTime = System.currentTimeMillis();
-                    ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree(request.getParameter("uuid"), request.getParameter("ws"));
+                    String uuidOrPath = request.getParameter("uuidOrPath");
+                    if (StringUtils.startsWith(uuidOrPath, "/")) {
+                        uuidOrPath = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uuidOrPath).getIdentifier();
+                    }
+                    ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).reindexTree(uuidOrPath, request.getParameter("ws"));
                     %>
-                    <p style="color: blue">Re-indexing tree in workspace <strong>${fn:escapeXml(param.ws)}</strong>, starting from node <strong>${fn:escapeXml(param.uuid)}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
+                    <p style="color: blue">Re-indexing tree in workspace <strong>${fn:escapeXml(param.ws)}</strong>, starting from node <strong>${fn:escapeXml(param.uuidOrPath)}</strong> has been completed in <strong><%= System.currentTimeMillis() - treeReindexStartTime %></strong> ms</p>
                     <%
-                } catch (IllegalArgumentException e) {
-                    // node not found by UUID
-                    pageContext.setAttribute("treeReindexNodeNotFound", Boolean.TRUE);
-                } catch (NoSuchItemStateException e) {
+                } catch (IllegalArgumentException | NoSuchItemStateException | RepositoryException e) {
                     // node not found by UUID
                     pageContext.setAttribute("treeReindexNodeNotFound", Boolean.TRUE);
                 }
-                %>
+                    %>
             </c:if>
         </c:when>
         <c:when test="${param.action == 'index-fix'}">
@@ -138,9 +142,9 @@
     <li>
         <a href="#reindex-tree" onclick="var cbW = document.getElementById('reindexTreeWorkspace');
                 var ws = cbW.options[cbW.selectedIndex].value;
-                var uuid = document.getElementById('reindexTreeUuid').value;
-                if (uuid.length == 0) { alert('You have not provided the node UUID to start re-indexing from'); return false; }
-                if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuid=' + uuid + '&amp;toolAccessToken=${toolAccessToken}'; return true; }
+                var uuidOrPath = document.getElementById('reindexTreeUuid').value;
+                if (uuidOrPath.length == 0) { alert('You have not provided the node UUID or path to start re-indexing from'); return false; }
+                if (confirm('This will execute (synchronously) a re-indexing of the JCR sub-tree in the specified workspace, starting with the specified node. Would you like to continue?')) { this.href='?action=reindex-tree&amp;ws=' + ws + '&amp;uuidOrPath=' + uuidOrPath + '&amp;toolAccessToken=${toolAccessToken}'; return true; }
                 else { return false; }">Re-index the sub-tree</a>
         &nbsp;&nbsp;
         <label for="reindexTreeWorkspace">workspace:&nbsp;</label>
@@ -149,11 +153,11 @@
             <option value="live" ${param.ws == 'live' ? 'selected="selected"' : ''}>live</option>
         </select>
         &nbsp;&nbsp;
-        <label for="reindexTreeUuid">start with node (UUID):&nbsp;</label><input type="text" id="reindexTreeUuid" name="reindexTreeUuid" value="${not empty param.uuid ? fn:escapeXml(param.uuid) : ''}" style="width: 270px"/>
+        <label for="reindexTreeUuid">start with node (UUID or path):&nbsp;</label><input type="text" id="reindexTreeUuid" name="reindexTreeUuid" value="${not empty param.uuidOrPath ? fn:escapeXml(param.uuidOrPath) : ''}" style="width: 270px"/>
         (you can lookup UUID in JCR Browser:
         <a title="Lookup UUID in JCR Browser" href="<c:url value='jcrBrowser.jsp'/>" target="_blank"><img src="<c:url value='/icons/search.png'/>" width="16"height="16" alt="lookup" title="Lookup UUID in JCR Browser"></a>)
         <c:if test="${treeReindexNodeNotFound}">
-            <span style="color: red;"><strong>Node not found. Please, provide an existing UUID.</strong></span>
+            <span style="color: red;"><strong>Node not found. Please, provide an existing path or UUID.</strong></span>
         </c:if>
     </li>
 </ul>
