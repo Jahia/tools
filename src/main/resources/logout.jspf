@@ -1,0 +1,3 @@
+<div width="100%" style="display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px">
+    <a href='/cms/logout?redirect=/start'>Logout</a>
+</div>

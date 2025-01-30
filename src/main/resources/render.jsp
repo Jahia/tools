@@ -9,6 +9,7 @@
     <title>Render chain debug</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Render chain debug</h1>
 <c:if test="${not empty param.active}">
     <%

@@ -51,6 +51,7 @@
 <% pageContext.setAttribute("fullReadOnlyModeController", ReadOnlyModeController.getInstance()); %>
 <% pageContext.setAttribute("settings", SettingsBean.getInstance()); %>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>System Maintenance</h1>
 <p><a href="maintenance.jsp" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="Refresh" title="Refresh" height="16" width="16"/>&nbsp; Refresh status</a></p>
 <c:set var="modeLabel" value="${maintenance ? 'ON' : 'OFF'}"/>

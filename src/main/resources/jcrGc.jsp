@@ -12,6 +12,7 @@
 <title>JCR Data Store Garbage Collection</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>JCR Data Store Garbage Collection</h1>
 <c:if test="${param.gc == 'true'}">
 <% System.gc(); %>

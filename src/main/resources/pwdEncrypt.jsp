@@ -13,6 +13,7 @@
     <title>Password encryption</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Password encryption</h1>
 <c:if test="${not empty param.pwd}">
     <c:choose>

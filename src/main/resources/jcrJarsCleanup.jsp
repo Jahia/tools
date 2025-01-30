@@ -70,6 +70,7 @@
     pageContext.setAttribute("result", result);
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <div>
     <fieldset>
         <legend><strong>JCR bundles cleanup</strong></legend>
