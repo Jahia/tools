@@ -34,6 +34,7 @@ if ("stopExtractionCheck".equals(request.getParameter("action"))) {
 pageContext.setAttribute("extractionCheckRunning", TextExtractionHelper.isCheckingExtractions());
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Jahia Text Extraction Service</h1>
 <p>This tool aims to perform text extractions on documents in the repository and store it in the j:extractedText property. Another option allows to extract the text from a local file and immediately show the results.</p>
 

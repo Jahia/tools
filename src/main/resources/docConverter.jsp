@@ -12,6 +12,7 @@
 <title>Jahia Document Conversion Service</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Jahia Document Conversion Service</h1>
 <%
 DocumentConverterService service = (DocumentConverterService) SpringContextSingleton.getBean("DocumentConverterService");

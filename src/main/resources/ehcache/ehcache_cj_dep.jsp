@@ -46,6 +46,7 @@
         pageContext.setAttribute("cache", cache);
     %>
     <body id="dt_example" class="container-fluid">
+    <%@ include file="../logout.jspf" %>
     <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
     <a href="?flush=true&toolAccessToken=${toolAccessToken}"
        onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"

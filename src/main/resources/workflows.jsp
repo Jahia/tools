@@ -27,6 +27,7 @@
     <%@ include file="css.jspf" %>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 
 <%
 

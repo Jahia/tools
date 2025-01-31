@@ -15,6 +15,7 @@
     <title>JCR Sessions</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>JCR Sessions</h1>
 
 <p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>

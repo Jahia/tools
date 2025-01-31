@@ -252,6 +252,7 @@
     </style>
 </head>
 <body onload="javascript:document.logFilterForm.logNameFilter.focus();">
+<%@ include file="logout.jspf" %>
 <%@ include file="gotoIndex.jspf" %>
 
 <%

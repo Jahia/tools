@@ -64,6 +64,7 @@
     </style>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>JCR Integrity Tools</h1>
 
 <p>

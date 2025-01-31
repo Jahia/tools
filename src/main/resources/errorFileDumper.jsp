@@ -10,6 +10,7 @@
 <title>Error File Dumper</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Error File Dumper</h1>
 <c:if test="${not empty param.active}">
 <%

@@ -10,6 +10,7 @@
 <title>WCAG Validator Service</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>WCAG Validator Service</h1>
 <form id="wcag" action="${pageContext.request.contextPath}/cms/wcag/validate" method="post">
 <p>Paste here the HTML text to be validated:</p>

@@ -43,6 +43,7 @@
     pageContext.setAttribute("newline", "\n");
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Render Filters (${functions:length(filters)} found)</h1>
 <table border="1" cellspacing="0" cellpadding="5">
     <thead>

@@ -35,6 +35,16 @@
 </div>
 <table width="100%" border="0">
     <tr>
+        <td width="50%">
+            <fieldset>
+                <legend>Logout</legend>
+                <ul>
+                    <li><a href='/cms/logout?redirect=/start'>Logout</a></li>
+                </ul>
+            </fieldset>
+        </td>
+    </tr>
+    <tr>
         <td width="50%" valign="top">
 <fieldset>
     <legend>System and Maintenance</legend>

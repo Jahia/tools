@@ -31,6 +31,7 @@ Locale currentLocale = LanguageCodeConverters.languageCodeToLocale((String) page
 pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <div class="${workspace}">
 <h1>JCR Console</h1>
 <%

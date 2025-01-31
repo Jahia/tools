@@ -13,6 +13,7 @@
 <title>Thread Dump Management</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Thread Dump Management</h1>
 <c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
 <% pageContext.setAttribute("outputFile", ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump")))); %>

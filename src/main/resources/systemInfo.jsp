@@ -17,6 +17,7 @@ response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
 <title>System Status Information</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>System Status Information at <%= new Date() %></h1>
 <a href="?file=true&toolAccessToken=${toolAccessToken}" target="_blank">download as a file</a>
 <br/>

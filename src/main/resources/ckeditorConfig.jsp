@@ -61,6 +61,7 @@
         <title>CKEditor Custom Configuration</title>
     </head>
     <body>
+    <%@ include file="logout.jspf" %>
     <h1>CKEditor Custom Configuration</h1>
     <c:if test="${not empty param.config}">
         <%

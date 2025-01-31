@@ -71,6 +71,7 @@
     </style>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>System Benchmark Tool</h1>
 
 <p>

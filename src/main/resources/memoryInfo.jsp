@@ -24,6 +24,7 @@ Heap dump performed into a file: <%= ErrorFileDumper.performHeapDump() %>
 </p>
 </c:if>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Memory Status at <%= new Date() %></h1>
 <%
 StringWriter s = new StringWriter();

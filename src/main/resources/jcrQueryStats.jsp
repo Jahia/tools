@@ -19,6 +19,7 @@
     <title>JCR Query statistics</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <%
 QueryStat queryStat = ((JahiaRepositoryImpl)((SpringJackrabbitRepository)JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getStatManager().getQueryStat();
 pageContext.setAttribute("queryStat", queryStat);

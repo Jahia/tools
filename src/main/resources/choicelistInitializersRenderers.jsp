@@ -27,6 +27,7 @@
     int count = 0;
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <%@ include file="gotoIndex.jspf" %>
 
 <h1>Choicelist initializers &amp; renderers</h1>

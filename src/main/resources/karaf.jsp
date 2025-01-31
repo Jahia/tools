@@ -13,6 +13,7 @@
     <title>Karaf command line</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Karaf command line</h1>
 
 <fieldset>

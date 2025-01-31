@@ -11,6 +11,7 @@
 <title>Jahia DB Query Tool</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Jahia DB Query Tool</h1>
 <c:set var="offset" value="${not empty param.offset ? param.offset : '0'}"/>
 <fieldset>

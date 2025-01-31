@@ -23,6 +23,7 @@
     <title>Search Engine Manager</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Search Engine Management</h1>
 <c:if test="${not empty param.action}">
 	<c:choose>

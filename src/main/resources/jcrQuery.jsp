@@ -66,6 +66,7 @@
     pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <c:set var="switchToWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <fieldset>
     <legend>

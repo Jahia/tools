@@ -169,6 +169,7 @@
     </script>
 </head>
 <body>
+    <%@ include file="logout.jspf" %>
 <c:url var="mgrUrl" value="/engines/manager.jsp">
     <c:param name="selectedPaths" value="${currentNode.path}"/>
     <c:param name="workspace" value="${workspace}"/>

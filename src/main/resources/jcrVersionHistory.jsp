@@ -38,6 +38,7 @@ pageContext.setAttribute("orphanedCheckRunning", NodeVersionHistoryHelper.isChec
 pageContext.setAttribute("unusedCheckRunning", NodeVersionHistoryHelper.isCheckingUnused());
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>JCR Version History Management</h1>
 <p>This tool aims to perform cleanup tasks on the version store, e.g. find version history for nodes that no longer exists and purge them or purge old versions for existing nodes.</p>
 <c:if test="${param.action == 'orphanedReport' || param.action == 'orphanedDelete'}">

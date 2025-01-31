@@ -25,6 +25,7 @@
 %>
 
 <body>
+<%@ include file="logout.jspf" %>
 <h1>JCR Providers (${functions:length(providers)} found)</h1>
 <table border="1" cellspacing="0" cellpadding="5">
     <thead>

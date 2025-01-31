@@ -28,6 +28,7 @@
     </head>
     
     <body>
+        <%@ include file="logout.jspf" %>
         <div>
          <h1>Modules</h1>
 
