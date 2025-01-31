@@ -177,7 +177,7 @@
 
             <p>
                     <textarea rows="25" style="width: 100%" id="text" name="script"
-                              onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm(<%=GroovyConsoleHelper.WARN_MSG%>')) document.getElementById('groovyForm').submit();">${param.script}</textarea>
+                              onkeyup="if ((event || window.event).keyCode == 13 && (event || window.event).ctrlKey && confirm(<%=GroovyConsoleHelper.WARN_MSG%>')) document.getElementById('groovyForm').submit();">${fn:escapeXml(param.script)}</textarea>
             </p>
         </c:when>
         <c:otherwise>
