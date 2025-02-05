@@ -31,6 +31,7 @@
 <title>Export Support Information</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Export Support Information</h1>
 <p>Allows you to export as a ZIP file useful support data about this Jahia instance.</p>
 <fieldset style="background-color:#dfe8f6;border-color:#c3dbee;color:#000">

@@ -16,6 +16,7 @@
     pageContext.setAttribute("actions", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getActions().values());
 %>
 <body>
+<%@ include file="logout.jspf" %>
 <%@ include file="gotoIndex.jspf" %>
 
 <h1>Actions (${functions:length(actions)} found)</h1>

@@ -46,6 +46,7 @@ pageContext.setAttribute("scheduler", scheduler);
 <c:url var="imgOff" value="images/nav_plain_red.png"/>
 <c:set var="schedulerStatus" value="${scheduler.started ? (scheduler.inStandbyMode ? 'In standby mode' : 'Started') : 'Not started'}"/>
 <body>
+    <%@ include file="logout.jspf" %>
 	<h1>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</h1>
     <p>Scheduler status:
     <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>

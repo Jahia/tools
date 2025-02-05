@@ -36,6 +36,7 @@
     <title>Cache Management</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Cache Management</h1>
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>

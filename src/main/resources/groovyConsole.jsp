@@ -29,6 +29,7 @@
     <title>Groovy Console</title>
 </head>
 <body>
+<%@ include file="logout.jspf" %>
 <h1>Groovy Console&nbsp;<button data-src="#helpArea" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"/></button>
 </h1>
 <%

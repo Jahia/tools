@@ -18,6 +18,7 @@
     <%@ include file="css.jspf" %>
 </head>
 <body>
+    <%@ include file="logout.jspf" %>
     <h1>Business Rules</h1>
     <p>
         Here is a list of all business rules, currently registered in the system.

@@ -13,6 +13,7 @@
 </head>
 
 <body>
+<%@ include file="logout.jspf" %>
 <div>
     <h1>OSGI Import-Package checker</h1>
 

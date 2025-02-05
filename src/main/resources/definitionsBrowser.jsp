@@ -108,6 +108,7 @@
     }
 %>
 <body id="dt_example">
+<%@ include file="logout.jspf" %>
 <%@ include file="gotoIndex.jspf" %>
 <div class="container-fluid">
     <table id="moduleTable" class="table table-striped compact" data-table="dataTable">
