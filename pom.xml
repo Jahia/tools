@@ -44,7 +44,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
-        <jahia-module-signature>MCwCFFgUeyNSH8zuZfuDP7mhRBLCfo4CAhR9BXOS/PoVM70Lw1HBK7fr1Z8Y5A==</jahia-module-signature>
+        <jahia-module-signature>MCwCFBGX/vAqZQYuftVcJylU66xRzomsAhQuyOVe3dKcotNNwmQIuesPyFgq+g==</jahia-module-signature>
         <jahia.plugin.version>6.10</jahia.plugin.version>
         <yarn.arguments>build:production</yarn.arguments>
         <sonar.sources>src/javascript</sonar.sources>
