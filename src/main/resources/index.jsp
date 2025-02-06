@@ -39,7 +39,7 @@
             <fieldset>
                 <legend>Logout</legend>
                 <ul>
-                    <li><a href='/cms/logout?redirect=/start'>Logout</a></li>
+                    <li><a href='${pageContext.request.contextPath}/cms/logout?redirect=/start'>Logout</a></li>
                 </ul>
             </fieldset>
         </td>
