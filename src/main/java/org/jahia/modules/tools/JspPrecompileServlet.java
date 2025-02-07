@@ -107,7 +107,7 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
 
-            out.println("<div width=\"100%\" style=\"display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px\"><a href='${pageContext.request.contextPath}/cms/logout?redirect=/start'>Logout</a></div>");
+            out.println("<div width=\"100%\" style=\"display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px\"><a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'>Logout</a></div>");
             out.println("<h1>JSP compilation</h1>");
             out.print("<p>Found <strong>");
             out.print(foundJsps.size());
