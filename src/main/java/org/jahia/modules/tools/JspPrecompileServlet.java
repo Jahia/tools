@@ -15,6 +15,7 @@
  */
 package org.jahia.modules.tools;
 
+import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.modules.tools.csrf.ToolsAccessTokenFilter;
 import org.jahia.osgi.BundleUtils;
@@ -93,7 +94,7 @@ public class JspPrecompileServlet extends HttpServlet {
             List<String> foundJsps = searchForAllJsps();
 
             aResponse.setContentType("text/html;charset=ISO-8859-1");
-            
+
             out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
             out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
             out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
@@ -107,15 +108,15 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
 
-            out.println("<div width=\"100%\" style=\"display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px\"><a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'>Logout</a></div>");
+            out.println("<div width=\"100%\" style=\"display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px\"><a href=\"" + Jahia.getContextPath() + "/cms/logout?redirect=" + Jahia.getContextPath() + "/start\">Logout</a></div>");
             out.println("<h1>JSP compilation</h1>");
             out.print("<p>Found <strong>");
             out.print(foundJsps.size());
             out.println("</strong> JSPs</p>");
-            
+
             out.println("<h2>Pre-compile:</h2>");
             out.println("<ul>");
-            out.print("<li><a target=\"_blank\" href=\"");
+            out.print("<li><a id=\"allJsp\" target=\"_blank\" href=\"");
 
             long now = System.currentTimeMillis();
 
@@ -125,7 +126,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             out.print(url);
             out.println("\">all</a></li>");
-            
+
             out.print("<li><a target=\"_blank\" href=\"");
 
             url = aResponse.encodeURL(aRequest.getContextPath()
@@ -134,7 +135,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             out.print(url);
             out.println("\">non-modules</a></li>");
-            
+
             out.print("<li><a target=\"_blank\" href=\"");
 
             url = aResponse.encodeURL(aRequest.getContextPath()
@@ -143,10 +144,10 @@ public class JspPrecompileServlet extends HttpServlet {
 
             out.print(url);
             out.print("\">all modules</a></li>");
-            
+
             out.println("</ul>");
             out.println("<h2>Modules:</h2>");
-            
+
             out.println("<ul>");
             Map<String, Long> moduleBundles = new TreeMap<String, Long>();
             for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
