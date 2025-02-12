@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>tools</artifactId>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Support Tools</name>
     <description>Digital Experience Manager Support Tools</description>
@@ -44,7 +44,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
-        <jahia-module-signature>MC0CFQCMLjAYd1JnY6mQQTzLSezxik1VogIUF43rwH7c3OLLe+aqoZ53AKNELnk=</jahia-module-signature>
+        <jahia-module-signature>MCwCFH5ApJLs9wpD/B8D0Crb6zWxDsBoAhRzr4ivtGXuhojwNSFU4RvODOjItg==</jahia-module-signature>
         <jahia.plugin.version>6.10</jahia.plugin.version>
         <yarn.arguments>build:production</yarn.arguments>
         <sonar.sources>src/javascript</sonar.sources>
