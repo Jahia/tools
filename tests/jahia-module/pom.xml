@@ -55,7 +55,7 @@
     <groupId>org.jahia.test</groupId>
     <artifactId>tools-test-module</artifactId>
     <name>Test module for Tools</name>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.1.2</version>
     <packaging>bundle</packaging>
     <description>This is the custom module for running on a Jahia server.</description>
 
