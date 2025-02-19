@@ -10,53 +10,6 @@
     <title>Run provisioning script</title>
 </head>
 <body>
-<script>
-    let buttonLocked = false;
-    const printMessage = () => {
-        document.getElementById("provisioningMessage").setAttribute("hidden", "true");
-        document.getElementById("provisioningResult").setAttribute("hidden", "true");
-        buttonLocked = true;
-        const provisioning = document.getElementById("provisioning").value;
-
-        const query = new XMLHttpRequest();
-         query.onreadystatechange = () => {
-            if(query.readyState === XMLHttpRequest.OPENED) {
-                document.getElementById("submitYaml").disabled = true;
-                document.getElementById("provisioningMessage").removeAttribute("hidden");
-            }
-            if (query.readyState === XMLHttpRequest.DONE) {
-                buttonLocked = false;
-                document.getElementById("submitYaml").disabled = false;
-                document.getElementById("provisioningMessage").setAttribute("hidden", "true");
-                if(query.status === 200) {
-                    document.getElementById("provisioningResult").innerText = "Provisioning script executed successfully, check server logs for more information";
-                } else {
-                    document.getElementById("provisioningResult").innerText = "Provisioning script failed, check server logs for more information";
-                }
-                document.getElementById("provisioningResult").removeAttribute("hidden");
-            }
-        }
-        query.open("POST", window.location.href, true);
-        console.log('printMessage');
-        query.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        const encodedProvisioning = encodeURIComponent(provisioning);
-        query.send('script=' + encodedProvisioning);
-
-    }
-
-    const validateYaml = event => {
-        if(buttonLocked) return;
-        const val = document.getElementById("provisioning").value;
-        if(!/^\s*[\w.-]+:\s*(.*)?$/m.test(val)) {
-            document.getElementById('submitYaml').disabled = true;
-            document.getElementById("submitYaml").setAttribute("title", "Invalid YAML");
-        } else {
-            document.getElementById('submitYaml').disabled = false;
-            document.getElementById("submitYaml").removeAttribute("title");
-        }
-    }
-    document.addEventListener("keyup", validateYaml);
-</script>
 <%@ include file="logout.jspf" %>
 <h1>Run provisioning script</h1>
 <a target="_blank" href="https://academy.jahia.com/documentation/jahia-cms/jahia-8.2/dev-ops/provisioning/creating-a-provisioning-script">Link to academy</a>
@@ -65,7 +18,7 @@
     <textarea name="script" id="provisioning" style="width: 100%; height: 500px;" required></textarea>
     <button id="submitYaml" type="button" onclick="printMessage()" disabled> Run provisioning script </button>
 </form>
-
+<%@ include file="gotoIndex.jspf" %>
 <h2 hidden="true" id="provisioningMessage"><strong>Request sent, waiting for provisioning API response</strong></h2>
 <strong><h2 hidden=true id="provisioningResult"></h2></strong>
 <c:if test="${not empty param.script}">
@@ -75,4 +28,44 @@
         provisioningManager.executeScript(request.getParameter("script"), "yaml");
     %>
 </c:if>
+<script>
+    const printMessage = () => {
+        const sendButton = document.getElementById("submitYaml");
+        const waitMessage = document.getElementById("provisioningMessage");
+        const resultMessage = document.getElementById("provisioningResult");
+
+        waitMessage.setAttribute("hidden", "true");
+        resultMessage.setAttribute("hidden", "true");
+        sendButton.locked = true;
+
+        const provisioning = document.getElementById("provisioning").value;
+
+        const query = new XMLHttpRequest();
+        query.onreadystatechange = () => {
+            if(query.readyState === XMLHttpRequest.OPENED) {
+                sendButton.disabled = true;
+                waitMessage.removeAttribute("hidden");
+            }
+
+            if (query.readyState === XMLHttpRequest.DONE) {
+                sendButton.locked = false;
+                sendButton.disabled = false;
+                waitMessage.setAttribute("hidden", "true");
+                
+                if(query.status === 200) {
+                    resultMessage.innerText = "Provisioning script executed successfully, check server logs for more information";
+                } else {
+                    resultMessage.innerText = "Provisioning script failed, check server logs for more information";
+                }
+                resultMessage.removeAttribute("hidden");
+            }
+        }
+        query.open("POST", window.location.href, true);
+        query.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        const encodedProvisioning = encodeURIComponent(provisioning);
+        query.send('script=' + encodedProvisioning);
+
+    }
+</script>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/provisioning.tools.bundle.js'/>"></script>
 </body>
