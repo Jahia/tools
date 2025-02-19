@@ -16,7 +16,11 @@
 <p>Paste here the provisioning script you would like to execute against Jahia:</p>
 <form method="post" id="provisioningForm">
     <textarea name="script" id="provisioning" style="width: 100%; height: 500px;" required></textarea>
-    <button id="submitYaml" type="button" onclick="printMessage()" disabled> Run provisioning script </button>
+    <fieldset id="errorField" hidden>
+        <legend style="color: red">Error</legend>
+        <p style="color: red" id="yamlMessage"></p>
+    </fieldset>
+    <button id="submitYaml" type="button" disabled> Run provisioning script </button>
 </form>
 <%@ include file="gotoIndex.jspf" %>
 <h2 hidden="true" id="provisioningMessage"><strong>Request sent, waiting for provisioning API response</strong></h2>
@@ -28,44 +32,5 @@
         provisioningManager.executeScript(request.getParameter("script"), "yaml");
     %>
 </c:if>
-<script>
-    const printMessage = () => {
-        const sendButton = document.getElementById("submitYaml");
-        const waitMessage = document.getElementById("provisioningMessage");
-        const resultMessage = document.getElementById("provisioningResult");
-
-        waitMessage.setAttribute("hidden", "true");
-        resultMessage.setAttribute("hidden", "true");
-        sendButton.locked = true;
-
-        const provisioning = document.getElementById("provisioning").value;
-
-        const query = new XMLHttpRequest();
-        query.onreadystatechange = () => {
-            if(query.readyState === XMLHttpRequest.OPENED) {
-                sendButton.disabled = true;
-                waitMessage.removeAttribute("hidden");
-            }
-
-            if (query.readyState === XMLHttpRequest.DONE) {
-                sendButton.locked = false;
-                sendButton.disabled = false;
-                waitMessage.setAttribute("hidden", "true");
-                
-                if(query.status === 200) {
-                    resultMessage.innerText = "Provisioning script executed successfully, check server logs for more information";
-                } else {
-                    resultMessage.innerText = "Provisioning script failed, check server logs for more information";
-                }
-                resultMessage.removeAttribute("hidden");
-            }
-        }
-        query.open("POST", window.location.href, true);
-        query.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        const encodedProvisioning = encodeURIComponent(provisioning);
-        query.send('script=' + encodedProvisioning);
-
-    }
-</script>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/provisioning.tools.bundle.js'/>"></script>
 </body>
