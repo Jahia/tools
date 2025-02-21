@@ -26,7 +26,6 @@
 <h2 hidden="true" id="provisioningMessage"><strong>Request sent, waiting for provisioning API response</strong></h2>
 <strong><h2 hidden=true id="provisioningResult"></h2></strong>
 <c:if test="${not empty param.script}">
-<h2><strong>Request sent, check the logs for the result</strong></h2>
     <%
         ProvisioningManager provisioningManager = (ProvisioningManager) BundleUtils.getOsgiService("org.jahia.services.provisioning.ProvisioningManager", null);
         provisioningManager.executeScript(request.getParameter("script"), "yaml");
