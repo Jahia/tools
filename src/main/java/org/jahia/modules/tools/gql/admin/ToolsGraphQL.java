@@ -34,9 +34,9 @@ public class ToolsGraphQL {
     @GraphQLField
     @GraphQLDescription("Will return all the import packages matching the given parameters.")
     public FindImportPackage findMatchingImportPackages(
-            @GraphQLName("RegExp") @GraphQLDescription("will return only import-package matching the RegExp") String regExp,
-            @GraphQLName("version") @GraphQLDescription("will return only import-package matching the given version") String version,
-            @GraphQLName("versionMissing") @GraphQLDescription("will return only import-package with no version range limitations") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean versionMissing
+            @GraphQLName("RegExp") @GraphQLDescription("Regular expression for the import packages. When specified, only import packages matching this regular expression are retrieved") String regExp,
+            @GraphQLName("version") @GraphQLDescription("Version for the import package. When specified, only import packages of an exact version or a version range matching this version are retrieved. Note that this parameter does not apply on the versions of the bundles, but on the versions of the import packages") String version,
+            @GraphQLName("versionMissing") @GraphQLDescription("Filter the import packages on whether their version is missing (when the flag is set to 'true') or is set (when the flag is set to 'false'). If not specified, import packages with and without version are retrieved") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean versionMissing
     ) {
         return OSGIPackageHeaderChecker.findImportPackages(regExp, version, versionMissing);
     }
@@ -44,8 +44,8 @@ public class ToolsGraphQL {
     @GraphQLField
     @GraphQLDescription("Will return all the duplicate export packages and the bundles that export them")
     public FindExportPackage findMatchingExportPackages(
-            @GraphQLName("RegExp") @GraphQLDescription("will return only export-package matching the RegExp") String regExp,
-            @GraphQLName("duplicates") @GraphQLDescription("will return only export-package found multiple times for a same package name") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates
+            @GraphQLName("RegExp") @GraphQLDescription("Regular expression for the export packages. When specified, only export packages matching this regular expression are retrieved.") String regExp,
+            @GraphQLName("duplicates") @GraphQLDescription("When set to 'true', only return export packages found multiple times for the same package name. By default (or when set to 'false'), all export packages are retrieved, regardless of how many times they are exported.") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates
     ) {
         return OSGIPackageHeaderChecker.findExportPackages(regExp, duplicates);
     }
@@ -55,7 +55,7 @@ public class ToolsGraphQL {
     public List<BundleWithDependencies> bundles(
             @GraphQLName("nameRegExp") @GraphQLDescription("Only return bundles whose symbolic names match the given regular expression") String nameRegExp,
             @GraphQLName("areModules") @GraphQLDescription("Allows to filter on whether the bundles are Jahia modules or not. If the parameter is set to 'true', only bundles that are also Jahia modules are returned. If set to 'false', only bundles that are not Jahia modules are returned. By default, both Jahia modules and non Jahia modules are returned.") Boolean areModules,
-            @GraphQLName("withUnsupportedDependenciesOnly") @GraphQLDescription("Only return bundles that have 1 or more dependencies configured with an unsupported version range") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean withUnsupportedDependenciesOnly
+            @GraphQLName("withUnsupportedDependenciesOnly") @GraphQLDescription("When set to 'true', only return bundles that have at least one dependency with an unsupported version range (to be considered supported, a version range should be open to minor upgrade based on SemVer)") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean withUnsupportedDependenciesOnly
     ) {
         return OSGIPackageHeaderChecker.findBundles(nameRegExp, areModules, withUnsupportedDependenciesOnly);
     }
