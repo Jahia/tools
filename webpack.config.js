@@ -19,7 +19,8 @@ module.exports = (env, argv) => {
             fancybox: [path.resolve(__dirname, 'src/javascript/fancybox.js')],
             session: [path.resolve(__dirname, 'src/javascript/session.js')],
             datatable: [path.resolve(__dirname, 'src/javascript/datatable.js')],
-            definitions: [path.resolve(__dirname, 'src/javascript/definitions.js')]
+            definitions: [path.resolve(__dirname, 'src/javascript/definitions.js')],
+            provisioning: [path.resolve(__dirname, 'src/javascript/provisioning.js')]
         },
         output: {
             path: path.resolve(__dirname, 'src/main/resources/javascript/apps/'),
