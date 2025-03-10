@@ -33,12 +33,8 @@ site: 'digitall'`);
         cy.waitUntil(() => cy.get('#provisioningMessage').should('not.be.visible'));
         cy.get('#provisioningResult').should('be.visible').should('not.be.empty');
         // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(5000);
         cy.reload();
-        getStartedModulesVersion().then(modules => {
-            console.log(modules.map(module => module.id).filter(module => /^s.*$/.test(module)));
-            expect(modules.some(module => module.id === 'skins')).to.be.true;
-        });
+        cy.waitUntil(() => getStartedModulesVersion().then(modules => modules.some(module => module.id === 'skins' && module.version === '8.2.0')), {timeout: 30000});
         cy.runProvisioningScript({
             fileContent: '- uninstallBundle: "mvn:org.jahia.modules/skins/8.2.0"',
             type: 'application/yaml'
