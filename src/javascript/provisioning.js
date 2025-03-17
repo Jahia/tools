@@ -60,9 +60,9 @@ const sendProvisioning = () => {
             waitMessage.setAttribute('hidden', 'true');
 
             if (query.status === 200) {
-                resultMessage.innerText = 'Provisioning script executed successfully, check server logs for more information';
+                resultMessage.innerText = 'Provisioning script submitted successfully, you can check the server logs to ensure all provisioning operations were executed';
             } else {
-                resultMessage.innerText = 'Provisioning script failed, check server logs for more information';
+                resultMessage.innerText = 'Provisioning script failed, you can check the server logs for more information about the error';
             }
 
             resultMessage.removeAttribute('hidden');
