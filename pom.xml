@@ -128,6 +128,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.jahia.modules.tools.Activator</Bundle-Activator>
+                        <!--suppress UnresolvedMavenProperty -->
                         <Import-Package>
                             javax.jcr,
                             javax.jcr.lock,
@@ -188,8 +189,9 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v18.18.0</nodeVersion>
-                            <yarnVersion>v1.22.19</yarnVersion>
+                            <nodeVersion>v22.14.0</nodeVersion>
+                            <!-- frontend-maven-plugin requires to use yarn 1.22.x as a "bootstrap" but then, the .yarnrc.yml will be detected and Yarn Berry (4+) will be used -->
+                            <yarnVersion>v1.22.22</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>
