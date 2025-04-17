@@ -1634,10 +1634,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fancyapps/ui@npm:^5.0.24":
-  version: 5.0.24
-  resolution: "@fancyapps/ui@npm:5.0.24"
-  checksum: 10c0/0c28431a61c5b746aa90410dae9c77b078b3a26972182fca7d57b26784c123a776377c7b53af5470ae90038814e08e7174e086d71e9232fd363aee6cf9ec87c8
+"@fancyapps/ui@npm:^5.0.36":
+  version: 5.0.36
+  resolution: "@fancyapps/ui@npm:5.0.36"
+  checksum: 10c0/7c280359d417cf6cb056f531874c9ba8a3cca78f093719e76f0ca5d0b814ebd2f3ab0c8fcd8a69043738ecc3bf04715cec183528992dce52fda2998cdb86ee41
   languageName: node
   linkType: hard
 
@@ -1745,7 +1745,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/runtime": "npm:^7.27.0"
     "@cyclonedx/webpack-plugin": "npm:^3.8.2"
-    "@fancyapps/ui": "npm:^5.0.24"
+    "@fancyapps/ui": "npm:^5.0.36"
     "@jahia/eslint-config": "npm:^2.1.2"
     "@jahia/webpack-config": "npm:^1.1.0"
     "@popperjs/core": "npm:^2.11.8"
