@@ -20,7 +20,6 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
 
   build:
     name: Build Module
@@ -37,7 +36,6 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          module_id: tools
 
   sbom:
     name: SBOM processing
@@ -73,8 +71,6 @@ jobs:
     name: Integration Tests
     needs: build
     runs-on: self-hosted
-    strategy:
-      fail-fast: false
     timeout-minutes: 30
     steps:
       - uses: jahia/jahia-modules-action/helper@v2
@@ -94,7 +90,6 @@ jobs:
           timeout_minutes: 20
           jahia_image: jahia/jahia-ee:8
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
-          should_use_build_artifacts: true
           github_artifact_name: toolse-${{ github.run_number }}
           bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
