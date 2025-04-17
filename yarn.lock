@@ -1754,7 +1754,7 @@ __metadata:
     clean-webpack-plugin: "npm:^4.0.0"
     copy-webpack-plugin: "npm:^11.0.0"
     css-loader: "npm:^6.8.1"
-    datatables.net-bs5: "npm:^1.13.6"
+    datatables.net-bs5: "npm:^2.2.2"
     eslint: "npm:^7.9.0"
     eslint-plugin-jest: "npm:^24.0.1"
     eslint-plugin-json: "npm:^2.1.1"
@@ -3210,22 +3210,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"datatables.net-bs5@npm:^1.13.6":
-  version: 1.13.6
-  resolution: "datatables.net-bs5@npm:1.13.6"
+"datatables.net-bs5@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "datatables.net-bs5@npm:2.2.2"
   dependencies:
-    datatables.net: "npm:>=1.13.4"
+    datatables.net: "npm:2.2.2"
     jquery: "npm:>=1.7"
-  checksum: 10c0/def031c59bc0f3293cbc247a52006c1e59e5d4a133fb8cf0b088bfcc09dc6248fdf15b7b1c49ef0e162559ca1005f54d6362600f83733a95780316a8b6925cb6
+  checksum: 10c0/5568e86e71a1969139157f75cdb363eafd94d866130fb2fd627f62d2d86cea4a938e7ff753bc477934245f3ae97105b83bb30def88a6598cae5ad4e74ef319f6
   languageName: node
   linkType: hard
 
-"datatables.net@npm:>=1.13.4":
-  version: 1.13.6
-  resolution: "datatables.net@npm:1.13.6"
+"datatables.net@npm:2.2.2":
+  version: 2.2.2
+  resolution: "datatables.net@npm:2.2.2"
   dependencies:
     jquery: "npm:>=1.7"
-  checksum: 10c0/e5a8221d7d59b7aa83eac974a460f6431198673171d4e623926828f9acd2cd9451dea3eb426e84788c609f1a5e075ef1263c5c8b41b475f7d0be96786fe530c5
+  checksum: 10c0/ca42e87e09cad2a3ca0f8728931fba48a222a87953d85ee0951432f9b0c7f15a630b787839ec2493b53f18744758ecfec9e18049ceccefec4323fd0895901845
   languageName: node
   linkType: hard
 
