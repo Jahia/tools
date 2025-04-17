@@ -23,12 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
       - uses: Jahia/jahia-modules-action/static-analysis@v2
         with:
           node_version: 20
           yarn_version: 4.9.1
-          yarn_test_version: 1.22.1
+          yarn_test_version: 4.9.1
           auditci_level: critical
 
   build:
@@ -42,7 +41,6 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
       - uses: jahia/jahia-modules-action/build@v2
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
