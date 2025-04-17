@@ -7,7 +7,8 @@ import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-table="dataTable"]')
         .forEach(dataTable => {
-            // eslint-disable-next-line no-unused-vars
-            const table = new Datatable(dataTable);
+            // Instanciate a datatable (ignore sonar warings)
+            // eslint-disable-next-line no-new
+            new Datatable(dataTable); // NOSONAR
         });
 });
