@@ -42,6 +42,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
+      - run: corepack enable
       - uses: jahia/jahia-modules-action/build@v2
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
