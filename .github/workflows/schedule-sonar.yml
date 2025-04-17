@@ -21,3 +21,4 @@ jobs:
       tests_module_type: mvn
       git_branch: ${{ matrix.git_branch }}
       incident_service: tools-sonar
+      github_slug: jahia/tools
