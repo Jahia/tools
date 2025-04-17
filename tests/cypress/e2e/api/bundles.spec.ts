@@ -12,7 +12,13 @@ function testBundle(bundles, bundleName: string, version: string, status: string
     expect(bundleImport.status).to.eq(status);
 }
 
-function testBundleAndDependency(bundles, bundleName: string, dependsIsOptional: boolean, dependsVersion: string, dependsStatus: string) {
+function testBundleAndDependency({bundles, bundleName, dependsIsOptional, dependsVersion, dependsStatus}: {
+    bundles: any,
+    bundleName: string,
+    dependsIsOptional: boolean,
+    dependsVersion: string,
+    dependsStatus: string
+}) {
     const bundle = bundles.find(b => b.symbolicName === bundleName);
     console.log('testing bundle and dependency', bundle);
     const bundleImport = bundle.dependencies.find(dep => dep.name === 'org.external.modules.provider');
@@ -100,15 +106,51 @@ describe('Dependencies tool test', () => {
                 const bundles = result.data.admin.tools.bundles;
                 testBundle(bundles, 'module-dependant-case10', '[1.1.0,2.0.0)', 'OPEN_RANGE');
                 testBundle(bundles, 'module-dependant-case11', '[1.1.0,2.0.0)', 'OPEN_RANGE');
-                testBundleAndDependency(bundles, 'module-dependant-case21', false, '', 'EMPTY');
-                testBundleAndDependency(bundles, 'module-dependant-case22', true, '', 'EMPTY');
-                testBundleAndDependency(bundles, 'module-dependant-case23', false, '1.1.0', 'OPEN_RANGE');
-                testBundleAndDependency(bundles, 'module-dependant-case24', true, '1.1.0', 'OPEN_RANGE');
-                testBundleAndDependency(bundles, 'module-dependant-case25', true, '1.1.1', 'OPEN_RANGE');
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case21',
+                    dependsIsOptional: false,
+                    dependsVersion: '',
+                    dependsStatus: 'EMPTY'
+                });
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case22',
+                    dependsIsOptional: true,
+                    dependsVersion: '',
+                    dependsStatus: 'EMPTY'
+                });
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case23',
+                    dependsIsOptional: false,
+                    dependsVersion: '1.1.0',
+                    dependsStatus: 'OPEN_RANGE'
+                });
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case24',
+                    dependsIsOptional: true,
+                    dependsVersion: '1.1.0',
+                    dependsStatus: 'OPEN_RANGE'
+                });
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case25',
+                    dependsIsOptional: true,
+                    dependsVersion: '1.1.1',
+                    dependsStatus: 'OPEN_RANGE'
+                });
                 testBundle(bundles, 'module-dependant-case26', '[1.0.0,2.0.0)', 'OPEN_RANGE');
                 testBundle(bundles, 'module-dependant-case27', '[1.0.0,1.99.0)', 'OPEN_RANGE');
                 testBundle(bundles, 'module-dependant-case31', '[1.1.0,1.2.0)', 'RESTRICTIVE_RANGE');
-                testBundleAndDependency(bundles, 'module-dependant-case32', false, '[1.0.0,1.2.0)', 'RESTRICTIVE_RANGE');
+                testBundleAndDependency({
+                    bundles: bundles,
+                    bundleName: 'module-dependant-case32',
+                    dependsIsOptional: false,
+                    dependsVersion: '[1.0.0,1.2.0)',
+                    dependsStatus: 'RESTRICTIVE_RANGE'
+                });
                 testBundle(bundles, 'module-dependant-case33', '1.1.0', 'STRICT_NO_RANGE');
                 testBundle(bundles, 'module-dependant-case34', '[1.1.0,1.2.0)', 'RESTRICTIVE_RANGE');
             });
