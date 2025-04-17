@@ -13,6 +13,7 @@ function testBundle(bundles, bundleName: string, version: string, status: string
 }
 
 function testBundleAndDependency({bundles, bundleName, dependsIsOptional, dependsVersion, dependsStatus}: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     bundles: any,
     bundleName: string,
     dependsIsOptional: boolean,
