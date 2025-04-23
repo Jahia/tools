@@ -110,15 +110,63 @@
             <version>${graphql-java-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- Embed dependencies -->
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.utils</artifactId>
             <version>${felix.utils.version}</version>
         </dependency>
-    </dependencies>
 
+        <!-- dependencies provided by jahia core -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>${felix.framework.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-core</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- dependencies provided by jahia core with version matching jahia parent version-->
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.13.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <!-- not exposed and not used transitive dependencies -->
+    <!--
+    - commons-compress
+    - plexus-utils
+    - commons-lang
+    - jboss-servlet-api_3.1_spec
+    - drools-core
+    - commons-lang3
+    - jackrabbit-data
+    - commons-collections
+    - commons-math
+    - osgi.cmpn
+    - spring-core
+    - oak-jackrabbit-api
+    - commons-collections4
+    -->
     <build>
         <plugins>
             <plugin>
