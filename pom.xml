@@ -67,10 +67,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${parent.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- prevent transitive dependencies to be used in lieu of the declared dependencies -->
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
        <dependency>
             <groupId>org.apache.karaf.bundle</groupId>
@@ -92,8 +99,8 @@
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>osgi.annotation</artifactId>
-            <version>${osgi.version}</version>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>${osgi.compendium.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -136,13 +143,35 @@
             <version>${jackrabbit.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-data</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-jackrabbit-api</artifactId>
+            <version>${oak-jackrabbit-api.version.implemented}</version>
+        </dependency>
 
         <!-- dependencies provided by jahia core with version matching jahia parent version-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.jcr</groupId>
             <artifactId>jcr</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>3.2.18.RELEASE_OSGI</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -151,24 +180,33 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <!-- not exposed and not used transitive dependencies -->
-    <!--
-    - commons-compress
-    - plexus-utils
-    - commons-lang
-    - jboss-servlet-api_3.1_spec
-    - drools-core
-    - commons-lang3
-    - jackrabbit-data
-    - commons-collections
-    - commons-math
-    - osgi.cmpn
-    - spring-core
-    - oak-jackrabbit-api
-    - commons-collections4
-    -->
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoredUnusedDeclaredDependencies>
+                                <!-- declared in the parent pom, hence inherited, but not used: -->
+                                <ignoredUnusedDeclaredDependency>org.springframework:spring-webmvc</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>javax.servlet:jstl</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.jackrabbit:jackrabbit-spi-commons</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</ignoredUnusedDeclaredDependency>
+                                <!-- declared in project and required: -->
+                                <ignoredUnusedDeclaredDependency>org.osgi:osgi.annotation</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.felix:org.apache.felix.utils</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.jahia.server:jahia-taglib</ignoredUnusedDeclaredDependency>
+
+                            </ignoredUnusedDeclaredDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
