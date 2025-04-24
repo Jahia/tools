@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;

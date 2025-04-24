@@ -12,7 +12,7 @@
 <%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
 <%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
 <%@ page import="org.jahia.modules.tools.search.ReIndexProxy"%>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="javax.jcr.RepositoryException" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>

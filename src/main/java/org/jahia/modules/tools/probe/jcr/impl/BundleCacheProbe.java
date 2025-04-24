@@ -15,7 +15,7 @@
  */
 package org.jahia.modules.tools.probe.jcr.impl;
 
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.cache.AbstractCache;

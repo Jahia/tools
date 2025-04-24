@@ -16,24 +16,12 @@
 package org.jahia.modules.tools.taglibs;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.WriterAppender;
-import org.apache.logging.log4j.core.config.AppenderRef;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
@@ -166,11 +154,11 @@ public class GroovyConsoleHelper {
         code.append("import org.apache.commons.httpclient.params.*\n");
         code.append("import org.apache.commons.httpclient.protocol.*\n");
         code.append("import org.apache.commons.id.*\n");
-        code.append("import org.apache.commons.lang.*\n");
-        code.append("import org.apache.commons.lang.builder.*\n");
-        code.append("import org.apache.commons.lang.exception.*\n");
-        code.append("import org.apache.commons.lang.math.*\n");
-        code.append("import org.apache.commons.lang.time.*\n");
+        code.append("import org.apache.commons.lang3.*\n");
+        code.append("import org.apache.commons.lang3.builder.*\n");
+        code.append("import org.apache.commons.lang3.exception.*\n");
+        code.append("import org.apache.commons.lang3.math.*\n");
+        code.append("import org.apache.commons.lang3.time.*\n");
         code.append("import org.apache.commons.logging.*\n");
         code.append("import org.apache.coyote.http11.upgrade.*\n");
         code.append("import org.apache.jackrabbit.commons.query.*\n");

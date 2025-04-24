@@ -15,7 +15,7 @@
  */
 package org.jahia.modules.tools.csrf;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.bin.filters.AbstractServletFilter;
 import org.jahia.settings.SettingsBean;
 

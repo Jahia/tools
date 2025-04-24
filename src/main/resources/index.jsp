@@ -9,7 +9,7 @@
 <%@page import="org.jahia.osgi.BundleUtils"%>
 <%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@page import="org.jahia.utils.DateUtils"%>
-<%@page import="org.apache.commons.lang.time.DurationFormatUtils"%>
+<%@page import="org.apache.commons.lang3.time.DurationFormatUtils"%>
 <%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
