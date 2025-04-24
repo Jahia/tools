@@ -4,7 +4,7 @@
 <%@page import="javax.jcr.nodetype.PropertyDefinition"%>
 <%@page import="javax.jcr.version.Version" %>
 <%@page import="org.apache.commons.collections.IteratorUtils"%>
-<%@page import="org.apache.commons.lang.StringUtils" %>
+<%@page import="org.apache.commons.lang3.StringUtils" %>
 <%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl"%>
 <%@page import="javax.jcr.version.VersionIterator" %>
 <%@page import="java.util.*" %>

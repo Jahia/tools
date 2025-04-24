@@ -31,7 +31,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.jahia.modules.tools.probe.Probe;
 import org.jahia.modules.tools.probe.ProbeService;
 import org.jahia.osgi.BundleUtils;

@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>

@@ -17,7 +17,7 @@ package org.jahia.modules.tools.karaf.impl;
 
 import static org.apache.karaf.shell.support.ansi.SimpleAnsi.*;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
 import org.jahia.modules.tools.karaf.KarafCommand;

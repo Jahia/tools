@@ -21,8 +21,8 @@ import java.io.PrintStream;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.karaf.shell.support.table.ShellTable;
 import org.jahia.bin.Jahia;
 import org.jahia.modules.tools.probe.Probe;

@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import="java.io.*" %>
 <%@page import="java.util.*"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="org.apache.commons.lang3.StringEscapeUtils"%>
+<%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="org.jahia.services.content.JCRContentUtils" %>
 <%@page import="org.jahia.services.textextraction.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
