@@ -2,12 +2,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<%@page import="java.io.*" %>
-<%@page import="java.util.*"%>
-<%@page import="org.apache.commons.lang3.StringEscapeUtils"%>
-<%@page import="org.apache.commons.lang3.StringUtils"%>
-<%@page import="org.jahia.services.content.JCRContentUtils" %>
-<%@page import="org.jahia.services.textextraction.*"%>
+<%@page import="org.apache.commons.lang3.StringUtils" %>
+<%@page import="org.apache.commons.text.StringEscapeUtils"%>
+<%@page import=" org.jahia.services.content.JCRContentUtils"%>
+<%@page import="org.jahia.services.textextraction.ExtractionCheckStatus"%>
+<%@page import="org.jahia.services.textextraction.RepositoryFileFilter" %>
+<%@page import="org.jahia.services.textextraction.TextExtractionHelper"%>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.HashSet" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Set" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
@@ -57,9 +61,9 @@ try {
         if (StringUtils.isNotBlank(mimeType)) {
             mimeTypes.addAll(Arrays.asList(mimeType.split("\\s*(,|\\s)\\s*")));
         }
-        RepositoryFileFilter filter = new RepositoryFileFilter(request.getParameter("workspace"), mimeTypes, 
-                StringEscapeUtils.unescapeHtml(request.getParameter("path")), request.getParameter("includeSubnodes") != null, 
-                StringEscapeUtils.unescapeHtml(request.getParameter("filenamePattern")));
+        RepositoryFileFilter filter = new RepositoryFileFilter(request.getParameter("workspace"), mimeTypes,
+                StringEscapeUtils.unescapeHtml4(request.getParameter("path")), request.getParameter("includeSubnodes") != null,
+                StringEscapeUtils.unescapeHtml4(request.getParameter("filenamePattern")));
         status = TextExtractionHelper.checkExtractionByFilter("redoExtractionByFilter".equals(action), filter, out);
     }
 
@@ -86,10 +90,10 @@ try {
 <c:choose>
   <c:when test="${extractionCheckRunning}">
     <fieldset>
-      <legend>Check extractions</legend>    
+      <legend>Check extractions</legend>
       <p>An extraction check is currently already running.</p>
       <p><input type="submit" name="stopExtractionCheck" onclick="if (confirm('Do you want to stop the process running the extraction check?')) { go('navigateForm','action', 'stopExtractionCheck'); } return false;" value="Stop running extraction check process"/></p>
-    </fieldset>            
+    </fieldset>
   </c:when>
   <c:otherwise>
     <fieldset>
@@ -97,7 +101,7 @@ try {
         <p><input type="submit" name="reportMissingExtraction" onclick="if (confirm('Start checking for the missing extractions?')) { go('navigateForm','action', 'reportMissingExtraction'); } return false;" value="Check for missing text extractions"/> - searches for missing text extractions of documents and prints a report</p>
         <p><input type="submit" name="fixMissingExtraction" onclick="if (confirm('Now we will try to fix the missing extractions. Do you want to continue?')) { go('navigateForm','action', 'fixMissingExtraction'); } return false;" value="Fix missing text extractions"/> - searches for missing text extractions of documents and tries to extract the text now</p>
     </fieldset>
-    
+
     <fieldset>
         <legend>Redo text extractions by filter</legend>
         <label for="workspaceSelector">Choose workspace:</label>
@@ -113,14 +117,14 @@ try {
           <c:forEach items="${fileTypes}" var="type">
             <c:if test="${type.key != 'image' && type.key != 'video' && type.key != 'archive'}">
               <option value="${type.key}" ${param.fileType == type.key ? 'selected="selected"' : ''}>${type.key}</option>
-            </c:if>              
+            </c:if>
           </c:forEach>
         </select>
         <label class="left" for="mimeType">Mime type(s):</label><input name="mimeType" id="mimeType" value="${param.mimeType}" size="100"/>
         </p>
         <p><label class="left" for="path">Path:</label><input name="path" id="path" value="${param.path}" size="120"/><input type="checkbox" name="includeSubnodes" id="includeSubnodes" ${param.includeSubnodes != null ? 'checked' : ''}/><label for="includeSubnodes">Include subnodes</label>
         </p>
-        <p></p><label class="left" for="filenamePattern">Filename (pattern):</label><input name="filenamePattern" id="filenamePattern" value="${param.filenamePattern}"/> (? is wildcard for single and * for multiple characters)</p>  
+        <p></p><label class="left" for="filenamePattern">Filename (pattern):</label><input name="filenamePattern" id="filenamePattern" value="${param.filenamePattern}"/> (? is wildcard for single and * for multiple characters)</p>
         <p><input type="submit" name="reportExtractionByFilter" onclick="if (confirm('Start checking for extractable documents by filter?')) { go('navigateForm','action', 'reportExtractionByFilter'); } return false;" value="Check matching documents"/> - searches for extractable files matching the chosen filter</p>
         <p><input type="submit" name="redoExtractionByFilter" onclick="if (confirm('Redo text extractions for documents by filter. Do you want to continue?')) { go('navigateForm','action', 'redoExtractionByFilter'); } return false;" value="Redo text extractions"/> - extracts the text of files matching the chosen filter</p>
      </fieldset>
