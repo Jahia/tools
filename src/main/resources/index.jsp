@@ -8,6 +8,7 @@
 <%@page import="org.jahia.bin.listeners.JahiaContextLoaderListener"%>
 <%@page import="org.jahia.osgi.BundleUtils"%>
 <%@page import="org.jahia.registries.ServicesRegistry"%>
+<%@page import="org.jahia.settings.SettingsBean"%>
 <%@page import="org.jahia.utils.DateUtils"%>
 <%@page import="org.apache.commons.lang3.time.DurationFormatUtils"%>
 <%@ page import="org.jahia.modules.tools.modules.ModuleToolsHelper" %>
@@ -30,6 +31,9 @@
         }
     } %>
     <br/>
+	<% if (SettingsBean.getInstance().getString("jahia.environment", null) != null) {%>
+	    Environment: <%= SettingsBean.getInstance().getString("jahia.environment", " ") %><br/><%
+    } %>
     Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %><br/>
     Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %>
 </div>
