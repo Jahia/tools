@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .forEach(dataTable => {
             // Instanciate a datatable (ignore sonar warings)
             // eslint-disable-next-line no-new
-            new Datatable(dataTable); // NOSONAR
+            new Datatable(dataTable, {
+                pageLength: 300,
+                lengthMenu: [10, 25, 50, 100, 300]
+            }); // NOSONAR
         });
 });
