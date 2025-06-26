@@ -111,7 +111,7 @@
 <%@ include file="logout.jspf" %>
 <%@ include file="gotoIndex.jspf" %>
 <div class="container-fluid">
-    <table id="moduleTable" class="table table-striped compact" data-table="dataTable">
+    <table id="moduleTable" class="table table-striped compact" data-table="dataTableDefinitionsBrowser">
         <thead>
         <tr>
             <th>N°</th>
