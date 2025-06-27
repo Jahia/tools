@@ -112,7 +112,7 @@
 <%@ include file="gotoIndex.jspf" %>
 <div class="container-fluid">
     <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 16px; margin-bottom: 24px; border-radius: 4px; font-weight: bold;">
-        Do not delete definitions in production. Deleting definitions will also delete content items with these types. Instead please refer to the <a href="https://academy.jahia.com/documentation/jahia-cms/jahia-8.2/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">Academy</a>.
+        Do not delete definitions in production. Deleting definitions will also delete content items with these types. Instead please refer to the <a href="https://academy.jahia.com/documentation/jahia-cms/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">Academy</a>.
     </div>
     <table id="moduleTable" class="table table-striped compact" data-table="dataTableDefinitionsBrowser">
         <thead>
