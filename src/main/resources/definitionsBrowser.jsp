@@ -4,7 +4,9 @@
 <%@ page import="org.apache.commons.collections.IteratorUtils" %>
 <%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
+<%@ page import="org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl" %>
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="javax.jcr.Node" %>
 <%@ page import="javax.jcr.NodeIterator" %>
 <%@ page import="javax.jcr.RepositoryException" %>
@@ -12,6 +14,8 @@
 <%@ page import="javax.jcr.query.Query" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.io.StringReader" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -90,12 +94,25 @@
 
         try {
             out.println("unregister all nodetypes for " + moduleName);
+            // delete the module but without fully undeploying the definitions for that module:
+            // keep the "<moduleName>.version" and ""<moduleName>.lastModified" properties that are removed with undeployDefinitions()
+            // this ensures the definitions.cnd of that module does not get re-deployed when the bundle is activated (on restart for instance)
+
+            NodeTypesDBServiceImpl nodeTypesDBService = (NodeTypesDBServiceImpl) SpringContextSingleton.getBean("nodeTypesDBService");
+            String propertyFile = nodeTypesDBService.readDefinitionPropertyFile();
+            Properties props = new Properties();
+            props.load(new StringReader(propertyFile));
 
             NodeTypeRegistry.getInstance().unregisterNodeTypes(moduleName);
             JCRStoreService.getInstance().undeployDefinitions(moduleName);
+
+            // to insert back "<moduleName>.version" and ""<moduleName>.lastModified" properties for the entry "definitions.properties" in 'jahia_nodetypes_provider' table
+            nodeTypesDBService.saveCndFile(null, null, props);
         } catch (java.lang.Exception exception) {
             exception.printStackTrace();
         }
+        response.sendRedirect(request.getRequestURI());
+        return;
     } else if ("deleteNodeType".equals(request.getParameter("action"))) {
         final String moduleName = request.getParameter("module");
 
@@ -105,6 +122,8 @@
 
         JCRStoreService.getInstance().deployDefinitions(moduleName);
         // todo : uregister node type from jackrabbit
+        response.sendRedirect(request.getRequestURI());
+        return;
     }
 %>
 <body id="dt_example">
