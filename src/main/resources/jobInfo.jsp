@@ -1,5 +1,8 @@
-<%@ page import="org.jahia.registries.ServicesRegistry, org.jahia.services.scheduler.*, java.text.*, java.util.*, org.quartz.*"
-%><%
+<%@ page import="org.jahia.registries.ServicesRegistry, org.jahia.services.scheduler.SchedulerService, org.quartz.*, java.text.SimpleDateFormat, java.util.Date"
+%>
+<%@ page import="java.util.LinkedList" %>
+<%@ page import="java.util.List" %>
+<%
 SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
 Scheduler scheduler = service.getScheduler();
 pageContext.setAttribute("service", service);
@@ -26,7 +29,7 @@ pageContext.setAttribute("allCount", jobs.size());
 response.setContentType("text/csv;charset=UTF-8");
 response.setHeader("Content-Disposition", "attachment; filename=\"jobs-"
         + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()) + ".csv\"");
-pageContext.setAttribute("newLineChar", "\n"); 
+pageContext.setAttribute("newLineChar", "\n");
 %><c:set var="nl" value="${fn:escapeXml(newLineChar)}"/>#,Group.Name,State,Start,End,Duration${nl}
 <c:forEach items="${jobs}" var="jobElement" varStatus="status">
 <c:set var="job" value="${jobElement[0]}"/>
@@ -34,24 +37,22 @@ pageContext.setAttribute("newLineChar", "\n");
 ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begin},${job.jobDataMap.end},${job.jobDataMap.duration}${nl}
 </c:forEach>
 </c:if><c:if test="${not param.file}"><%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+%><%@ page contentType="text/html; charset=UTF-8" language="java" %>
+    <!DOCTYPE html>
+    <html>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Completed Job Info"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Completed Job Info</title>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-	<h1>Completed Job Info</h1>
     <p>Completed job count: <strong>${allCount}</strong> <a href="#refresh" onclick="window.location.reload(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a>
     <br/><a href="?file=true&amp;group=${fn:escapeXml(param.group)}&toolAccessToken=${toolAccessToken}" target="_blank"><img src="<c:url value='/icons/download.png'/>" alt="download" title="download" height="16" width="16"/>download as a file</a></p>
-    
+
     <c:if test="${not empty jobs}">
-    
+
     <table border="1" cellspacing="0" cellpadding="5">
         <thead>
             <tr>
@@ -79,8 +80,8 @@ ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begi
         </tbody>
     </table>
     </c:if>
-    
-    <%@ include file="gotoIndex.jspf" %>
+
+    <%@ include file="commons/footer.jspf" %>
 </body>
 </html>
 </c:if>

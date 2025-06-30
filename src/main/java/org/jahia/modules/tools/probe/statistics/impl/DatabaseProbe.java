@@ -15,9 +15,6 @@
  */
 package org.jahia.modules.tools.probe.statistics.impl;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-
 import org.jahia.bin.Jahia;
 import org.jahia.modules.tools.benchmark.DatabaseBenchmark;
 import org.jahia.modules.tools.probe.Probe;
@@ -28,9 +25,12 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+
 /**
  * Reports database information and connection speed stats, collected by the execution of {@link DatabaseBenchmark} utility.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + DatabaseProbe.KEY,

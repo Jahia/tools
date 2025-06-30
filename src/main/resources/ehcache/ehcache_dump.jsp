@@ -1,20 +1,23 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
+<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
+<%@ page import="javax.jcr.RepositoryException" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Locale" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
-<%@ page import="javax.jcr.RepositoryException" %>
 
-<%@ page contentType="text/xml;charset=UTF-8" language="java" %>
+        <%@ page contentType="text/xml;charset=UTF-8" language="java" %>
     <%
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();

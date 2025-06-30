@@ -1,17 +1,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@ page import="java.io.File, org.jahia.modules.tools.SupportInfoHelper" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
+%><%@ page import="org.jahia.modules.tools.SupportInfoHelper, java.io.File" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
 %><c:if test="${param.action == 'download' || param.action == 'server'}"><% SupportInfoHelper.exportInfo(targetDir, request, response); %></c:if><c:if test="${param.action != 'download'}"><%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<%@ page import="org.jahia.settings.SettingsBean" %>
-<%@ page import="org.jahia.tools.jvm.ThreadMonitor" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+%><%@ page contentType="text/html; charset=UTF-8" language="java" %>
+    <!DOCTYPE html>
+    <html>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<c:set var="title" value="Export Support Information"/>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function selectAll(selector) {
             var ele = document.querySelectorAll(selector);
@@ -28,11 +26,9 @@
             }
         }
     </script>
-<title>Export Support Information</title>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Export Support Information</h1>
+<%@ include file="commons/header.jspf" %>
 <p>Allows you to export as a ZIP file useful support data about this Jahia instance.</p>
 <fieldset style="background-color:#dfe8f6;border-color:#c3dbee;color:#000">
 	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
@@ -85,7 +81,7 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 * - The support information ZIP will be located in the folder:
 <pre>        <%= targetDir %></pre>
 </p>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <div style="display: none;">
     <div id="infoArea">
         <h3>Sensitive information</h3>

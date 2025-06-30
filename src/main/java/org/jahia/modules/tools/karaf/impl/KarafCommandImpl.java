@@ -15,8 +15,6 @@
  */
 package org.jahia.modules.tools.karaf.impl;
 
-import static org.apache.karaf.shell.support.ansi.SimpleAnsi.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
@@ -35,6 +33,8 @@ import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.concurrent.*;
+
+import static org.apache.karaf.shell.support.ansi.SimpleAnsi.*;
 
 @Component(service = KarafCommand.class, immediate = true)
 public class KarafCommandImpl implements KarafCommand {

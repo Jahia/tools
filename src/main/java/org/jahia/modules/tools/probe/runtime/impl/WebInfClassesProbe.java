@@ -15,11 +15,6 @@
  */
 package org.jahia.modules.tools.probe.runtime.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Collection;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -31,9 +26,14 @@ import org.jahia.utils.StringOutputStream;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Collection;
+
 /**
  * Reports the list of class files under WEB-INF/classes.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + WebInfClassesProbe.KEY,

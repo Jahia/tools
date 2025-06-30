@@ -15,14 +15,14 @@
  */
 package org.jahia.modules.tools.probe.properties.impl;
 
-import java.io.PrintWriter;
-
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.jahia.modules.tools.probe.ProbeMBean;
 
+import java.io.PrintWriter;
+
 /**
  * Base class for the DX info probes.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class BaseSysInfoProbe implements ProbeMBean {

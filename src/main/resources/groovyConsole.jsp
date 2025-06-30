@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <%@ page import="org.apache.commons.io.FileUtils" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.jahia.bin.listeners.LoggingConfigListener" %>
@@ -24,14 +23,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<c:set var="title" value="Groovy Console"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Groovy Console</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Groovy Console&nbsp;<button data-src="#helpArea" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"/></button>
-</h1>
+<%@ include file="commons/header.jspf" %>
+<button data-src="#helpArea" data-fancybox><img src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="help" title="Help"/></button>
 <%
     long timer = System.currentTimeMillis();
     ScriptEngine engine = null;
@@ -190,7 +188,7 @@
                onclick="if (!confirm('<%=GroovyConsoleHelper.WARN_MSG%>')) { return false; }"/>
     </p>
 </form>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <div style="display: none;">
     <div id="helpArea" style="display:none;max-width:500px;">
         <h3>How to use the Groovy console</h3>

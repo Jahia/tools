@@ -1,0 +1,20 @@
+<header class="page-header">
+    <ul class="page-header_topbar">
+        <li><a href="<c:url value='/modules/tools/index.jsp'/>"><span class="material-symbols-outlined">home</span>Back</a>
+        </li>
+        <li>
+            <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span
+                    class="material-symbols-outlined">logout</span>logout</a></li>
+    </ul>
+    <hrgroup>
+        <h1>${title}</h1>
+        <p>${description}</p>
+    </hrgroup>
+    <c:if test="${actions.size > 0}">
+        <ul class="page-header_toolbar">
+            <c:forEach items="${actions}" var="action">
+                <li><a href="${action.url}">${action.title}</a></li>
+            </c:forEach>
+        </ul>
+    </c:if>
+</header>

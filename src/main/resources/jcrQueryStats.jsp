@@ -1,30 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl"%>
-<%@page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.apache.jackrabbit.api.stats.QueryStat"%>
+<%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl"%>
 <%@page import="org.jahia.services.content.JCRSessionFactory"%>
-<%@page import="java.io.File"%>
-<%@page import="java.io.FileFilter"%>
-<%@page import="org.apache.commons.io.FileUtils"%>
-<%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>
-<%@page import="org.jahia.settings.SettingsBean"%>
-<%@page import="org.jahia.services.search.spell.CompositeSpellChecker"%>
+<%@page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="JCR Query statistics"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
-    <title>JCR Query statistics</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
+<%@ include file="commons/header.jspf" %>
 <%
 QueryStat queryStat = ((JahiaRepositoryImpl)((SpringJackrabbitRepository)JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getStatManager().getQueryStat();
 pageContext.setAttribute("queryStat", queryStat);
 %>
-<h1>JCR Query statistics</h1>
 <p>
 	<a href="?refresh=true&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
 	<a href="?action=reset&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Reset statistics</a>
@@ -63,7 +55,7 @@ pageContext.setAttribute("queryStat", queryStat);
 			</c:url>
 			<a title="Execute in JCR Query Tool"
             	href="${executeUrl}"
-                target="_blank"><img src="<c:url value='/icons/tab-search.png'/>" width="16" height="16" alt="run" title="Execute in JCR Query Tool">execute</a>		
+                target="_blank"><img src="<c:url value='/icons/tab-search.png'/>" width="16" height="16" alt="run" title="Execute in JCR Query Tool">execute</a>
 			<br/>
 			duration: <strong>${q.duration} ms</strong><br/>
 			language: <strong>${q.language}</strong><br/>
@@ -92,7 +84,7 @@ pageContext.setAttribute("queryStat", queryStat);
 			</c:url>
 			<a title="Execute in JCR Query Tool"
             	href="${executeUrl}"
-                target="_blank"><img src="<c:url value='/icons/tab-search.png'/>" width="16" height="16" alt="run" title="Execute in JCR Query Tool">execute</a>		
+                target="_blank"><img src="<c:url value='/icons/tab-search.png'/>" width="16" height="16" alt="run" title="Execute in JCR Query Tool">execute</a>
 			<br/>
 			duration: <strong>${q.duration} ms</strong><br/>
 			language: <strong>${q.language}</strong><br/>
@@ -106,6 +98,6 @@ pageContext.setAttribute("queryStat", queryStat);
 </c:if>
 </fieldset>
 </c:if>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

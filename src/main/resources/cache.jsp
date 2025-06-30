@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="net.sf.ehcache.Cache" %>
 <%@page import="net.sf.ehcache.CacheManager" %>
 <%@page import="org.jahia.services.cache.CacheHelper" %>
-<%@page import="org.jahia.utils.FileUtils" %>
-<%@ page import="java.util.Arrays" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -15,10 +14,9 @@
 <% pageContext.setAttribute("clusterActivated", Boolean.getBoolean("cluster.activated")); %>
 <c:set var="flushIcon"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" "
                             align="top"/></c:set>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Cache Management"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
+      <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             if (id1) {
@@ -33,11 +31,9 @@
             document.getElementById('navigateForm').submit();
         }
     </script>
-    <title>Cache Management</title>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Cache Management</h1>
+<%@ include file="commons/header.jspf" %>
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>
@@ -263,7 +259,7 @@
         </tbody>
     </table>
 </c:forEach>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <c:if test="${showConfig}">
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </c:if>

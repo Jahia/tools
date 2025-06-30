@@ -1,6 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.apache.commons.collections.IteratorUtils" %>
 <%@ page import="org.jahia.services.content.*" %>
 <%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeType" %>
@@ -18,10 +18,9 @@
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value=">Installed Definitions Browser"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Installed Definitions Browser</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 
 <form id="navigateForm" action="#" method="post">
@@ -108,8 +107,7 @@
     }
 %>
 <body id="dt_example">
-<%@ include file="logout.jspf" %>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/header.jspf" %>
 <div class="container-fluid">
     <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 16px; margin-bottom: 24px; border-radius: 4px; font-weight: bold;">
         Do not delete definitions in production. Deleting definitions will also delete the content created with these types. Instead please <a href="https://academy.jahia.com/documentation/jahia-cms/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">consider migrating your definitions</a>.

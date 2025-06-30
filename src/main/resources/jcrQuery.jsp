@@ -1,27 +1,23 @@
-<%@page contentType="text/html;charset=UTF-8" language="java" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.apache.commons.lang3.StringUtils" %>
 <%@page import="org.apache.jackrabbit.core.query.lucene.join.JahiaQueryEngine" %>
 <%@page import="org.apache.jackrabbit.core.query.lucene.join.JoinRow" %>
+<%@page import="org.jahia.services.content.JCRContentUtils" %>
 <%@page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@page import="org.jahia.services.history.NodeVersionHistoryHelper" %>
 <%@page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
 <%@page import="org.jahia.utils.LanguageCodeConverters" %>
-<%@page import="javax.jcr.ItemNotFoundException" %>
-<%@page import="javax.jcr.Node" %>
-<%@page import="javax.jcr.NodeIterator" %>
-<%@page import="javax.jcr.Session" %>
-<%@page import="javax.jcr.Value" %>
-<%@page import="javax.jcr.query.Query"%>
+<%@page import="javax.jcr.*" %>
+<%@page import="javax.jcr.query.Query" %>
 <%@page import="javax.jcr.query.QueryResult" %>
 <%@page import="javax.jcr.query.Row" %>
-<%@page import="java.io.PrintWriter" %>
-<%@ page import="java.io.StringWriter" %>
-<%@ page import="java.util.Locale" %>
-<%@ page import="org.jahia.services.content.JCRContentUtils" %>
+<%@page import="java.io.PrintWriter"%>
+<%@page import="java.io.StringWriter" %>
+<%@page import="java.util.Locale" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -29,11 +25,9 @@
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="JCR Query Tool"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>JCR Query Tool</title>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             document.getElementById(id1).value = value1;
@@ -66,7 +60,7 @@
     pageContext.setAttribute("locales", LanguageCodeConverters.getSortedLocaleList(Locale.ENGLISH));
 %>
 <body>
-<%@ include file="logout.jspf" %>
+<%@ include file="commons/header.jspf" %>
 <c:set var="switchToWorkspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
 <fieldset>
     <legend>
@@ -512,7 +506,7 @@
         JCRSessionFactory.getInstance().setCurrentUser(null);
     }
 %>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <div style="display: none;">
     <div id="helpArea">
         <h3>Query examples</h3>

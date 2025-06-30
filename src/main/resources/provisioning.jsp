@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.jahia.osgi.BundleUtils" %>
 <%@ page import="org.jahia.services.provisioning.ProvisioningManager" %>
+<c:set var="title" value="Run provisioning script"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
-    <title>Run provisioning script</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Run provisioning script</h1>
+<%@ include file="commons/header.jspf" %>
 <a target="_blank" href="https://academy.jahia.com/documentation/jahia-cms/jahia-8.2/dev-ops/provisioning/creating-a-provisioning-script">Link to academy</a>
 <p>Paste here the provisioning script you would like to execute against Jahia:</p>
 <form method="post" id="provisioningForm">
@@ -22,7 +20,7 @@
     </fieldset>
     <button id="submitYaml" type="button" disabled> Run provisioning script </button>
 </form>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <h2 hidden="true" id="provisioningMessage"><strong>Request sent, waiting for provisioning API response</strong></h2>
 <strong><h2 hidden=true id="provisioningResult"></h2></strong>
 <c:if test="${not empty param.script}">

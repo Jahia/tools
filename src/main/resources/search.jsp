@@ -1,30 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="java.io.File"%>
-<%@page import="java.io.FileFilter"%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.apache.commons.io.FileUtils"%>
-<%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>
-<%@page import="org.jahia.settings.SettingsBean"%>
-<%@page import="org.jahia.services.search.spell.CompositeSpellChecker"%>
-<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
+<%@page import="org.apache.commons.lang3.StringUtils"%>
+<%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl"%>
+<%@page import="org.apache.jackrabbit.core.state.NoSuchItemStateException"%>
+<%@page import="org.jahia.modules.tools.search.ReIndexProxy"%>
+<%@page import="org.jahia.services.content.JCRSessionFactory"%>
 <%@ page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" %>
-<%@ page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
-<%@ page import="org.apache.jackrabbit.core.state.ItemStateException" %>
-<%@ page import="org.apache.jackrabbit.core.state.NoSuchItemStateException" %>
-<%@ page import="org.jahia.modules.tools.search.ReIndexProxy"%>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.jahia.services.search.spell.CompositeSpellChecker" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="javax.jcr.RepositoryException" %>
+<%@ page import="java.io.File" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Search Engine Manager"/>
+<c:set var="title" value="Search Engine Management"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
-    <title>Search Engine Manager</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Search Engine Management</h1>
+<%@ include file="commons/header.jspf" %>
 <c:if test="${not empty param.action}">
 	<c:choose>
 		<c:when test="${param.action == 'updateSpellCheckerIndex'}">
@@ -202,7 +198,8 @@
 
 </ul>
 </fieldset>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>
+

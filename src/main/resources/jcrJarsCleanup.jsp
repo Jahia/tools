@@ -1,20 +1,22 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="org.slf4j.Logger"%>
-<%@ page import="org.slf4j.LoggerFactory" %>
-<%@ page import="org.jahia.osgi.BundleUtils" %>
+<%@ page import="org.jahia.osgi.BundleUtils"%>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.services.content.JCRCallback" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@ page import="org.jahia.services.content.JCRTemplate" %>
 <%@ page import="org.jahia.services.modulemanager.persistence.BundlePersister" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="javax.jcr.NodeIterator" %>
+<%@ page import="javax.jcr.RepositoryException" %>
 <%@ page import="javax.jcr.query.Query" %>
 <%@ page import="javax.jcr.query.QueryResult" %>
-<%@ page import="javax.jcr.NodeIterator" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ page import="org.jahia.services.content.JCRCallback" %>
-<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
-<%@ page import="javax.jcr.RepositoryException" %>
-<%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 
 <%!
@@ -57,11 +59,9 @@
         });
     }
 %>
-
+<c:set var="title" value="JCR Bundles storage"/>
 <head>
-    <title>JCR Bundles storage</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 
 <%
@@ -70,7 +70,7 @@
     pageContext.setAttribute("result", result);
 %>
 <body>
-<%@ include file="logout.jspf" %>
+<%@ include file="commons/header.jspf" %>
 <div>
     <fieldset>
         <legend><strong>JCR bundles cleanup</strong></legend>

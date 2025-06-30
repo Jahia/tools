@@ -1,34 +1,28 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@page import="org.jahia.services.content.JCRSessionWrapper" %>
-<%@page import="org.jahia.services.workflow.Workflow" %>
+<%@page import="org.jahia.services.usermanager.JahiaUser" %>
+<%@page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
+<%@ page import="org.jahia.services.workflow.Workflow" %>
 <%@ page import="org.jahia.services.workflow.WorkflowService" %>
 <%@ page import="org.jahia.services.workflow.WorkflowTask" %>
+<%@ page import="javax.jcr.ItemNotFoundException" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="javax.jcr.RepositoryException" %>
-<%@ page import="javax.jcr.ItemNotFoundException" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Workflows monitor"/>
 <head>
-    <title>Workflows monitor</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-
+<%@ include file="commons/header.jspf" %>
 <%
 
     final JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
@@ -126,6 +120,6 @@
 
 <a href="workflows.jsp?abortGhost=all&toolAccessToken=${toolAccessToken}">Abort all ghost workflows</a>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

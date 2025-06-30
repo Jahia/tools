@@ -1,21 +1,17 @@
-<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.modules.tools.gql.admin.osgi.FindImportPackage" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
+<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="OSGI Import-Package checker"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <%@ include file="css.jspf" %>
-    <title>OSGI Import-Package checker</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 
 <body>
-<%@ include file="logout.jspf" %>
+<%@ include file="commons/header.jspf" %>
 <div>
-    <h1>OSGI Import-Package checker</h1>
 
     <fieldset>
         <legend>Perform Import-Package checker</legend>
@@ -87,7 +83,7 @@
     </c:if>
 </div>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 
 </body>
 </html>

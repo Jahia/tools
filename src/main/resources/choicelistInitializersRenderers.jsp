@@ -1,22 +1,20 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page import="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" %>
-<%@ page import="java.util.Map" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer" %>
+<%@ page import="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" %>
 <%@ page import="org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer" %>
-<%@ page import="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService" %>
 <%@ page import="org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer" %>
+<%@ page import="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService" %>
 <%@ page import="org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Choicelist initializers &amp; renderers"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Choicelist initializers &amp; renderers</title>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <%
     final Map<String,ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
@@ -27,11 +25,7 @@
     int count = 0;
 %>
 <body>
-<%@ include file="logout.jspf" %>
-<%@ include file="gotoIndex.jspf" %>
-
-<h1>Choicelist initializers &amp; renderers</h1>
-
+<%@ include file="commons/header.jspf" %>
 <div style="float:left;width:40%">
     <h2>Choicelist initializers (<%=nbInitializers%> found)</h2>
 
@@ -90,6 +84,7 @@
 
 <div style="clear:both"></div>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>
+

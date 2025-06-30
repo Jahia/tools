@@ -1,3 +1,10 @@
+<%@ page import="java.lang.*" %>
+<%@ page import="java.lang.Boolean" %>
+<%@ page import="java.lang.Exception" %>
+<%@ page import="java.lang.Long" %>
+<%@ page import="java.lang.String" %>
+<%@ page import="java.lang.StringBuffer" %>
+<%@ page import="java.lang.System" %>
 <c:choose>
 
     <c:when test="${value.type == jcrPropertyTypes.BINARY}"> <%-- binary --%>
@@ -47,7 +54,7 @@
                 <c:param name="workspace" value="${workspace}"/>
                 <c:param name="toolAccessToken" value="${toolAccessToken}"/>
             </c:url>
-            <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>        
+            <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>
         </c:if>
         <c:if test="${not valuePresent}">${value.string}</c:if>
     </c:when>

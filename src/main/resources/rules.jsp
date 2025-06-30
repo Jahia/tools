@@ -1,25 +1,16 @@
-<%@page import="org.drools.core.base.EnabledBoolean"%>
-<%@page import="org.drools.core.spi.Enabled"%>
-<%@page import="org.drools.core.rule.Rule"%>
-<%@page import="java.lang.reflect.Field"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.jahia.services.content.rules.RulesListener"%>
-<%@ page import="java.util.*" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Business Rules"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Business Rules</title>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-    <%@ include file="logout.jspf" %>
-    <h1>Business Rules</h1>
+    <%@ include file="commons/header.jspf" %>
     <p>
         Here is a list of all business rules, currently registered in the system.
         <a href="?refresh=true&toolAccessToken=${toolAccessToken}" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="Refresh" height="16" width="16"/></a>
@@ -82,7 +73,7 @@
 	</ul>
 	</c:forEach>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>
