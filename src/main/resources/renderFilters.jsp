@@ -30,15 +30,15 @@
         }
     }
 %>
-
-<c:set var="title">Render Filters (${functions:length(filters)} found)</c:set>
-<head>
-    <%@ include file="commons/html_header.jspf" %>
-</head>
 <%
     pageContext.setAttribute("filters", RenderService.getInstance().getRenderChainInstance().getFilters());
     pageContext.setAttribute("newline", "\n");
 %>
+<c:set var="title">Render Filters (${functions:length(filters)} found)</c:set>
+<head>
+    <%@ include file="commons/html_header.jspf" %>
+</head>
+
 <body>
 <%@ include file="commons/header.jspf" %>
 <table border="1" cellspacing="0" cellpadding="5">

@@ -6,13 +6,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<%
+    pageContext.setAttribute("actions", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getActions().values());
+%>
 <c:set var="title" value="Actions (${functions:length(actions)} found)"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>
-<%
-    pageContext.setAttribute("actions", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getActions().values());
-%>
 <body>
 <%@ include file="commons/header.jspf" %>
 <table border="1" cellspacing="0" cellpadding="5">

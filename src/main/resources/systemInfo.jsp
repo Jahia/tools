@@ -15,13 +15,15 @@ response.setHeader("Content-Disposition", "attachment; filename=\"system-info-"
 <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="headerActions">
+    <li><a href="?file=true&toolAccessToken=${toolAccessToken}" target="_blank"><span class="material-symbols-outlined">download</span>download as a file</a></li>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<a href="?file=true&toolAccessToken=${toolAccessToken}" target="_blank">download as a file</a>
-<br/>
-<%@ include file="commons/footer.jspf" %>
 <pre>
     <% ErrorFileDumper.outputSystemInfo(new PrintWriter(pageContext.getOut())); %>
 </pre>
+<br/>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>
 </c:if>

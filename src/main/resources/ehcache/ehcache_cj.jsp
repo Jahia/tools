@@ -60,13 +60,15 @@
         pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
     %>
     <body id="dt_example" class="container-fluid">
+    <c:set var="headerActions">
+        <li><a href="?refresh&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">Refresh</span>refresh</a></li>
+        <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
+               onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
+               title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
+        <li><a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">preview</span>${param.viewContent ? 'Hide content preview' : 'Preview content'}</a></li>
+    </c:set>
     <%@ include file="../commons/header.jspf" %>
-    <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?refresh&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
-    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
-       onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
-       title="flush the content of the module output cache">flush</a>&nbsp;
-    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
+
     <c:if test="${not empty removed and removed}">
         <p>Key (${requestScope.flushkey}) has been flushed</p>
     </c:if>

@@ -8,9 +8,11 @@
 <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="description">
+    <p>Paste here the HTML text to be validated:</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
 <form id="wcag" action="${pageContext.request.contextPath}/cms/wcag/validate" method="post">
-<p>Paste here the HTML text to be validated:</p>
 <p><textarea rows="5" cols="80" id="text" name="text"></textarea></p>
 <p><input type="submit" value="Validate" /></p>
 </form>

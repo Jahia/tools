@@ -36,8 +36,10 @@ if ("stopExtractionCheck".equals(request.getParameter("action"))) {
 pageContext.setAttribute("extractionCheckRunning", TextExtractionHelper.isCheckingExtractions());
 %>
 <body>
+<c:set var="description">
+    <p>This tool aims to perform text extractions on documents in the repository and store it in the j:extractedText property. Another option allows to extract the text from a local file and immediately show the results.</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<p>This tool aims to perform text extractions on documents in the repository and store it in the j:extractedText property. Another option allows to extract the text from a local file and immediately show the results.</p>
 
 <c:if test="${param.action == 'reportMissingExtraction' || param.action == 'fixMissingExtraction' || param.action == 'reportExtractionByFilter' || param.action == 'redoExtractionByFilter'}">
 <pre>

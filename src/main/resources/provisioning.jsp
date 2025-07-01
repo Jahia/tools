@@ -9,9 +9,13 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="headerActions">
+    <li><a target="_blank" href="https://academy.jahia.com/documentation/jahia-cms/jahia-8.2/dev-ops/provisioning/creating-a-provisioning-script"><span class="material-symbols-outlined">dictionary</span>Link to academy</a></li>
+</c:set>
+<c:set var="description">
+    <p>Paste here the provisioning script you would like to execute against Jahia</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<a target="_blank" href="https://academy.jahia.com/documentation/jahia-cms/jahia-8.2/dev-ops/provisioning/creating-a-provisioning-script">Link to academy</a>
-<p>Paste here the provisioning script you would like to execute against Jahia:</p>
 <form method="post" id="provisioningForm">
     <textarea name="script" id="provisioning" style="width: 100%; height: 500px;" required></textarea>
     <fieldset id="errorField" hidden>

@@ -12,33 +12,44 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="commons/header.jspf" %>
 <%
-QueryStat queryStat = ((JahiaRepositoryImpl)((SpringJackrabbitRepository)JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getStatManager().getQueryStat();
-pageContext.setAttribute("queryStat", queryStat);
+    QueryStat queryStat = ((JahiaRepositoryImpl)((SpringJackrabbitRepository)JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getStatManager().getQueryStat();
+    pageContext.setAttribute("queryStat", queryStat);
 %>
-<p>
-	<a href="?refresh=true&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Refresh</a>
-	<a href="?action=reset&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" " align="top"/>Reset statistics</a>
-</p>
+
 <c:if test="${not empty param.action}">
-	<c:choose>
-		<c:when test="${param.action == 'enable'}">
-			<% queryStat.setEnabled("on".equals(request.getParameter("status"))); %>
-			<p style="color: blue">Query statistics now ${param.status == 'on' ? 'enabled' : 'disabled'}.</p>
-		</c:when>
-		<c:when test="${param.action == 'reset'}">
-			<%
-			queryStat.clearPopularQueriesQueue();
-			queryStat.clearSlowQueriesQueue();
-			%>
-			<p style="color: blue">Query statistics was cleared.</p>
-		</c:when>
-	</c:choose>
+    <c:choose>
+        <c:when test="${param.action == 'enable'}">
+            <% queryStat.setEnabled("on".equals(request.getParameter("status"))); %>
+            <c:set var="message">
+                <p style="color: blue">Query statistics now ${param.status == 'on' ? 'enabled' : 'disabled'}.</p>
+            </c:set>
+        </c:when>
+        <c:when test="${param.action == 'reset'}">
+            <%
+                queryStat.clearPopularQueriesQueue();
+                queryStat.clearSlowQueriesQueue();
+            %>
+            <c:set var="message">
+                <p style="color: blue">Query statistics was cleared.</p>
+            </c:set>
+        </c:when>
+    </c:choose>
 </c:if>
+
+
+<c:set var="description">
 <p>Query statistics when enabled provides information about slow queries and most popular queries.</p>
-<p>The JCR query statistics is currently ${queryStat.enabled ? 'enabled' : 'disabled'}.
-<a href="?action=enable&amp;status=${queryStat.enabled ? 'off' : 'on'}&toolAccessToken=${toolAccessToken}">${queryStat.enabled ? 'Disable it' : 'Enable it'}</a></p>
+    <p>The JCR query statistics is currently <strong>${queryStat.enabled ? 'enabled' : 'disabled'}</strong>.</p>
+    ${message}
+</c:set>
+<c:set var="headerActions">
+    <li><a href="?refresh=true&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
+    <li><a href="?action=reset&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">recycling</span>Reset statistics</a></li>
+    <li><a href="?action=enable&amp;status=${queryStat.enabled ? 'off' : 'on'}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">switch</span>${queryStat.enabled ? 'Disable stats' : 'Enable stats'}</a></li>
+</c:set>
+<%@ include file="commons/header.jspf" %>
+
 <c:if test="${queryStat.enabled}">
 <fieldset>
 <legend>Slow queries</legend>

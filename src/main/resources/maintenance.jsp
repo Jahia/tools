@@ -50,8 +50,10 @@
 <% pageContext.setAttribute("fullReadOnlyModeController", ReadOnlyModeController.getInstance()); %>
 <% pageContext.setAttribute("settings", SettingsBean.getInstance()); %>
 <body>
+<c:set var="headerActions">
+    <li><a href="maintenance.jsp" title="Refresh"><span class="material-symbols-outlined">refresh</span>Refresh status</a></li>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<p><a href="maintenance.jsp" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="Refresh" title="Refresh" height="16" width="16"/>&nbsp; Refresh status</a></p>
 <c:set var="modeLabel" value="${maintenance ? 'ON' : 'OFF'}"/>
 <h2><img src="${maintenance ? imgOn : imgOff}" alt="${modeLabel}" title="${modeLabel}" height="16" width="16"/> Maintenance Mode</h2>
 <p>Please note that if you switch the maintenance mode flag, <strong>the changes are only valid during server run time and are not persisted between server restarts.</strong><br/>

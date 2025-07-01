@@ -25,15 +25,17 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="description">
+    <p>
+        This tool will validates the content nodes against the cnd files. It will remove any property that would be
+        found in the JCR but no more declared in the related CND. Ensure that you do not have any CND parsing issue
+        before running this tool: if some definition is temporarly missing because of some syntax error, or any other
+        reason, this tool may drop some content you want to keep. This operation cannot be reverted, unless from a backup.
+        For this reason, it is highly recommended to perform such backup before using this tool!
+    </p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
 
-<p>
-    This tool will validates the content nodes against the cnd files. It will remove any property that would be
-    found in the JCR but no more declared in the related CND. Ensure that you do not have any CND parsing issue
-    before running this tool: if some definition is temporarly missing because of some syntax error, or any other
-    reason, this tool may drop some content you want to keep. This operation cannot be reverted, unless from a backup.
-    For this reason, it is highly recommended to perform such backup before using this tool!
-</p>
 
 <h2>Consistency checks</h2>
 

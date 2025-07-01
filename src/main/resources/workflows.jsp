@@ -22,6 +22,12 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="headerActions">
+    <li><a href="workflows.jsp?abortGhost=all&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">
+cancel_presentation
+</span>Abort all ghost workflows</a>
+    </li>
+</c:set>
 <%@ include file="commons/header.jspf" %>
 <%
 
@@ -117,9 +123,6 @@
         </tr>
     </c:forEach>
 </table>
-
-<a href="workflows.jsp?abortGhost=all&toolAccessToken=${toolAccessToken}">Abort all ghost workflows</a>
-
 <%@ include file="commons/footer.jspf" %>
 </body>
 </html>

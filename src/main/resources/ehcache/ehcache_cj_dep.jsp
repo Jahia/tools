@@ -45,11 +45,12 @@
         pageContext.setAttribute("cache", cache);
     %>
     <body id="dt_example" class="container-fluid">
+    <c:set var="headerActions">
+        <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
+               onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
+               title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
+    </c:set>
     <%@ include file="../commons/header.jspf" %>
-    <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
-       onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
-       title="flush the content of the module output cache">flush</a>&nbsp;
     <div id="keys">
         <table id="cacheTable" class="table table-striped compact" data-table="dataTable">
             <thead>

@@ -39,8 +39,11 @@ pageContext.setAttribute("orphanedCheckRunning", NodeVersionHistoryHelper.isChec
 pageContext.setAttribute("unusedCheckRunning", NodeVersionHistoryHelper.isCheckingUnused());
 %>
 <body>
+<c:set var="description">
+
+    <p>This tool aims to perform cleanup tasks on the version store, e.g. find version history for nodes that no longer exists and purge them or purge old versions for existing nodes.</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<p>This tool aims to perform cleanup tasks on the version store, e.g. find version history for nodes that no longer exists and purge them or purge old versions for existing nodes.</p>
 <c:if test="${param.action == 'orphanedReport' || param.action == 'orphanedDelete'}">
 <pre>
 <%

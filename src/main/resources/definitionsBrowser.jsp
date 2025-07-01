@@ -18,7 +18,7 @@
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<c:set var="title" value=">Installed Definitions Browser"/>
+<c:set var="title" value="Installed Definitions Browser"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>

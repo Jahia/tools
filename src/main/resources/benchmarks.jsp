@@ -68,19 +68,19 @@
     </style>
 </head>
 <body>
+<c:set var="description">
+    <p>
+        This tool will benchmark the database read performance as well as perform both read and write performance
+        checks for the filesystem. This is in now way a exhaustive tool but will allow to check if the performance is
+        nominal or not.
+    </p>
+
+    <p>
+        It is recommended to execute the tests multiple times to make sure that the results are stable and significant.
+        You can re-run a test simply by reloading the JSP.
+    </p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-
-<p>
-    This tool will benchmark the database read performance as well as perform both read and write performance
-    checks for the filesystem. This is in now way a exhaustive tool but will allow to check if the performance is
-    nominal or not.
-</p>
-
-<p>
-    It is recommended to execute the tests multiple times to make sure that the results are stable and significant.
-    You can re-run a test simply by reloading the JSP.
-</p>
-
 <%!
     public static String getDatabaseType() {
         return DatabaseUtils.getDatabaseType().name();

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %><%@ page import="org.jahia.modules.tools.SupportInfoHelper, java.io.File" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
-%><c:if test="${param.action == 'download' || param.action == 'server'}"><% SupportInfoHelper.exportInfo(targetDir, request, response); %></c:if><c:if test="${param.action != 'download'}"><%@ page contentType="text/html;charset=UTF-8" language="java"
-%><%@ page contentType="text/html; charset=UTF-8" language="java" %>
+%><c:if test="${param.action == 'download' || param.action == 'server'}"><% SupportInfoHelper.exportInfo(targetDir, request, response); %></c:if><c:if test="${param.action != 'download'}">
+    <%@ page contentType="text/html; charset=UTF-8" language="java" %>
     <!DOCTYPE html>
     <html>
     <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -28,8 +28,19 @@
     </script>
 </head>
 <body>
+<c:set var="headerActions">
+    <li><a href="#all-on" title="Select all" onclick="selectAll('.cbProbe'); return false;"><span class="material-symbols-outlined">
+check_box
+</span>select all</a></li>
+    <li><a href="#all-off" title="Unselect all" onclick="deSelectAll('.cbProbe'); return false;"><span class="material-symbols-outlined">
+check_box_outline_blank
+</span>unselect all</a></li>
+</c:set>
+<c:set var="description">
+    <p>Allows you to export as a ZIP file useful support data about this Jahia instance.</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<p>Allows you to export as a ZIP file useful support data about this Jahia instance.</p>
+
 <fieldset style="background-color:#dfe8f6;border-color:#c3dbee;color:#000">
 	<legend><img src="<c:url value='/icons/warning.png'/>" height="16" width="16" alt="(!)" align="top"/> Caution</legend>
 	Please, note, that no information is sent directly to Jahia support when using this action. You will be able to review and adjust the resulted file.<br/>
@@ -47,7 +58,6 @@ Support information exported in ${fn:escapeXml(generationTime)} ms to file: <str
 <form id="support" action="<c:url value='support.jsp'/>" method="get">
     <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
 <p>
-<a href="#all-on" title="Select all" onclick="selectAll('.cbProbe'); return false;">select all</a> | <a href="#all-off" title="Unselect all" onclick="deSelectAll('.cbProbe'); return false;">unselect all</a>
 <c:forEach var="probesPerCategory" items="${allProbes}">
 <fieldset>
     <legend>&nbsp;${fn:escapeXml(probesPerCategory.key == 'jcr' ? 'JCR' : functions:capitalize(probesPerCategory.key))}&nbsp;

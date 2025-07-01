@@ -11,38 +11,37 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <% pageContext.setAttribute("currentDate", new java.util.Date()); %>
-<c:set var="title">Support Tools <span style="font-size:0.7em;">(<%= Jahia.getFullProductVersion() %>)</span></c:set>
+<c:set var="title">Support Tools</c:set>
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<h1>${title}</h1>
-<div style="position: absolute; right: 20px; top: 7px; font-size:1.0em;">
-    <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
-        if (Boolean.getBoolean("cluster.activated")) {
-    %>
-    Current Node Id: <%= System.getProperty("cluster.node.serverId", "N/A") %>
-    <%
-            }
-        } %>
-    <br/>
-    Uptime: <%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %>
-    <br/>
-    Since: <%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %>
-</div>
+<header class="page-header">
+    <ul class="page-header_bar">
+        <li>
+            <h1>${title}</h1>
+        </li>
+        <li>
+            <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span
+                    class="material-symbols-outlined">logout</span>Logout</a></li>
+    </ul>
+    <hrgroup>
+        <ul class="page-header_toolbar">
+            <li><%= Jahia.getFullProductVersion() %></li>
+            <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
+                if (Boolean.getBoolean("cluster.activated")) {
+            %>
+            <li>Current Node Id: <strong><%= System.getProperty("cluster.node.serverId", "N/A") %></strong></li>
+            <%
+                    }
+                } %>
+            <li>Uptime: <strong><%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %></strong></li>
+            <li> Since: <strong><%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></strong></li>
+        </ul>
+    </hrgroup>
+</header>
+
 <table width="100%" border="0">
-    <tr>
-        <td width="50%">
-            <fieldset>
-                <legend>Logout</legend>
-                <ul>
-                    <li>
-                        <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'>Logout</a>
-                    </li>
-                </ul>
-            </fieldset>
-        </td>
-    </tr>
     <tr>
         <td width="50%" valign="top">
             <fieldset>
@@ -150,7 +149,15 @@
         </td>
     </tr>
 </table>
-<p>&copy; Copyright 2002-<%= new SimpleDateFormat("yyyy").format(new Date()) %> Jahia Solutions Group SA - All rights
-    reserved.</p>
+<footer class="page-footer">
+    <ul class="page-footer_bar">
+        <li><p>&copy; Copyright 2002-<%= new SimpleDateFormat("yyyy").format(new Date()) %> Jahia Solutions Group SA - All rights
+            reserved.</p>
+        </li>
+        <li>
+            <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span
+                    class="material-symbols-outlined">logout</span>Logout</a></li>
+    </ul>
+</footer>
 </body>
 </html>

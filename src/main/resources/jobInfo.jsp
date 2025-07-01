@@ -36,8 +36,8 @@ pageContext.setAttribute("newLineChar", "\n");
 <c:set var="state" value="${job.jobDataMap.status}"/>
 ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begin},${job.jobDataMap.end},${job.jobDataMap.duration}${nl}
 </c:forEach>
-</c:if><c:if test="${not param.file}"><%@ page contentType="text/html;charset=UTF-8" language="java"
-%><%@ page contentType="text/html; charset=UTF-8" language="java" %>
+</c:if><c:if test="${not param.file}">
+    <%@ page contentType="text/html; charset=UTF-8" language="java" %>
     <!DOCTYPE html>
     <html>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -48,8 +48,16 @@ ${status.index + 1},${fn:escapeXml(job.fullName)},${state},${job.jobDataMap.begi
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-    <p>Completed job count: <strong>${allCount}</strong> <a href="#refresh" onclick="window.location.reload(); return false;" title="refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="refresh" height="16" width="16"/></a>
-    <br/><a href="?file=true&amp;group=${fn:escapeXml(param.group)}&toolAccessToken=${toolAccessToken}" target="_blank"><img src="<c:url value='/icons/download.png'/>" alt="download" title="download" height="16" width="16"/>download as a file</a></p>
+<c:set var="headerActions">
+    <li><a href="?file=true&amp;group=${fn:escapeXml(param.group)}&toolAccessToken=${toolAccessToken}" target="_blank"><span class="material-symbols-outlined">download</span>download as a file</a></li>
+    <li> <a href="#refresh" onclick="window.location.reload(); return false;" title="refresh"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
+</c:set>
+<c:set var="description">
+    <p>Completed job count: <strong>${allCount}</strong></p>
+</c:set>
+    <%@ include file="commons/header.jspf" %>
+
+    <br/></p>
 
     <c:if test="${not empty jobs}">
 

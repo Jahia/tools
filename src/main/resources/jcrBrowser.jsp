@@ -173,6 +173,7 @@
     </script>
 </head>
 <body>
+<c:set var="description"><p id="renderText"></p></c:set>
 <%@ include file="commons/header.jspf" %>
 <c:url var="mgrUrl" value="/engines/manager.jsp">
     <c:param name="selectedPaths" value="${currentNode.path}"/>
@@ -657,9 +658,7 @@
     </pre>
             <br>
         </c:if>
-        <div style="position: absolute; right: 20px; top: 10px; font-size: 80%">rendered
-            in <%= System.currentTimeMillis() - timer %> ms
-        </div>
+        <div style="position: absolute; right: 20px; top: 10px; font-size: 80%">
     </fieldset>
 </body>
 <%
@@ -710,5 +709,10 @@
 %>
 </div>
 <%@ include file="commons/footer.jspf" %>
+<script>
+    window.onload = function () {
+        document.getElementById("renderText").textContent = 'rendered in <%= System.currentTimeMillis() - timer %> ms';
+    }
+</script>
 </body>
 </html>

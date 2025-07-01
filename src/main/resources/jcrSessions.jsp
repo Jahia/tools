@@ -14,11 +14,13 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="description">
+    <p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>
+    There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
+    <p>List of session not hold/created by this page/request:</p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
-<p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>
-There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
 
-<p>List of session not hold/created by this page/request:</p>
 <ol>
     <%
         final PrintWriter s = new PrintWriter(pageContext.getOut());

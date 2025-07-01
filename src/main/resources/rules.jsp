@@ -10,11 +10,13 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-    <%@ include file="commons/header.jspf" %>
-    <p>
+<c:set var="headerActions">
+    <li><a href="?refresh=true&toolAccessToken=${toolAccessToken}" title="Refresh"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
+</c:set>
+<c:set var="description">
         Here is a list of all business rules, currently registered in the system.
-        <a href="?refresh=true&toolAccessToken=${toolAccessToken}" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="refresh" title="Refresh" height="16" width="16"/></a>
-    </p>
+</c:set>
+    <%@ include file="commons/header.jspf" %>
     <p>
         Note, please, the enable/disable actions here are not persistent, meaning they influence the state of a rule only till the next server restart and only on this current cluster node.<br/>
         If you would like to <strong>permanently disable some rules</strong>, please use the configuration approach:

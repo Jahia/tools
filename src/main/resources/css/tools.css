@@ -57,14 +57,14 @@ a:has(.material-symbols-outlined) {
     }
 }
 
-.page-header {
+.page-header, .page-footer {
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 16px;
     /* gap: 8px; */
 
     h1 {
+        margin-top: 0;
         margin-bottom: 4px;
     }
 
@@ -83,17 +83,21 @@ a:has(.material-symbols-outlined) {
     }
 }
 
-.page-header ul {
+.page-header ul, .page-footer ul {
     padding: 0;
     list-style: none;
     display: flex;
     gap: 16px;
 }
 
-.page-header_topbar {
+.page-header_bar, .page-footer_bar {
     display: flex;
     justify-content: space-between;
     color: #7E8386;
+}
+
+.page-header_bar h1 {
+    color: #293136;
 }
 
 .page-header_toolbar a {

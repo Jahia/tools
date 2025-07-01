@@ -130,6 +130,7 @@
 <% long beginPageLoadTime = System.currentTimeMillis();%>
 <c:set var="title" value="Log4j Administration"/>
 <head>
+    <%@ include file="commons/html_header.jspf" %>
     <style type="text/css">
 
         <!--

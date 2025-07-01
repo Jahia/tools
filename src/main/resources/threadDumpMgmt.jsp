@@ -11,6 +11,9 @@
     <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
+<c:set var="headerActions">
+    <li><a href="?refresh=true&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">refresh</span>Refresh</a>
+</c:set>
 <%@ include file="commons/header.jspf" %>
 <c:if test="${empty param.threadDumpCount && (param.threadDump == 'sysout' || param.threadDump == 'file')}">
     <% pageContext.setAttribute("outputFile", ThreadMonitor.getInstance().dumpThreadInfo("sysout".equals(request.getParameter("threadDump")), "file".equals(request.getParameter("threadDump")))); %>
@@ -40,8 +43,7 @@
         <strong>${param.threadDumpOnHighLoad ? 'enabled' : 'disabled'}</strong>.
     </p>
 </c:if>
-<a href="?refresh=true&toolAccessToken=${toolAccessToken}"><img src="<c:url value='/icons/refresh.png'/>" height="16"
-                                                                width="16" alt=" " align="top"/>Refresh</a>
+
 <p>Active thread count: <strong><%=Thread.activeCount() %>
 </strong></p>
 <ul>

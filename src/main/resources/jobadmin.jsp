@@ -46,25 +46,28 @@ pageContext.setAttribute("scheduler", scheduler);
 <c:url var="imgOff" value="images/nav_plain_red.png"/>
 <c:set var="schedulerStatus" value="${scheduler.started ? (scheduler.inStandbyMode ? 'In standby mode' : 'Started') : 'Not started'}"/>
 <body>
-    <%@ include file="commons/header.jspf" %>
+<c:set var="description">
     <p>Scheduler status:
-    <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>
-    ${schedulerStatus}
+        <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>
+            ${schedulerStatus}
     </p>
     <p>
-    <c:if test="${ramScheduler}">
-        This view lists all the jobs, managed by the RAM (in-memory) scheduler.
-        A RAM scheduler is a local (non-clustered) instance which has no persistence for jobs between the server restarts.
-        <br/>
-        <a title="Switch to persistent scheduler" href="#scheduler" onclick="go('schedulerType', ''); return false;">Switch to persistent scheduler</a>
-    </c:if>
-    <c:if test="${!ramScheduler}">
-        This view lists all the jobs, managed by the scheduler and whose state
-        is persisted in the database (maintained between server restarts).
-        <br/>
-        <a title="Switch to RAM (in-memory) scheduler" href="#scheduler" onclick="go('schedulerType', 'ram'); return false;">Switch to RAM (in-memory) scheduler</a>
-    </c:if>
+        <c:if test="${ramScheduler}">
+            This view lists all the jobs, managed by the RAM (in-memory) scheduler.
+            A RAM scheduler is a local (non-clustered) instance which has no persistence for jobs between the server restarts.
+            <br/>
+            <a title="Switch to persistent scheduler" href="#scheduler" onclick="go('schedulerType', ''); return false;">Switch to persistent scheduler</a>
+        </c:if>
+        <c:if test="${!ramScheduler}">
+            This view lists all the jobs, managed by the scheduler and whose state
+            is persisted in the database (maintained between server restarts).
+            <br/>
+            <a title="Switch to RAM (in-memory) scheduler" href="#scheduler" onclick="go('schedulerType', 'ram'); return false;">Switch to RAM (in-memory) scheduler</a>
+        </c:if>
     </p>
+</c:set>
+    <%@ include file="commons/header.jspf" %>
+
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>

@@ -67,11 +67,11 @@
     </style>
 </head>
 <body>
-<%@ include file="commons/header.jspf" %>
-<p>
+<c:set var="description">
     This tool will perform some integrity checks on the locks of the JCR repository, and also implements some fixes.
-</p>
+</c:set>
 
+<%@ include file="commons/header.jspf" %>
 <h2>Lock Integrity checks</h2>
 <%!
 

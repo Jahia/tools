@@ -60,11 +60,13 @@
     </style>
 </head>
 <body>
+<c:set var="description">
+    <p>
+        This tool will perform some integrity checks on the JCR repository, and also implements some fixes.
+    </p>
+</c:set>
 <%@ include file="commons/header.jspf" %>
 
-<p>
-    This tool will perform some integrity checks on the JCR repository, and also implements some fixes.
-</p>
 
 <h2>Integrity checks</h2>
 <%@ include file="commons/functions.jspf" %>

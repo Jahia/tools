@@ -3,9 +3,9 @@
   box-sizing: border-box;
 }
 /* 2. Remove default margin */
-* {
-  margin: 0;
-}
+/** {*/
+/*  margin: 0;*/
+/*}*/
 /* 3. Enable keyword animations */
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -20,7 +20,7 @@ body {
 }
 /* 6. Improve media defaults */
 img, picture, video, canvas, svg {
-  display: block;
+/*  display: block; */
   max-width: 100%;
 }
 /* 7. Inherit fonts for form controls */
