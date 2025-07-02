@@ -26,8 +26,8 @@
                     class="material-symbols-outlined">logout</span>Logout</a></li>
     </ul>
     <hrgroup>
+        <p><%= Jahia.getFullProductVersion() %></p>
         <ul class="page-header_toolbar">
-            <li><%= Jahia.getFullProductVersion() %></li>
             <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
                 if (Boolean.getBoolean("cluster.activated")) {
             %>
@@ -36,7 +36,7 @@
                     }
                 } %>
             <li>Uptime: <strong><%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %></strong></li>
-            <li> Since: <strong><%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></strong></li>
+            <li>Since: <strong><%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></strong></li>
         </ul>
     </hrgroup>
 </header>

@@ -66,6 +66,8 @@
     <span>Cache Miss: ${depstats.cacheMissCount}</span><br/>
     <span>Object counts: ${depstats.size}</span><br/>
 </div>
+
+<%@ include file="commons/footer.jspf" %>
 </body>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
 </html>
