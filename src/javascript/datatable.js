@@ -11,13 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // eslint-disable-next-line no-new
             new Datatable(dataTable); // NOSONAR
         });
+    document.querySelectorAll('[data-table="dataTableModulesBrowser"]')
+        .forEach(dataTable => {
+            // Instantiate a datatable (ignore sonar warnings)
+            // eslint-disable-next-line no-new
+            new Datatable(dataTable, {paging: false}); // NOSONAR
+        });
     document.querySelectorAll('[data-table="dataTableDefinitionsBrowser"]')
         .forEach(dataTable => {
             // Instantiate a datatable (ignore sonar warnings)
             // eslint-disable-next-line no-new
-            new Datatable(dataTable, {
-                pageLength: 300,
-                lengthMenu: [10, 25, 50, 100, 300],
+            new Datatable(dataTable, { // NOSONAR
+                paging: false,
                 columns: [
                     null,
                     null,
@@ -37,6 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 ]
-            }); // NOSONAR
+            });
         });
 });
