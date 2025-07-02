@@ -14,7 +14,6 @@
 <%@ page import="java.io.File" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<c:set var="title" value="Search Engine Manager"/>
 <c:set var="title" value="Search Engine Management"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>

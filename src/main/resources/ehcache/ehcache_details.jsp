@@ -43,6 +43,7 @@
     EhCacheStatisticsWrapper ehCacheStatisticsWrapper = new EhCacheStatisticsWrapper(cache.getStatistics());
     pageContext.setAttribute("stats", ehCacheStatisticsWrapper);
 %>
+</head>
 <body id="dt_example" class="container-fluid">
 <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
 <a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
