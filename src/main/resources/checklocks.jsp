@@ -1,6 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<%@ page import="org.apache.commons.collections.CollectionUtils" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
+<%@ page import="org.apache.jackrabbit.core.lock.LockInfo" %>
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -14,24 +18,16 @@
 <%@ page import="org.quartz.JobDetail" %>
 <%@ page import="org.quartz.SchedulerException" %>
 <%@ page import="javax.jcr.*" %>
-<%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
-<%@ page import="org.apache.commons.collections.CollectionUtils" %>
-<%@ page import="org.apache.commons.io.IOUtils" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
-<%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
-<%@ page import="org.apache.jackrabbit.core.lock.LockInfo" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
+<%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="JCR Lock Check Tool"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
-    <title>JCR Lock Check Tool</title>
+    <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function toggleLayer(whichLayer) {
             var elem, vis;
@@ -71,12 +67,11 @@
     </style>
 </head>
 <body>
-<h1>JCR Lock Check Tool</h1>
-
-<p>
+<c:set var="description">
     This tool will perform some integrity checks on the locks of the JCR repository, and also implements some fixes.
-</p>
+</c:set>
 
+<%@ include file="commons/header.jspf" %>
 <h2>Lock Integrity checks</h2>
 <%!
 
@@ -726,6 +721,6 @@
     }
 
 %>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

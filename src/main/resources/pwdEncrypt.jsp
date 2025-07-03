@@ -1,20 +1,16 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java"
-%>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.services.pwd.PasswordService" %>
 <%@ page import="org.jahia.utils.EncryptionUtils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="title" value="Password encryption"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
-    <title>Password encryption</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Password encryption</h1>
+<%@ include file="commons/header.jspf" %>
 <c:if test="${not empty param.pwd}">
     <c:choose>
         <c:when test="${param.digest == 'legacy'}">
@@ -49,7 +45,7 @@
         digest</label><br/>
     </p>
 </form>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <c:if test="${not empty param.pwd}">
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {

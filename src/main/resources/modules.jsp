@@ -1,20 +1,16 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="java.io.StringWriter" %>
-<%@page import="java.io.PrintWriter" %>
-<%@page import="java.util.Date" %>
-<%@page import="org.jahia.services.templates.JahiaTemplateManagerService" %>
-<%@page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.jahia.osgi.FrameworkService" %>
+<%@page import="org.jahia.registries.ServicesRegistry" %>
+<%@page import="org.jahia.services.templates.JahiaTemplateManagerService" %>
 <%@page import="org.osgi.framework.Bundle" %>
 <%@page import="org.osgi.framework.startlevel.BundleStartLevel" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Modules information"/>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <%@ include file="css.jspf" %>
-        <title>Modules information</title>
+        <%@ include file="commons/html_header.jspf" %>
         <style>
             table {
                 border-spacing: 0; border-collapse: collapse;
@@ -26,11 +22,10 @@
             }
         </style>
     </head>
-    
+
     <body>
-        <%@ include file="logout.jspf" %>
+        <%@ include file="commons/header.jspf" %>
         <div>
-         <h1>Modules</h1>
 
 <%
     JahiaTemplateManagerService service = ServicesRegistry.getInstance().getJahiaTemplateManagerService() ;
@@ -76,7 +71,7 @@
         </table>
     </div>
 
-    <%@ include file="gotoIndex.jspf" %>
+    <%@ include file="commons/footer.jspf" %>
 
     </body>
 </html>

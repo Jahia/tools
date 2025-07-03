@@ -15,10 +15,6 @@
  */
 package org.jahia.modules.tools;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.rule.Package;
@@ -33,9 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Utility class for the business rule overview page.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class RuleHelper {
@@ -53,7 +53,7 @@ public class RuleHelper {
 
         /**
          * Initializes an instance of this class.
-         * 
+         *
          * @param pkg the rule package object
          * @param origin the module, this package comes form
          * @param content the raw content of the rule file
@@ -103,7 +103,7 @@ public class RuleHelper {
 
     /**
      * Get the rule base data.
-     * 
+     *
      * @return the rule base data
      */
     public Map<RulesListener, List<PackageData>> getData() {
@@ -181,7 +181,7 @@ public class RuleHelper {
 
     /**
      * Update the state of the specified rule.
-     * 
+     *
      * @param listenerId the listener ID
      * @param packageId the package name
      * @param ruleId the rule name

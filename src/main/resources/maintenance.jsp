@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.bin.Jahia" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.jahia.settings.SettingsBean" %>
@@ -10,11 +11,9 @@
 <%@ page import="java.util.function.Function" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="System Maintenance"/>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<%@ include file="css.jspf" %>
-<title>System Maintenance</title>
+<%@ include file="commons/html_header.jspf" %>
 </head>
 <c:url var="imgOn" value="images/nav_plain_green.png"/>
 <c:url var="imgOff" value="images/nav_plain_red.png"/>
@@ -37,9 +36,9 @@
     pageContext.setAttribute("currentReadOnlyStatus", readOnlyModeController.getReadOnlyStatus());
     try {
         readOnlyModeController.switchReadOnlyMode(fullReadOnlyParameter);
-        pageContext.setAttribute("readOnlyStateChangeResult", "done"); 
+        pageContext.setAttribute("readOnlyStateChangeResult", "done");
     } catch (IllegalStateException e) {
-        // we are not allowed to switch the state 
+        // we are not allowed to switch the state
     }
     %>
     <c:if test="${empty readOnlyStateChangeResult}">
@@ -51,9 +50,10 @@
 <% pageContext.setAttribute("fullReadOnlyModeController", ReadOnlyModeController.getInstance()); %>
 <% pageContext.setAttribute("settings", SettingsBean.getInstance()); %>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>System Maintenance</h1>
-<p><a href="maintenance.jsp" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>" alt="Refresh" title="Refresh" height="16" width="16"/>&nbsp; Refresh status</a></p>
+<c:set var="headerActions">
+    <li><a href="maintenance.jsp" title="Refresh"><span class="material-symbols-outlined">refresh</span>Refresh status</a></li>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 <c:set var="modeLabel" value="${maintenance ? 'ON' : 'OFF'}"/>
 <h2><img src="${maintenance ? imgOn : imgOff}" alt="${modeLabel}" title="${modeLabel}" height="16" width="16"/> Maintenance Mode</h2>
 <p>Please note that if you switch the maintenance mode flag, <strong>the changes are only valid during server run time and are not persisted between server restarts.</strong><br/>
@@ -126,6 +126,6 @@ The read-only mode is currently <strong>${modeLabel}</strong>.<br/>Click here to
     </c:when>
 </c:choose>
 </p>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

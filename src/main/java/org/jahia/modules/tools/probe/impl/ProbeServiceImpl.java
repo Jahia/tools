@@ -15,12 +15,6 @@
  */
 package org.jahia.modules.tools.probe.impl;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.Jahia;
@@ -32,9 +26,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import java.util.*;
+
 /**
  * Service that retrieves all registered probes.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(name = "org.jahia.tools.probe.service", service = ProbeService.class, property = {

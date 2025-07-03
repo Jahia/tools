@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
+<%@ page import="org.apache.karaf.jaas.boot.principal.RolePrincipal" %>
 <%@ page import="org.jahia.modules.tools.karaf.KarafCommand" %>
 <%@ page import="org.jahia.osgi.BundleUtils" %>
-<%@ page import="org.apache.karaf.jaas.boot.principal.RolePrincipal" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Karaf command line"/>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
-    <title>Karaf command line</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Karaf command line</h1>
+<%@ include file="commons/header.jspf" %>
 
 <fieldset>
     <legend>Command line</legend>
@@ -49,6 +48,6 @@
         </fieldset>
     </c:if>
 </c:if>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

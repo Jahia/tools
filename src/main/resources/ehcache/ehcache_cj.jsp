@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
@@ -16,7 +19,6 @@
   Date: 28 mai 2008
   Time: 16:59:07
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:if test="${not empty param.flushkey}">
     <%
         System.out.println(request.getParameter("flushkey"));
@@ -25,7 +27,6 @@
     %>
 </c:if>
 <c:if test="${not empty param.key}">
-    <html>
     <body>
     <%
         System.out.println(request.getParameter("key"));
@@ -36,9 +37,9 @@
     </html>
 </c:if>
 <c:if test="${empty param.key}">
-    <html>
+    <c:set var="title" value="Display content of module output cache"/>
     <head>
-        <title>Display content of module output cache</title>
+        <%@ include file="../commons/html_header.jspf" %>
     </head>
     <%
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
@@ -59,13 +60,15 @@
         pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
     %>
     <body id="dt_example" class="container-fluid">
-    <%@ include file="../logout.jspf" %>
-    <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?refresh&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
-    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
-       onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
-       title="flush the content of the module output cache">flush</a>&nbsp;
-    <a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}">${param.viewContent ? 'hide content preview' : 'preview content'}</a>
+    <c:set var="headerActions">
+        <li><a href="?refresh&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">Refresh</span>refresh</a></li>
+        <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
+               onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
+               title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
+        <li><a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">preview</span>${param.viewContent ? 'Hide content preview' : 'Preview content'}</a></li>
+    </c:set>
+    <%@ include file="../commons/header.jspf" %>
+
     <c:if test="${not empty removed and removed}">
         <p>Key (${requestScope.flushkey}) has been flushed</p>
     </c:if>
@@ -141,6 +144,7 @@
             </tbody>
         </table>
     </div>
+    <%@ include file="commons/footer.jspf" %>
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
     </body>
     </html>

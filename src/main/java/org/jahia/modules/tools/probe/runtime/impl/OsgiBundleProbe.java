@@ -15,9 +15,6 @@
  */
 package org.jahia.modules.tools.probe.runtime.impl;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-
 import org.apache.karaf.bundle.core.BundleInfo;
 import org.apache.karaf.bundle.core.BundleService;
 import org.apache.karaf.bundle.core.BundleState;
@@ -34,9 +31,12 @@ import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+
 /**
  * Reports the state of OSGI bundles.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + OsgiBundleProbe.KEY,

@@ -1,11 +1,10 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<%@ page import="java.util.*" %>
-<%@ page import="java.lang.reflect.Method" %>
-<%@ page import="java.lang.reflect.InvocationTargetException" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.bin.listeners.LoggingConfigListener" %>
+<%@ page import="java.lang.reflect.InvocationTargetException" %>
+<%@ page import="java.lang.reflect.Method" %>
+<%@ page import="java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%!
 
@@ -129,9 +128,9 @@
 
 %>
 <% long beginPageLoadTime = System.currentTimeMillis();%>
+<c:set var="title" value="Log4j Administration"/>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Log4j Administration</title>
+    <%@ include file="commons/html_header.jspf" %>
     <style type="text/css">
 
         <!--
@@ -252,8 +251,7 @@
     </style>
 </head>
 <body onload="javascript:document.logFilterForm.logNameFilter.focus();">
-<%@ include file="logout.jspf" %>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/header.jspf" %>
 
 <%
 
@@ -270,7 +268,6 @@
     pageContext.setAttribute("logLevels", logLevels);
 %>
 <div id="content">
-<h1>Log4j Administration</h1>
 <p>Please note that these settings are valid only during server run time and are not persisted between server restarts.</p>
 <div class="filterForm">
 
@@ -415,5 +412,6 @@
     Page load time: <%=(System.currentTimeMillis() - beginPageLoadTime)%> ms
 </h2>
 </div>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

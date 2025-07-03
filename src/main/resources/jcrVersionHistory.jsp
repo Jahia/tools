@@ -1,17 +1,18 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<%@page import="java.util.*"%>
+<html>
 <%@page import="org.jahia.services.history.NodeVersionHistoryHelper"%>
 <%@page import="org.jahia.services.history.VersionHistoryCheckStatus"%>
+<%@page import="java.util.HashSet"%>
+<%@ page import="java.util.Set" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<c:set var="title" value="JCR Version History Management"/>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<%@ include file="css.jspf" %>
-<title>JCR Version History Management</title>
+<%@ include file="commons/html_header.jspf" %>
 <script type="text/javascript">
     function go(form, id1, value1, id2, value2, id3, value3) {
         document.getElementById(id1).value=value1;
@@ -38,9 +39,11 @@ pageContext.setAttribute("orphanedCheckRunning", NodeVersionHistoryHelper.isChec
 pageContext.setAttribute("unusedCheckRunning", NodeVersionHistoryHelper.isCheckingUnused());
 %>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>JCR Version History Management</h1>
-<p>This tool aims to perform cleanup tasks on the version store, e.g. find version history for nodes that no longer exists and purge them or purge old versions for existing nodes.</p>
+<c:set var="description">
+
+    <p>This tool aims to perform cleanup tasks on the version store, e.g. find version history for nodes that no longer exists and purge them or purge old versions for existing nodes.</p>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 <c:if test="${param.action == 'orphanedReport' || param.action == 'orphanedDelete'}">
 <pre>
 <%
@@ -86,7 +89,7 @@ final Set<String> ids = new HashSet<String>();
 final long maxLimit = Long.parseLong((String) pageContext.getAttribute("maxLimitUnused"));
 try {
     long age = Long.parseLong((String) pageContext.getAttribute("age"));
-    long purgeOlderThanTimestamp = age > 0 ? (System.currentTimeMillis() - age * 24L * 60L * 60L * 1000L) : 0;  
+    long purgeOlderThanTimestamp = age > 0 ? (System.currentTimeMillis() - age * 24L * 60L * 60L * 1000L) : 0;
     VersionHistoryCheckStatus status = NodeVersionHistoryHelper.checkUnused(maxLimit, "unusedDelete".equals(request.getParameter("action")), purgeOlderThanTimestamp, out);
 
     pageContext.setAttribute("status", status);
@@ -133,7 +136,7 @@ try {
             <p>The version history is currently being checked for orphans.</p>
             <p><input type="submit" name="stopOrphaned" onclick="if (confirm('Do you want to stop the process running version history check?')) { go('navigateForm','action', 'orphanedStop'); } return false;" value="Stop running orphaned version history check process"/></p>
         </c:if>
-    </fieldset>    
+    </fieldset>
 </form>
 <form id="navigateFormUnused" action="?" method="get">
     <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
@@ -150,10 +153,10 @@ try {
             <p>The version history is currently being checked for orphans.</p>
             <p><input type="submit" name="stopUnused" onclick="if (confirm('Do you want to stop the process running unused versions check?')) { go('navigateFormUnused','actionUnused', 'unusedStop'); } return false;" value="Stop running unused versions check process"/></p>
         </c:if>
-    </fieldset>    
+    </fieldset>
 
 </form>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

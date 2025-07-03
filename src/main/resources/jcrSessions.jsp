@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.services.content.JCRSessionWrapper" buffer="16kb" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.*" %>
@@ -8,20 +9,18 @@
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:set var="workspace" value="${functions:default(param.workspace, 'default')}"/>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="JCR Sessions"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
-    <title>JCR Sessions</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>JCR Sessions</h1>
+<c:set var="description">
+    <p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>
+    There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
+    <p>List of session not hold/created by this page/request:</p>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 
-<p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>
-There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
-
-<p>List of session not hold/created by this page/request:</p>
 <ol>
     <%
         final PrintWriter s = new PrintWriter(pageContext.getOut());
@@ -54,7 +53,7 @@ There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sess
     %>
 
 </ol>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/session.tools.bundle.js'/>"></script>
 </body>
 </html>

@@ -15,9 +15,6 @@
  */
 package org.jahia.modules.tools.probe.runtime.impl;
 
-import java.io.File;
-import java.io.PrintStream;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.karaf.shell.support.table.ShellTable;
@@ -28,9 +25,12 @@ import org.jahia.utils.StringOutputStream;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 
+import java.io.File;
+import java.io.PrintStream;
+
 /**
  * Reports the list of JAR files under WEB-INF/lib.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + WebInfLibProbe.KEY,

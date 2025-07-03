@@ -1,0 +1,5 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>${title}</title>
+<link rel="stylesheet" href="<c:url value='/modules/tools/css/reset.css'/>" type="text/css" />
+<link rel="stylesheet" href="<c:url value='/modules/tools/css/google_material.css'/>" type="text/css" />
+<link rel="stylesheet" href="<c:url value='/modules/tools/css/tools.css'/>" type="text/css" />

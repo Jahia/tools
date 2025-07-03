@@ -1,24 +1,24 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-%><?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page import="org.jahia.bin.Jahia" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.scheduler.*" %>
-<%@ page import="java.util.*" %>
-<%@ page import="org.quartz.*" %>
+<%@ page import="org.jahia.services.scheduler.BackgroundJob" %>
+<%@ page import="org.jahia.services.scheduler.SchedulerService" %>
 <%@ page import="org.jahia.settings.readonlymode.ReadOnlyModeController" %>
+<%@ page import="org.quartz.*" %>
+<%@ page import="java.util.LinkedList" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Objects" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
-<html xmlns="http://www.w3.org/1999/xhtml">
 <c:set var="ramScheduler" value="${param.schedulerType == 'ram'}"/>
 <% boolean isRamScheduler = (Boolean) pageContext.getAttribute("ramScheduler");
 pageContext.setAttribute("fullReadOnlyMode", Objects.equals(ReadOnlyModeController.getInstance().getReadOnlyStatus().toString(), "ON")); %>
+<c:set var="title">${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</c:set>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</title>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
         	if (id1) {
@@ -46,26 +46,28 @@ pageContext.setAttribute("scheduler", scheduler);
 <c:url var="imgOff" value="images/nav_plain_red.png"/>
 <c:set var="schedulerStatus" value="${scheduler.started ? (scheduler.inStandbyMode ? 'In standby mode' : 'Started') : 'Not started'}"/>
 <body>
-    <%@ include file="logout.jspf" %>
-	<h1>${ramScheduler ? 'RAM (in-memory) ' : ''}Job Administration</h1>
+<c:set var="description">
     <p>Scheduler status:
-    <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>
-    ${schedulerStatus}
+        <img src="${schedulerStatus == 'Started' ? imgOn : imgOff}" alt="${schedulerStatus}" title="${schedulerStatus}" height="16" width="16"/>
+            ${schedulerStatus}
     </p>
     <p>
-    <c:if test="${ramScheduler}">
-        This view lists all the jobs, managed by the RAM (in-memory) scheduler.
-        A RAM scheduler is a local (non-clustered) instance which has no persistence for jobs between the server restarts.
-        <br/>
-        <a title="Switch to persistent scheduler" href="#scheduler" onclick="go('schedulerType', ''); return false;">Switch to persistent scheduler</a>
-    </c:if>
-    <c:if test="${!ramScheduler}">
-        This view lists all the jobs, managed by the scheduler and whose state
-        is persisted in the database (maintained between server restarts).
-        <br/>
-        <a title="Switch to RAM (in-memory) scheduler" href="#scheduler" onclick="go('schedulerType', 'ram'); return false;">Switch to RAM (in-memory) scheduler</a>
-    </c:if>
+        <c:if test="${ramScheduler}">
+            This view lists all the jobs, managed by the RAM (in-memory) scheduler.
+            A RAM scheduler is a local (non-clustered) instance which has no persistence for jobs between the server restarts.
+            <br/>
+            <a title="Switch to persistent scheduler" href="#scheduler" onclick="go('schedulerType', ''); return false;">Switch to persistent scheduler</a>
+        </c:if>
+        <c:if test="${!ramScheduler}">
+            This view lists all the jobs, managed by the scheduler and whose state
+            is persisted in the database (maintained between server restarts).
+            <br/>
+            <a title="Switch to RAM (in-memory) scheduler" href="#scheduler" onclick="go('schedulerType', 'ram'); return false;">Switch to RAM (in-memory) scheduler</a>
+        </c:if>
     </p>
+</c:set>
+    <%@ include file="commons/header.jspf" %>
+
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>
@@ -290,7 +292,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
     <img src="<c:url value='/icons/showTrashboard.png'/>" alt=" " height="16" width="16"/>&nbsp;<a href="#removeCompleted" onclick="if (confirm('You are about to permanently remove the data of completed jobs. Continue?')) { go('action', 'removeCompleted'); } return false;">remove all completed jobs (${allCount - aliveCount - addedCount})</a>
 </p>
 </c:if>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </body>
 </html>

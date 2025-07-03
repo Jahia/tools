@@ -15,8 +15,6 @@
  */
 package org.jahia.modules.tools.probe.statistics.impl;
 
-import java.io.PrintWriter;
-
 import org.jahia.bin.Jahia;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.modules.tools.probe.Probe;
@@ -24,9 +22,11 @@ import org.jahia.modules.tools.probe.properties.impl.BaseSysInfoProbe;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 
+import java.io.PrintWriter;
+
 /**
  * Reports current DX cache status.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + CacheProbe.KEY,

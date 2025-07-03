@@ -15,12 +15,6 @@
  */
 package org.jahia.modules.tools.taglibs;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
@@ -29,6 +23,11 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Utility class for the Groovy Console.
@@ -346,7 +345,7 @@ public class GroovyConsoleHelper {
 
     /**
      * Returns a collection of BundleResource, representing scripts, which are found in all active module bundles.
-     * 
+     *
      * @return a collection of BundleResource, representing scripts, which are found in all active module bundles
      */
     public static Collection<BundleResource> getGroovyConsoleScripts() {
@@ -369,7 +368,7 @@ public class GroovyConsoleHelper {
 
     /**
      * Returns a generated HTML with form elements for the script parameters.
-     * 
+     *
      * @param scriptURI
      * @param request
      * @return
@@ -406,7 +405,7 @@ public class GroovyConsoleHelper {
 
     /**
      * Returns an array of parameter names for the specified script or <code>null</code> if the script has no parameters.
-     * 
+     *
      * @param scriptURI the script URI to get parameter names for
      * @return an array of parameter names for the specified script or <code>null</code> if the script has no parameters
      */

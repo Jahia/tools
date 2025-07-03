@@ -1,43 +1,41 @@
-<%@ page import="java.io.IOException" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.text.MessageFormat" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.HashSet" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.Set" %>
-<%@ page import="javax.jcr.*" %>
-<%@ page import="javax.jcr.nodetype.ConstraintViolationException" %>
-<%@ page import="javax.jcr.query.Query" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
 <%@ page import="org.jahia.api.Constants" %>
-<%@ page import="org.jahia.services.content.*" %>
+<%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.services.content.JCRCallback" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
+<%@ page import="org.jahia.services.content.JCRTemplate" %>
 <%@ page import="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition" %>
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
-<%@ page import="org.jahia.services.SpringContextSingleton" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
+<%@ page import="javax.jcr.*" %>
+<%@ page import="javax.jcr.nodetype.ConstraintViolationException" %>
+<%@ page import="javax.jcr.query.Query" %>
+<%@ page import="java.io.IOException" %>
+<%@ page import="java.text.MessageFormat" %>
+<%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="title" value="Nodes consistency Tool"/>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
-    <title>Nodes consistency Tool</title>
+    <%@ include file="commons/html_header.jspf" %>
 </head>
 <body>
-<%@ include file="gotoIndex.jspf" %>
-<h1>Nodes consistency Tool</h1>
+<c:set var="description">
+    <p>
+        This tool will validates the content nodes against the cnd files. It will remove any property that would be
+        found in the JCR but no more declared in the related CND. Ensure that you do not have any CND parsing issue
+        before running this tool: if some definition is temporarly missing because of some syntax error, or any other
+        reason, this tool may drop some content you want to keep. This operation cannot be reverted, unless from a backup.
+        For this reason, it is highly recommended to perform such backup before using this tool!
+    </p>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 
-<p>
-    This tool will validates the content nodes against the cnd files. It will remove any property that would be
-    found in the JCR but no more declared in the related CND. Ensure that you do not have any CND parsing issue
-    before running this tool: if some definition is temporarly missing because of some syntax error, or any other
-    reason, this tool may drop some content you want to keep. This operation cannot be reverted, unless from a backup.
-    For this reason, it is highly recommended to perform such backup before using this tool!
-</p>
 
 <h2>Consistency checks</h2>
 
@@ -64,11 +62,11 @@
     </c:otherwise>
 </c:choose>
 
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>
 
-<%@ include file="functions.jspf" %>
+<%@ include file="commons/functions.jspf" %>
 <%!
 
     private static final String RUN_CONSISTENCY_TEST = "runConsistencyTest";

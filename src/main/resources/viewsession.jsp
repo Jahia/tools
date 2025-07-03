@@ -1,15 +1,16 @@
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
+<c:set var="title" value="Session Viewer JSP"/>
 <head>
-    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-    <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
+    <%@ include file="commons/html_header.jspf" %>
     <style type="text/css">
         <!--
 
         ol.attribute {
-        /* border: 1px solid #CFD9E1; */
+            /* border: 1px solid #CFD9E1; */
             display: block;
             padding: 2px;
             clear: both;
@@ -53,10 +54,9 @@
 
         -->
     </style>
-    <title>Session Viewer JSP</title>
 </head>
 <body>
-
+<%@ include file="commons/header.jspf" %>
 <utility:sessionViewer/>
 </body>
 </html>

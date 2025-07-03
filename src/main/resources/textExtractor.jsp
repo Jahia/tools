@@ -1,7 +1,6 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java"%>
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="org.apache.commons.lang3.StringUtils" %>
 <%@page import="org.apache.commons.text.StringEscapeUtils"%>
 <%@page import=" org.jahia.services.content.JCRContentUtils"%>
@@ -14,10 +13,9 @@
 <%@ page import="java.util.Set" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="title" value="Jahia Text Extraction Service"/>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<%@ include file="css.jspf" %>
-<title>Jahia Text Extraction Service</title>
+<%@ include file="commons/html_header.jspf" %>
 <script type="text/javascript">
     function go(form, id1, value1, id2, value2, id3, value3) {
         document.getElementById(id1).value=value1;
@@ -38,9 +36,10 @@ if ("stopExtractionCheck".equals(request.getParameter("action"))) {
 pageContext.setAttribute("extractionCheckRunning", TextExtractionHelper.isCheckingExtractions());
 %>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Jahia Text Extraction Service</h1>
-<p>This tool aims to perform text extractions on documents in the repository and store it in the j:extractedText property. Another option allows to extract the text from a local file and immediately show the results.</p>
+<c:set var="description">
+    <p>This tool aims to perform text extractions on documents in the repository and store it in the j:extractedText property. Another option allows to extract the text from a local file and immediately show the results.</p>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 
 <c:if test="${param.action == 'reportMissingExtraction' || param.action == 'fixMissingExtraction' || param.action == 'reportExtractionByFilter' || param.action == 'redoExtractionByFilter'}">
 <pre>
@@ -157,6 +156,6 @@ try {
     <p><c:out value="${content}"/></p>
 </fieldset>
 </c:if>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 </body>
 </html>

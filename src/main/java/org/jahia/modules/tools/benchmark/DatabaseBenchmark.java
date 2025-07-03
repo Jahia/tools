@@ -15,14 +15,6 @@
  */
 package org.jahia.modules.tools.benchmark;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -31,6 +23,14 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DatabaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility for benchmarking database connection latency. When a benchmark is performed by the {@link #perform()} method, it reads the list
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>ping</code> - a special "query" that executes {@link Connection#isValid(int)} method to do a "ping"</li>
  * <li><code>select count(*) from jahia_db_test</code> - is a fast count query on an empty DB test table</li>
  * </ul>
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class DatabaseBenchmark {
@@ -92,7 +92,7 @@ public final class DatabaseBenchmark {
 
     /**
      * Performs the database connection tests and returns the results with the timings per configured test query.
-     * 
+     *
      * @return the results with the timings per configured test query
      */
     public static Map<String, Map<String, Object>> perform() {
@@ -141,7 +141,7 @@ public final class DatabaseBenchmark {
 
     /**
      * Returns a formatted string representation of the database connection stats.
-     * 
+     *
      * @param stats the collected statistics
      * @return the formatted string representation of the database connection stats
      */

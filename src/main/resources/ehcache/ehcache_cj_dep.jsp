@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
@@ -12,22 +15,18 @@
   Date: 28 mai 2008
   Time: 16:59:07
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:if test="${not empty param.key}">
-    <html>
     <body>
     <%
         System.out.println(request.getParameter("key"));
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
     %><%= obj %>
-    </body>
-    </html>
 </c:if>
 <c:if test="${empty param.key}">
-    <html>
+    <c:set var="title" value="Display content of module cache dependencies"/>
     <head>
-        <title>Display content of module cache dependencies</title>
+        <%@ include file="../commons/html_header.jspf" %>
     </head>
     <%
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
@@ -46,11 +45,12 @@
         pageContext.setAttribute("cache", cache);
     %>
     <body id="dt_example" class="container-fluid">
-    <%@ include file="../logout.jspf" %>
-    <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-    <a href="?flush=true&toolAccessToken=${toolAccessToken}"
-       onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
-       title="flush the content of the module output cache">flush</a>&nbsp;
+    <c:set var="headerActions">
+        <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
+               onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
+               title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
+    </c:set>
+    <%@ include file="../commons/header.jspf" %>
     <div id="keys">
         <table id="cacheTable" class="table table-striped compact" data-table="dataTable">
             <thead>
@@ -86,6 +86,7 @@
         </table>
     </div>
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
-    </body>
-    </html>
 </c:if>
+    <%@ include file="commons/footer.jspf" %>
+</body>
+</html>

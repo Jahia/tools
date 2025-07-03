@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
@@ -23,9 +26,9 @@
         pageContext.setAttribute("removed", removed);
     %>
 </c:if>
-<html>
+<c:set var="title" value="Cache details"/>
 <head>
-</head>
+    <%@ include file="../commons/html_header.jspf" %>
 <%
 
     Ehcache cache = CacheHelper.getCacheManager(pageContext.getRequest().getParameter("name")).getEhcache(pageContext.getRequest().getParameter("cache"));
@@ -40,6 +43,7 @@
     EhCacheStatisticsWrapper ehCacheStatisticsWrapper = new EhCacheStatisticsWrapper(cache.getStatistics());
     pageContext.setAttribute("stats", ehCacheStatisticsWrapper);
 %>
+</head>
 <body id="dt_example" class="container-fluid">
 <a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
 <a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
@@ -107,6 +111,8 @@
         </tbody>
     </table>
 </div>
+
+<%@ include file="commons/footer.jspf" %>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
 </body>
 </html>

@@ -15,13 +15,6 @@
  */
 package org.jahia.modules.tools.probe.runtime.impl;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.apache.karaf.config.core.ConfigRepository;
 import org.jahia.bin.Jahia;
 import org.jahia.modules.tools.probe.Probe;
@@ -33,9 +26,16 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Lists configurations in OSGI
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @Component(service = Probe.class, property = { Probe.KEY + "=" + OsgiConfigProbe.KEY,
@@ -90,7 +90,7 @@ public class OsgiConfigProbe implements ProbeMBean {
         }
         return data;
     }
-    
+
     private void writeConfigToStream(Configuration config, PrintStream out) {
         out.println("----------------------------------------------------------------");
         out.println("Pid:            " + config.getPid());

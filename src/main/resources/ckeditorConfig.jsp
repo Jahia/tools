@@ -1,18 +1,21 @@
-<%@page import="org.apache.commons.io.Charsets,org.apache.commons.io.FileUtils,org.jahia.osgi.BundleUtils,org.jahia.settings.SettingsBean"
-%>
-<%@ page import="org.osgi.framework.Bundle" %>
 <%@ page import="org.osgi.framework.Version" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.FileOutputStream" %>
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.io.OutputStream" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.util.jar.Attributes" %>
 <%@ page import="java.util.jar.JarEntry" %>
 <%@ page import="java.util.jar.JarOutputStream" %>
 <%@ page import="java.util.jar.Manifest" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
+<%@ page import="org.apache.commons.io.FileUtils" %>
+<%@ page import="org.osgi.framework.Bundle" %>
+<%@ page import="org.jahia.osgi.BundleUtils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <%!
 
     public Version getExistingVersion() {
@@ -42,32 +45,31 @@
         jarOutputStream.closeEntry();
         jarOutputStream.close();
     }
-%><c:if test="${not empty param.config && param.action=='Create and download configuration'}" var="download"><%
+%>
+<c:if test="${not empty param.config && param.action=='Create and download configuration'}" var="download"><%
 
     String ckEditorVersion = getNewModuleVersion();
     response.setContentType("application/java-archive; charset=UTF-8");
     response.setHeader("Content-Disposition", "attachment; filename=\"ckeditor-config-" + ckEditorVersion + ".jar\"");
     createJar(request.getParameter("config"), response.getOutputStream(), ckEditorVersion);
-%></c:if><c:if test="${!download}"
+%>
+</c:if>
+<c:if test="${!download}"
 >
     <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+    <!DOCTYPE html>
+    <html>
+    <c:set var="title" value="CKEditor Custom Configuration"/>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <%@ include file="css.jspf" %>
-        <title>CKEditor Custom Configuration</title>
+        <%@ include file="commons/html_header.jspf" %>
     </head>
     <body>
-    <%@ include file="logout.jspf" %>
-    <h1>CKEditor Custom Configuration</h1>
+    <%@ include file="commons/header.jspf" %>
     <c:if test="${not empty param.config}">
         <%
             Version existingVersion = getExistingVersion();
             if (existingVersion != null) {
-                String oldVersionString = existingVersion.getMajor() + "." + existingVersion.getMinor()+ "." + existingVersion.getMicro();
+                String oldVersionString = existingVersion.getMajor() + "." + existingVersion.getMinor() + "." + existingVersion.getMicro();
                 File targetFile = new File(SettingsBean.getInstance().getJahiaModulesDiskPath(),
                         "ckeditor-config-" + oldVersionString + ".jar");
                 targetFile.delete();
@@ -94,11 +96,12 @@
             config.toolbar_Full[8]=['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Mathjax'];
             }
         </c:if><c:if test="${not empty param.config}">${param.config}</c:if></textarea></p>
-        <p><input type="submit" name="action" value="Create and download configuration"/><input type="submit" name="action"
+        <p><input type="submit" name="action" value="Create and download configuration"/><input type="submit"
+                                                                                                name="action"
                                                                                                 value="Create and deploy configuration"/>
         </p>
     </form>
-    <%@ include file="gotoIndex.jspf" %>
+    <%@ include file="commons/footer.jspf" %>
     </body>
     </html>
 </c:if>

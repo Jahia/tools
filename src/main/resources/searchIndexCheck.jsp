@@ -1,10 +1,9 @@
-<%@page import="java.io.File"%>
-<%@page import="java.io.FileFilter"%>
 <%@page import="org.apache.commons.io.FileUtils"%>
 <%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>
 <%@page import="org.jahia.settings.SettingsBean"%>
-<%@page import="org.jahia.services.search.spell.CompositeSpellChecker"%>
 <%@page import="org.jahia.utils.SearchIndexUtils"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.FileFilter"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%

@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
 <%@page import="net.sf.ehcache.Cache" %>
 <%@page import="net.sf.ehcache.CacheManager" %>
 <%@page import="org.jahia.services.cache.CacheHelper" %>
-<%@page import="org.jahia.utils.FileUtils" %>
-<%@ page import="java.util.Arrays" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -13,12 +12,10 @@
 <c:set var="showBytes" value="${functions:default(fn:escapeXml(param.showBytes), 'false')}"/>
 <c:set var="showConfig" value="${functions:default(fn:escapeXml(param.showConfig), 'false')}"/>
 <% pageContext.setAttribute("clusterActivated", Boolean.getBoolean("cluster.activated")); %>
-<c:set var="flushIcon"><img src="<c:url value='/icons/showTrashboard.png'/>" height="16" width="16" alt=" "
-                            align="top"/></c:set>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<c:set var="flushIcon"><span class="material-symbols-outlined">recycling</span></c:set>
+<c:set var="title" value="Cache Management"/>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@ include file="css.jspf" %>
+    <%@ include file="commons/html_header.jspf" %>
     <script type="text/javascript">
         function go(id1, value1, id2, value2, id3, value3) {
             if (id1) {
@@ -33,11 +30,32 @@
             document.getElementById('navigateForm').submit();
         }
     </script>
-    <title>Cache Management</title>
 </head>
 <body>
-<%@ include file="logout.jspf" %>
-<h1>Cache Management</h1>
+<c:set var="headerActions">
+    <li>
+        <a href="#refresh" onclick="go(); return false;" title="Refresh"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
+    &nbsp;&nbsp;
+    <li><a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;"
+           title="Performs flush of module output caches that are responsible for caching HTML page and fragment output, rendered in Live mode">${flushIcon}Flush
+        HTML output caches</a></li>
+    &nbsp;&nbsp;
+    <c:if test="${clusterActivated}">
+        <li><a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;"
+               title="Does the same flush as 'Flush HTML output caches' also propagating flush to all cluster nodes">${flushIcon}Flush
+            HTML output caches (all across the cluster)</a></li>
+        &nbsp;&nbsp;
+    </c:if>
+    <li><a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;"
+           title="Triggers the flush of all caches, including back-end and front-end (module output)">${flushIcon}Flush
+        all caches</a></li>
+    <c:if test="${clusterActivated}">
+        <li><a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;"
+               title="Does the same flush as 'Flush all caches' also propagating flush to all cluster nodes">${flushIcon}Flush
+            all caches (all across the cluster)</a></li>
+    </c:if>
+</c:set>
+<%@ include file="commons/header.jspf" %>
 <fieldset style="position: absolute; right: 20px;">
     <legend><strong>Settings</strong></legend>
     <p>
@@ -82,37 +100,14 @@
         </c:when>
     </c:choose>
 </c:if>
-<p>
-    <a href="#refresh" onclick="go(); return false;" title="Refresh"><img src="<c:url value='/icons/refresh.png'/>"
-                                                                          height="16" width="16" alt=" " align="top"/>Refresh</a>
-    &nbsp;&nbsp;
-    <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches'); return false;"
-       title="Performs flush of module output caches that are responsible for caching HTML page and fragment output, rendered in Live mode">${flushIcon}Flush
-        HTML output caches</a>
-    &nbsp;&nbsp;
-    <c:if test="${clusterActivated}">
-        <a href="#flushOutputCaches" onclick="go('action', 'flushOutputCaches', 'propagate', 'true'); return false;"
-           title="Does the same flush as 'Flush HTML output caches' also propagating flush to all cluster nodes">${flushIcon}Flush
-            HTML output caches (all across the cluster)</a>
-        &nbsp;&nbsp;
-    </c:if>
-    <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches'); return false;"
-       title="Triggers the flush of all caches, including back-end and front-end (module output)">${flushIcon}Flush
-        all caches</a>
-    <c:if test="${clusterActivated}">
-        <a href="#flushAllCaches" onclick="go('action', 'flushAllCaches', 'propagate', 'true'); return false;"
-           title="Does the same flush as 'Flush all caches' also propagating flush to all cluster nodes">${flushIcon}Flush
-            all caches (all across the cluster)</a>
-        &nbsp;&nbsp;
-    </c:if>
-</p>
 <% pageContext.setAttribute("cacheManagers", CacheHelper.getCacheManagerInfos(Boolean.valueOf((String) pageContext.getAttribute("showConfig")), Boolean.valueOf((String) pageContext.getAttribute("showBytes")))); %>
 <c:forEach items="${cacheManagers}" var="managerEntry" varStatus="managerStatus">
     <c:set var="manager" value="${managerEntry.value}"/>
     <h2>Cache Manager: ${manager.name}
         <c:if test="${showConfig}">
             &nbsp;
-            <a class="configLink" title="Cache configuration details" data-src="#managerconfig-${managerStatus.index}" data-fancybox><img
+            <a class="configLink" title="Cache configuration details" data-src="#managerconfig-${managerStatus.index}"
+               data-fancybox><img
                     src="<c:url value='/icons/help.png'/>" width="16" height="16" alt="?"
                     title="Cache configuration details"/></a>
 
@@ -179,19 +174,24 @@
                 <td><strong>${status.index + 1}</strong></td>
                 <c:if test="${showConfig}">
                     <td align="center">
-                        <a class="configLink" title="Cache configuration details" data-src="#config-${managerStatus.index}-${status.index}" data-fancybox><img
+                        <a class="configLink" title="Cache configuration details"
+                           data-src="#config-${managerStatus.index}-${status.index}" data-fancybox><img
                                 src="<c:url value='/icons/help.png'/>" width="16" height="16"
                                 alt="?" title="Cache configuration details"/></a>
 
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
-                                <h3><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a></h3>
+                                <h3>
+                                    <a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a>
+                                </h3>
                                 <pre>${fn:escapeXml(cache.config)}</pre>
                             </div>
                         </div>
                     </td>
                 </c:if>
-                <td><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a></td>
+                <td>
+                    <a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}&toolAccessToken=${toolAccessToken}">${cache.name}</a>
+                </td>
                 <td align="center">${cache.size}</td>
                 <td align="center">${cache.localHeapSize}</td>
                 <td align="center">${cache.overflowToDisk ? cache.localDiskSize : '-'}</td>
@@ -263,7 +263,7 @@
         </tbody>
     </table>
 </c:forEach>
-<%@ include file="gotoIndex.jspf" %>
+<%@ include file="commons/footer.jspf" %>
 <c:if test="${showConfig}">
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 </c:if>

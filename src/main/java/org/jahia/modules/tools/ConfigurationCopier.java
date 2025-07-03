@@ -15,7 +15,12 @@
  */
 package org.jahia.modules.tools;
 
-import static org.jahia.modules.tools.SupportInfoHelper.ENCODING;
+import org.apache.commons.io.FileUtils;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -24,12 +29,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.settings.SettingsBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
+import static org.jahia.modules.tools.SupportInfoHelper.ENCODING;
 
 /**
  * Utility class for copying configuration files (used in the process of generating support information archive).
