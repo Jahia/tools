@@ -87,6 +87,6 @@
     </div>
     <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
 </c:if>
-    <%@ include file="commons/footer.jspf" %>
+    <%@ include file="../commons/footer.jspf" %>
 </body>
 </html>
