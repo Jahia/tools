@@ -15,7 +15,6 @@
  */
 package org.jahia.modules.tools;
 
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.modules.tools.csrf.ToolsAccessTokenFilter;
 import org.jahia.osgi.BundleUtils;
@@ -25,7 +24,6 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +50,12 @@ public class JspPrecompileServlet extends HttpServlet {
     private static final String MAGIC_TOMCAT_PARAM = "jsp_precompile=true";
 
     public void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse)
-            throws ServletException, IOException {
+            throws IOException {
         doWork(aRequest, aResponse);
     }
 
     public void doPost(HttpServletRequest aRequest,
-            HttpServletResponse aResponse) throws ServletException, IOException {
+                       HttpServletResponse aResponse) throws IOException {
         doWork(aRequest, aResponse);
     }
 
@@ -65,14 +63,14 @@ public class JspPrecompileServlet extends HttpServlet {
      * Performs depending on the passed request params the actions mentioned in the class description.
      */
     private void doWork(HttpServletRequest aRequest,
-            HttpServletResponse aResponse) throws ServletException, IOException {
+                        HttpServletResponse aResponse) throws IOException {
         aRequest.getSession(true);
 
         String jspName = aRequest.getParameter(JSP_NAME_PARAM);
         String compileType = aRequest.getParameter(COMPILE_TYPE_PARAM);
         if (jspName != null) {
             // precompile single JSP
-            precompileJsps(Arrays.asList(jspName),aRequest, aResponse);
+            precompileJsps(Collections.singletonList(jspName), aRequest, aResponse);
         } else if ("all".equals(compileType)) {
             // precompile all JSPs and generate report
             precompileJsps(searchForAllJsps(), aRequest, aResponse);
@@ -86,32 +84,44 @@ public class JspPrecompileServlet extends HttpServlet {
                             Long.parseLong(aRequest.getParameter("id")))), aRequest, aResponse);
         } else if ("non-modules".equals(compileType)) {
             // precompile all JSPs not in modules and generate report
-            precompileJsps(searchForJsps(""), aRequest, aResponse);
+            precompileJsps(searchForJsps(), aRequest, aResponse);
         } else {
             // generate output with links for compile all and all JSPs
+            aResponse.setContentType("text/html;charset=UTF-8");
             PrintWriter out = aResponse.getWriter();
             List<String> foundJsps = searchForAllJsps();
-
-            aResponse.setContentType("text/html;charset=ISO-8859-1");
-
-            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-            out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-            out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+            out.println("<!DOCTYPE html>");
+            out.println("<html lang=\"en\">");
             out.println("<head>");
-            out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
-            out.println("<meta http-equiv=\"expires\" content=\"0\" />");
+            out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+            out.print("<link rel=\"stylesheet\" href=\"");
+            out.print(aResponse.encodeURL(aRequest.getContextPath() + "/tools/css/reset.css"));
+            out.println("\" type=\"text/css\">");
             out.print("<link rel=\"stylesheet\" href=\"");
             out.print(aResponse.encodeURL(aRequest.getContextPath() + "/tools/css/tools.css"));
-            out.println("\" type=\"text/css\" />");
+            out.println("\" type=\"text/css\">");
+            out.print("<link rel=\"stylesheet\" href=\"");
+            out.print(aResponse.encodeURL(aRequest.getContextPath() + "/tools/css/google_material.css"));
+            out.println("\" type=\"text/css\">");
             out.println("<title>JSP compilation</title>");
             out.println("</head>");
             out.println("<body>");
-
-            out.println("<div width=\"100%\" style=\"display: flex; justify-content: flex-end; margin: 20px; margin-right: 100px\"><a href=\"" + Jahia.getContextPath() + "/cms/logout?redirect=" + Jahia.getContextPath() + "/start\">Logout</a></div>");
-            out.println("<h1>JSP compilation</h1>");
-            out.print("<p>Found <strong>");
-            out.print(foundJsps.size());
-            out.println("</strong> JSPs</p>");
+            out.println("<header class=\"page-header\">");
+            out.println("    <ul class=\"page-header_bar\">");
+            out.println("        <li><a href=\"" + aRequest.getContextPath() + "/tools/index.jsp\"><span class=\"material-symbols-outlined\">home</span>Back</a></li>");
+            out.println("        <li>");
+            out.println("            <a href='" + aRequest.getContextPath() + "/cms/logout?redirect=" + aRequest.getContextPath() + "/start'><span class=\"material-symbols-outlined\">logout</span>Logout</a>");
+            out.println("        </li>");
+            out.println("    </ul>");
+            out.println("    <hgroup>");
+            out.println("        <h1>JSP Compilation</h1>");
+            out.println("    </hgroup>");
+            out.println("</header>");
+            if (!foundJsps.isEmpty()) {
+                out.print("<p>Found <strong>");
+                out.print(foundJsps.size());
+                out.println("</strong> JSPs</p>");
+            }
 
             out.println("<h2>Pre-compile:</h2>");
             out.println("<ul>");
@@ -148,7 +158,7 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("<h2>Modules:</h2>");
 
             out.println("<ul>");
-            Map<String, Long> moduleBundles = new TreeMap<String, Long>();
+            Map<String, Long> moduleBundles = new TreeMap<>();
             for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
                 if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() == Bundle.ACTIVE) {
                     Enumeration<?> en = bundle.findEntries("/", "*.jsp", true);
@@ -162,17 +172,24 @@ public class JspPrecompileServlet extends HttpServlet {
 
                 url = aResponse.encodeURL(aRequest.getContextPath() + aRequest.getServletPath() + "?"
                         + COMPILE_TYPE_PARAM + "=module&id=" + entry.getValue() + "&timestamp=" + now + "&"
-                        + MAGIC_TOMCAT_PARAM  + "&" + getTokenParam(aRequest));
+                        + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(aRequest));
 
                 out.print(url);
                 out.print("\">" + entry.getKey() + "</a></li>");
             }
 
-            out.println("</ul><br/>");
+            out.println("</ul><br>");
 
             out.println("<h2>All JSPs:</h2>");
             listFiles(out, aRequest, foundJsps, aResponse, now);
-
+            out.println("<footer class=\"page-footer\">");
+            out.println("    <ul class=\"page-footer_bar\">");
+            out.println("        <li><a href=\"" + aRequest.getContextPath() + "/tools/index.jsp\"><span class=\"material-symbols-outlined\">home</span>Back</a></li>");
+            out.println("        <li>");
+            out.println("            <a href='" + aRequest.getContextPath() + "/cms/logout?redirect=" + aRequest.getContextPath() + "/start'><span class=\"material-symbols-outlined\">logout</span>Logout</a>");
+            out.println("        </li>");
+            out.println("    </ul>");
+            out.println("</footer>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -184,7 +201,7 @@ public class JspPrecompileServlet extends HttpServlet {
      * @return List of context relative JSP names (Strings)
      */
     private List<String> searchForAllJsps() {
-        List<String> list = searchForJsps("");
+        List<String> list = searchForJsps();
         list.addAll(searchForBundleJsps());
         return list;
     }
@@ -194,16 +211,16 @@ public class JspPrecompileServlet extends HttpServlet {
      *
      * @return List of context relative JSP names (Strings)
      */
-    private List<String> searchForJsps(String attachPath) {
+    private List<String> searchForJsps() {
         String webModulePath = JahiaContextLoaderListener.getServletContext().getRealPath("/");
-        File jspsDir = new File(webModulePath + attachPath);
-        List<String> foundJsps = new ArrayList<String>();
+        File jspsDir = new File(webModulePath);
+        List<String> foundJsps = new ArrayList<>();
         searchForJsps(webModulePath, jspsDir, foundJsps);
         return foundJsps;
     }
 
     private List<String> searchForBundleJsps() {
-        List<String> foundJsps = new ArrayList<String>();
+        List<String> foundJsps = new ArrayList<>();
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
             if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() == Bundle.ACTIVE) {
                 foundJsps.addAll(searchForBundleJsps(bundle));
@@ -213,12 +230,12 @@ public class JspPrecompileServlet extends HttpServlet {
     }
 
     private List<String> searchForBundleJsps(Bundle bundle) {
-        List<String> foundJsps = new ArrayList<String>();
-        Enumeration<?> en = bundle.findEntries("/","*.jsp",true);
+        List<String> foundJsps = new ArrayList<>();
+        Enumeration<?> en = bundle.findEntries("/", "*.jsp", true);
         if (en != null) {
             while (en.hasMoreElements()) {
-                URL url  = (URL) en.nextElement();
-                foundJsps.add("modules/"+bundle.getSymbolicName()+url.getPath());
+                URL url = (URL) en.nextElement();
+                foundJsps.add("modules/" + bundle.getSymbolicName() + url.getPath());
             }
         }
         return foundJsps;
@@ -230,18 +247,22 @@ public class JspPrecompileServlet extends HttpServlet {
      */
     private void searchForJsps(String aWebModulePath, File aDir, List<String> aFoundJsps) {
         File[] files = aDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
+        if (files == null) {
+            // Nothing to do
+            return;
+        }
+        for (File file : files) {
+            if (file.isDirectory()) {
                 // subdir found
-                searchForJsps(aWebModulePath, files[i], aFoundJsps);
+                searchForJsps(aWebModulePath, file, aFoundJsps);
             } else {
-                int extIdx = files[i].getName().lastIndexOf('.');
+                int extIdx = file.getName().lastIndexOf('.');
                 if (extIdx != -1
-                        && files[i].getName().length() == extIdx + 4 // ... + ".jsp"
-                        && files[i].getName().regionMatches(true, extIdx + 1,
-                                "jsp", 0, 3)) {
+                        && file.getName().length() == extIdx + 4 // ... + ".jsp"
+                        && file.getName().regionMatches(true, extIdx + 1,
+                        "jsp", 0, 3)) {
                     // JSP found!
-                    String jspPath = files[i].getPath();
+                    String jspPath = file.getPath();
                     jspPath = jspPath.substring(aWebModulePath.length());
                     jspPath = jspPath.replace('\\', '/');
                     aFoundJsps.add(jspPath);
@@ -255,10 +276,10 @@ public class JspPrecompileServlet extends HttpServlet {
      * stdout.
      */
     private void precompileJsps(List<String> foundJsps, HttpServletRequest aRequest,
-            HttpServletResponse aResponse) throws ServletException, IOException {
+                                HttpServletResponse aResponse) throws IOException {
         System.out.println("Precompile started...");
 
-        List < String > buggyJsps = new ArrayList<String>();
+        List<String> buggyJsps = new ArrayList<>();
         int i = 1;
         for (final String jspPath : foundJsps) {
             try {
@@ -280,12 +301,12 @@ public class JspPrecompileServlet extends HttpServlet {
                 + "<title>JSP precompile result</title>" + "</head>\r\n"
                 + "<body>\r\n" + "<b>");
         out.print(foundJsps.size());
-        out.print(" JSPs processed.</b><br/>\r\n");
-        if (buggyJsps.size() == 0)
+        out.print(" JSPs processed.</b><br>\r\n");
+        if (buggyJsps.isEmpty()) {
             out.print("No problems found!\r\n");
-        else {
+        } else {
             out.print("Precompile failed for following <strong>" + buggyJsps.size()
-                    + "</strong> JSPs:<br/>\r\n");
+                    + "</strong> JSPs:<br>\r\n");
             listFiles(out, aRequest, buggyJsps, aResponse, System.currentTimeMillis());
         }
         out.println("</body>" + "</html>");
@@ -303,13 +324,12 @@ public class JspPrecompileServlet extends HttpServlet {
      * param is also added to each link. Also current timestamp is added to help the browser marking visited links.
      */
     private void listFiles(PrintWriter anOut, HttpServletRequest request, List<String> aFoundJsps,
-            HttpServletResponse aResponse, long now) {
+                           HttpServletResponse aResponse, long now) {
         for (String jspPath : aFoundJsps) {
             anOut.print("<a target=\"_blank\" href=\"");
-            String url = null;
 
             // create link to JspPrecompileServlet with jsp_name param
-            url = request.getContextPath() + request.getServletPath() + "?" + JSP_NAME_PARAM + "="
+            String url = request.getContextPath() + request.getServletPath() + "?" + JSP_NAME_PARAM + "="
                     + jspPath + "&" + MAGIC_TOMCAT_PARAM + "&" + getTokenParam(request);
 
             url = url + "&now=" + now;
@@ -317,7 +337,7 @@ public class JspPrecompileServlet extends HttpServlet {
 
             anOut.print("\">");
             anOut.print(jspPath);
-            anOut.println("</a><br/>");
+            anOut.println("</a><br>");
         }
     }
 
