@@ -17,7 +17,6 @@
   Date: 28 mai 2008
   Time: 16:59:07
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:if test="${not empty param.flushkey}">
     <%
         System.out.println(request.getParameter("flushkey"));
@@ -44,9 +43,14 @@
     pageContext.setAttribute("stats", ehCacheStatisticsWrapper);
 %>
 </head>
+<c:set var="headerActions">
+
+    <li><a href="<c:url value="/modules/tools/cache.jsp"/>"><span class="material-symbols-outlined">arrow_back</span>Back to caches list</a></li>
+    <li><a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
+</c:set>
 <body id="dt_example" class="container-fluid">
-<a href="../index.jsp" title="back to the overview of caches">overview</a>&nbsp;
-<a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}">refresh</a>&nbsp;
+<%@ include file="../commons/header.jspf" %>
+
 <div id="statistics">
     <span>Cache Hits: ${stats.cacheHitCount} (Cache hits in memory : ${stats.localHeapHitCount}; Cache hits on disk : ${stats.localDiskHitCount})</span><br/>
     <span>Cache Miss: ${stats.cacheMissCount}</span><br/>
@@ -112,7 +116,7 @@
     </table>
 </div>
 
-<%@ include file="commons/footer.jspf" %>
+<%@ include file="../commons/footer.jspf" %>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
 </body>
 </html>
