@@ -1,6 +1,3 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
