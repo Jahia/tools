@@ -233,7 +233,7 @@
                 explorer</a>
         </legend>
 
-        <fieldset style="position: absolute; right: 20px;">
+        <fieldset style="position: absolute; right: 46px;">
             <legend><strong>Settings</strong></legend>
             <p>
                 <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}

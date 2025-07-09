@@ -56,7 +56,7 @@
     </c:if>
 </c:set>
 <%@ include file="commons/header.jspf" %>
-<fieldset style="position: absolute; right: 20px;">
+<fieldset style="position: absolute; right: 24px;">
     <legend><strong>Settings</strong></legend>
     <p>
         <input id="cbActions" type="checkbox" ${showActions ? 'checked="checked"' : ''}

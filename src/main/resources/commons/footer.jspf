@@ -1,6 +1,6 @@
 <footer class="page-footer">
     <ul class="page-footer_bar">
-        <li><a href="<c:url value='/modules/tools/index.jsp'/>"><span class="material-symbols-outlined">home</span>Back</a>
+        <li><a href="<c:url value='/modules/tools/index.jsp'/>"><span class="material-symbols-outlined">home</span>Home</a>
         </li>
         <li>
             <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span

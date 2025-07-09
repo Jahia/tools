@@ -34,10 +34,25 @@ fieldset legend strong span {
     text-transform: none;
 }
 
+body.hasDataTable,
 body {
     color: #293136;
     font-family: sans-serif;
     font-size: 14px;
+    margin: 24px;
+}
+
+fieldset {
+    margin: 0;
+    border: 1px solid #cfcfcf;
+}
+
+fieldset li {
+    margin-bottom: 0.5rem;
+}
+
+legend {
+    font-weight: bold;
 }
 
 main p {
@@ -46,6 +61,7 @@ main p {
 
 a:has(.material-symbols-outlined) {
     display: inline-flex;
+    height: min-content;
     align-items: center;
     text-decoration: none;
     line-height: 1;
@@ -61,7 +77,10 @@ a:has(.material-symbols-outlined) {
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* gap: 8px; */
+
+    ul {
+        margin: 0;
+    }
 
     h1 {
         margin-top: 0;
@@ -71,6 +90,17 @@ a:has(.material-symbols-outlined) {
     > * {
         width: 100%;
     }
+}
+
+.page-header {
+    margin-bottom: 32px;
+    gap: 8px;
+}
+
+.page-footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid #cfcfcf;
 }
 
 .page-header_top {
@@ -98,6 +128,7 @@ a:has(.material-symbols-outlined) {
 
 .page-header_bar h1 {
     color: #293136;
+    margin-bottom: 0;
 }
 
 .page-header_toolbar a {
@@ -107,4 +138,23 @@ a:has(.material-symbols-outlined) {
 .material-symbols-outlined {
     font-size: 1rem;
     margin-right: 2px;
+}
+
+
+/* DataTable overrides */
+.hasDataTable h1 {
+    font-size: revert;
+    font-weight: revert;
+    color: inherit;
+    line-height: inherit;
+    font-family: inherit;
+}
+
+/* Specific for index.jsp */
+body.home td:nth-child(even) fieldset {
+    margin: 12px 0 12px 12px;
+}
+
+body.home td:nth-child(odd) fieldset {
+    margin: 12px 12px 12px 0;
 }

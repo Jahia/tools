@@ -15,18 +15,17 @@
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>
-<body>
+<body class="home">
 <header class="page-header">
-    <ul class="page-header_bar">
-        <li>
-            <h1>${title}</h1>
-        </li>
-        <li>
-            <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span
-                    class="material-symbols-outlined">logout</span>Logout</a></li>
-    </ul>
-    <hrgroup>
-        <p><%= Jahia.getFullProductVersion() %></p>
+    <div class="page-header_bar">
+        <h1>${title}</h1>
+        <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'>
+            <span class="material-symbols-outlined">logout</span>
+            Logout
+        </a>
+        </div>
+        <div>
+            <span><%= Jahia.getFullProductVersion() %></span>
         <ul class="page-header_toolbar">
             <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
                 if (Boolean.getBoolean("cluster.activated")) {
@@ -38,7 +37,7 @@
             <li>Uptime: <strong><%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %></strong></li>
             <li>Since: <strong><%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></strong></li>
         </ul>
-    </hrgroup>
+    </div>
 </header>
 
 <table width="100%" border="0">

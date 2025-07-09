@@ -74,7 +74,7 @@
             </c:forEach>
         </select>
     </legend>
-    <fieldset style="position: absolute; right: 20px;">
+    <fieldset style="position: absolute; right: 46px;">
         <legend><strong>Settings</strong></legend>
         <c:if test="${allowChangingNativeSort}">
             <input id="cbNative" type="checkbox" ${useNativeSort ? 'checked="checked"' : ''}
@@ -289,7 +289,7 @@
             Query took ${took} ms.
         </legend>
         <c:if test="${showActions}">
-            <div style="position: absolute; right: 20px;">
+            <div style="position: absolute; right: 46px;">
                 <a href="#delete"
                    onclick='if (!confirm("You are about to permanently delete all the nodes this query is matching (considering limit and offset). Continue?")) return false; go("action", "deleteAll"); return false;'
                    title="Permanently delete all the nodes this query is matching (considering limit and offset)"><img

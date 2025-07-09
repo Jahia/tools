@@ -40,7 +40,7 @@
     pageContext.setAttribute("stats", new EhCacheStatisticsWrapper(cache.getStatistics()));
     pageContext.setAttribute("depstats", new EhCacheStatisticsWrapper(depCache.getStatistics()));
 %>
-<body id="dt_example" class="container-fluid">
+<body id="dt_example" class="container-fluid hasDataTable">
 
 <c:set var="headerActions">
     <li><a href="?refresh&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">refresh</span>Refresh</a>&nbsp;</li>
