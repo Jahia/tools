@@ -147,12 +147,8 @@
 
         body {
             position: relative;
-            margin: 10px;
-
-            padding: 0px;
-            color: #333;
         }
-
+/*
         h1 {
             margin-top: 20px;
             font: 1.5em Verdana, Arial, Helvetica sans-serif;

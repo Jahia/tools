@@ -106,7 +106,7 @@
         // todo : uregister node type from jackrabbit
     }
 %>
-<body id="dt_example">
+<body id="dt_example" class="hasDataTable">
 <%@ include file="commons/header.jspf" %>
 <div class="container-fluid">
     <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 16px; margin-bottom: 24px; border-radius: 4px; font-weight: bold;">
