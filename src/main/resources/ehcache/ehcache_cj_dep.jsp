@@ -44,7 +44,7 @@
         pageContext.setAttribute("keys", keys);
         pageContext.setAttribute("cache", cache);
     %>
-    <body id="dt_example" class="container-fluid">
+    <body id="dt_example" class="container-fluid hasDataTable">
     <c:set var="headerActions">
         <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
                onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
