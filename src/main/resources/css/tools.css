@@ -47,6 +47,11 @@ fieldset {
     border: 1px solid #cfcfcf;
 }
 
+hgroup p {
+    margin-top: 0;
+    margin-bottom: 0.3rem;
+}
+
 fieldset li {
     margin-bottom: 0.5rem;
 }

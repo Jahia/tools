@@ -6,10 +6,10 @@
             <a href='${pageContext.request.contextPath}/cms/logout?redirect=${pageContext.request.contextPath}/start'><span
                     class="material-symbols-outlined">logout</span>Logout</a></li>
     </ul>
-    <hrgroup>
+    <hgroup>
         <h1>${title}</h1>
         ${description}
-    </hrgroup>
+    </hgroup>
     <c:if test="${! empty headerActions}">
         <ul class="page-header_toolbar">
             ${headerActions}

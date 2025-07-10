@@ -115,13 +115,13 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("    </ul>");
             out.println("    <hgroup>");
             out.println("        <h1>JSP Compilation</h1>");
+            if (!foundJsps.isEmpty()) {
+                out.print("<span>Found <strong>");
+                out.print(foundJsps.size());
+                out.println("</strong> JSPs</span>");
+            }
             out.println("    </hgroup>");
             out.println("</header>");
-            if (!foundJsps.isEmpty()) {
-                out.print("<p>Found <strong>");
-                out.print(foundJsps.size());
-                out.println("</strong> JSPs</p>");
-            }
 
             out.println("<h2>Pre-compile:</h2>");
             out.println("<ul>");

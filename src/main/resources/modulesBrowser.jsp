@@ -73,7 +73,7 @@
         });
     }
 %>
-<body id="dt_example">
+<body id="dt_example" class="hasDataTable">
 <%@ include file="commons/header.jspf" %>
 <div class="container-fluid">
     <table id="moduleTable" class="table table-striped compact" data-table="dataTableModulesBrowser">
