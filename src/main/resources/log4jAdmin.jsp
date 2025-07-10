@@ -148,25 +148,6 @@
         body {
             position: relative;
         }
-/*
-        h1 {
-            margin-top: 20px;
-            font: 1.5em Verdana, Arial, Helvetica sans-serif;
-        }
-
-        h2 {
-            margin-top: 10px;
-            font: 0.75em Verdana, Arial, Helvetica sans-serif;
-            text-align: left;
-        }
-
-/*
-        a, a:link, a:visited, a:active {
-            color: red;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-*/
 
         table {
             width: 100%;
