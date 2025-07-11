@@ -48,7 +48,7 @@
     <li><a href="<c:url value="/modules/tools/cache.jsp"/>"><span class="material-symbols-outlined">arrow_back</span>Back to caches list</a></li>
     <li><a href="?refresh&name=${param.name}&cache=${param.cache}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">refresh</span>Refresh</a></li>
 </c:set>
-<body id="dt_example" class="container-fluid hasDataTable">
+<body id="dt_example" class="hasDataTable">
 <%@ include file="../commons/header.jspf" %>
 
 <div id="statistics">
