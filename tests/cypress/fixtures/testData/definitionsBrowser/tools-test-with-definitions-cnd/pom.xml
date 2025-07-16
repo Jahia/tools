@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.modules</groupId>
+        <artifactId>jahia-modules</artifactId>
+        <version>8.2.0.0</version>
+    </parent>
+    <groupId>org.jahia.test</groupId>
+    <artifactId>tools-test-with-definitions-cnd</artifactId>
+    <name>Test module for Tools with definitions.cnd</name>
+    <version>0.0.1</version>
+    <packaging>bundle</packaging>
+    <description>This is a test module for Tools that contains a definitions.cnd file.</description>
+
+    <properties>
+        <jahia-depends>default</jahia-depends>
+        <jahia.plugin.version>6.10</jahia.plugin.version>
+    </properties>
+    <repositories>
+        <repository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>

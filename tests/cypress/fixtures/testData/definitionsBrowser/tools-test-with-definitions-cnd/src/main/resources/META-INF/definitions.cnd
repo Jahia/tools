@@ -1,0 +1,12 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+<toolstestwithdefinitionscnd = 'https://example.com/tools/definitionsBrowser/test-with-definitions-cnd/1.0'>
+<toolstestwithdefinitionscndmix = 'https://example.com/tools/definitionsBrowser/test-with-definitions-cnd-mix/1.0'>
+
+
+[toolstestwithdefinitionscnd:testComponent] > jnt:content
+ - testProp (string)
+
+[toolstestwithdefinitionscnd:otherComponent] > jnt:content
+ - otherProp (string)
