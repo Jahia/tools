@@ -14,6 +14,9 @@
 <%@ page import="javax.jcr.query.Query" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.jahia.osgi.BundleUtils" %>
+<%@ page import="org.jahia.modules.tools.modules.NoteTypesRegistryManagementService" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="java.util.Properties" %>
 <%@ page import="java.io.StringReader" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -85,6 +88,15 @@
     Collections.sort(systemIds);
     pageContext.setAttribute("systemIds", systemIds);
 
+    if ("reloadDefinitions".equals(request.getParameter("action"))) {
+        try {
+            NoteTypesRegistryManagementService noteTypesRegistryManagementService = BundleUtils.getOsgiService(NoteTypesRegistryManagementService.class, null);
+            noteTypesRegistryManagementService.reloadNodeTypesFromJahiaModules();
+        } catch (Throwable e) {
+           e.printStackTrace();
+        }
+    }
+
     if ("deleteModule".equals(request.getParameter("action"))) {
         final String moduleName = request.getParameter("module");
         java.util.Iterator it = NodeTypeRegistry.getInstance().getNodeTypes(moduleName);
@@ -124,12 +136,36 @@
         response.sendRedirect(request.getRequestURI());
         return;
     }
+    boolean isEnabled = SettingsBean.getInstance().isDevelopmentMode() && !SettingsBean.getInstance().isClusterActivated();
+    pageContext.setAttribute("isEnabled", isEnabled);
+    pageContext.setAttribute("isCluster", SettingsBean.getInstance().isClusterActivated() ? "" : "strikethrough");
+    pageContext.setAttribute("isDevelopmentMode", SettingsBean.getInstance().isDevelopmentMode() ? "strikethrough" : "");
+
 %>
+<c:set var="description">
+    <c:if test="${!isEnabled}">
+        <p>
+            The Reload definition button is disabled because:
+        <ul>
+                <li class="${isCluster}">- The environment is in cluster</li>
+                <li class="${isDevelopmentMode}">- Not in development mode</li>
+        </ul>
+        </p>
+    </c:if>
+</c:set>
+<c:set var="headerActions">
+    <li>
+        <button id="reloadDefinitions" <c:if test="${!isEnabled}">disabled</c:if>>Reload Definitions</button>
+    </li>
+</c:set>
 <body id="dt_example" class="hasDataTable">
 <%@ include file="commons/header.jspf" %>
 <div class="container-fluid">
     <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 16px; margin-bottom: 24px; border-radius: 4px; font-weight: bold;">
-        Do not delete definitions in production. Deleting definitions will also delete the content created with these types. Instead please <a href="https://academy.jahia.com/documentation/jahia-cms/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">consider migrating your definitions</a>.
+        Do not delete definitions in production. Deleting definitions will also delete the content created with these
+        types. Instead please <a
+            href="https://academy.jahia.com/documentation/jahia-cms/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">consider
+        migrating your definitions</a>.
     </div>
     <table id="moduleTable" class="table table-striped compact" data-table="dataTableDefinitionsBrowser">
         <thead>
@@ -154,7 +190,7 @@
                              class="delete-definitions"
                              title="Delete">
                         <img src="<c:url value='/icons/delete.png'/>" height="16" width="16"
-                                                 title="Delete" border="0" style="vertical-align: middle;" data-package="${pkg}"/></a>
+                             title="Delete" border="0" style="vertical-align: middle;" data-package="${pkg}"/></a>
                 </td>
                 <td>
                     <ol>
@@ -167,10 +203,10 @@
                                          class="delete-nodetype"
                                          title="Delete">
                                     <img src="<c:url value='/icons/delete.png'/>" height="16"
-                                                             width="16"
-                                                             title="Delete" border="0" style="vertical-align: middle;"
-                                                             data-package="${pkg}"
-                                                             data-nodetype=${dep.name}
+                                         width="16"
+                                         title="Delete" border="0" style="vertical-align: middle;"
+                                         data-package="${pkg}"
+                                         data-nodetype=${dep.name}
                                     /></a>
                             </li>
                             <div style="display:none;">
@@ -239,6 +275,6 @@
 </div>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/fancybox.tools.bundle.js'/>"></script>
 <script type="module" src="<c:url value='/modules/tools/javascript/apps/datatable.tools.bundle.js'/>"></script>
-<script  type="module" src="<c:url value='/modules/tools/javascript/apps/definitions.tools.bundle.js'/>"></script>
+<script type="module" src="<c:url value='/modules/tools/javascript/apps/definitions.tools.bundle.js'/>"></script>
 </body>
 </html>
