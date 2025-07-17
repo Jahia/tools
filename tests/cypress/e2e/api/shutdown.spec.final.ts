@@ -1,6 +1,6 @@
 describe('Shutdown via API - mutation.admin.jahia.shutdown', () => {
     it('Shutdown success', function () {
-        // This test must be the last test for obviously reason
+        // This test must be the last test for obvious reasons
         cy.apollo({
             mutationFile: 'shutdown.graphql',
             variables: {
