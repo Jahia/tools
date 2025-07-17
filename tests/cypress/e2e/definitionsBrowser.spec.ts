@@ -2,9 +2,11 @@ import {addNode, createSite, deleteSite, getNodeByPath} from '@jahia/cypress';
 import gql from 'graphql-tag';
 
 const TEST_BUNDLE = 'tools-test-with-definitions-cnd/0.0.1';
+const TEST_BUNDLE_V2 = 'tools-test-with-definitions-cnd/0.0.2';
 const SITE_KEY = 'testSite';
 const testComponentSelector = 'a[id="toolstestwithdefinitionscnd_testComponent"]';
 const otherComponentSelector = 'a[id="toolstestwithdefinitionscnd_otherComponent"]';
+const testComponentToRemove = 'a[id="toolstestwithdefinitionscnd_testComponentToRemove"]';
 
 function checkNodeDoesNotExist(path: string) {
     cy.apollo({
@@ -41,7 +43,8 @@ function restartBundle() {
 
 describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', () => {
     beforeEach(() => {
-        cy.installBundle('testData/definitionsBrowser/tools-test-with-definitions-cnd.jar');
+        // Do the provisioning
+        cy.installBundle('testData/definitionsBrowser/tools-test-with-definitions-cnd-0.0.1.jar');
         cy.runProvisioningScript([{startBundle: TEST_BUNDLE}]);
         // Create a site
         createSite(SITE_KEY, {
@@ -133,5 +136,31 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
         cy.get(otherComponentSelector).should('exist');
         checkNodeDoesNotExist(`/sites/${SITE_KEY}/testNode`);
         checkNodeExists(`/sites/${SITE_KEY}/otherNode`);
+    });
+    it('Should remove nodetypes when definitions are reloaded', () => {
+        // GIVEN
+        // Going to the list of definitions:
+        cy.login();
+        cy.visit('/modules/tools/definitionsBrowser.jsp');
+        // Type to remove is listed
+        cy.get(testComponentToRemove).should('be.visible');
+        // WHEN
+        // I deploy the new version of the module
+        cy.installBundle('testData/definitionsBrowser/tools-test-with-definitions-cnd-0.0.2.jar');
+        cy.runProvisioningScript([{startBundle: TEST_BUNDLE_V2}]);
+        cy.visit('/modules/tools/definitionsBrowser.jsp');
+        // Type to remove is listed
+        cy.get(testComponentToRemove).should('be.visible');
+        // THEN
+        // I reload all definition
+        cy.window().then(win => {
+            cy.stub(win, 'confirm').returns(true); // Confirm the dialog
+        });
+        cy.get('#reloadDefinitions').click();
+        // After refresh the nodetype does not exists
+        cy.get(testComponentToRemove).should('not.exist');
+
+        // Clean up bundle v2
+        cy.runProvisioningScript([{uninstallBundle: TEST_BUNDLE_V2}]);
     });
 });

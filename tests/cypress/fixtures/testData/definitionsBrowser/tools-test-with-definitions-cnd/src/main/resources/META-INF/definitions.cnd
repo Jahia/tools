@@ -10,3 +10,7 @@
 
 [toolstestwithdefinitionscnd:otherComponent] > jnt:content
  - otherProp (string)
+
+// This definition is removed in version 0.0.2
+// [toolstestwithdefinitionscnd:testComponentToRemove] > jnt:content
+//  - someProp (string)

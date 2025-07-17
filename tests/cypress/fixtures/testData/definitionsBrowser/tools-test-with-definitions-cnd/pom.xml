@@ -10,7 +10,7 @@
     <groupId>org.jahia.test</groupId>
     <artifactId>tools-test-with-definitions-cnd</artifactId>
     <name>Test module for Tools with definitions.cnd</name>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>bundle</packaging>
     <description>This is a test module for Tools that contains a definitions.cnd file.</description>
 
