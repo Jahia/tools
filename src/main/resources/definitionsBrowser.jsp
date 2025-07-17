@@ -136,21 +136,29 @@
         response.sendRedirect(request.getRequestURI());
         return;
     }
-    boolean isEnabled = SettingsBean.getInstance().isDevelopmentMode() && !SettingsBean.getInstance().isClusterActivated();
+    SettingsBean settingsBean = SettingsBean.getInstance();
+    boolean clusterActivated = settingsBean.isClusterActivated();
+    boolean developmentMode = settingsBean.isDevelopmentMode();
+    boolean isEnabled = developmentMode && !clusterActivated;
+    String fulfilled = "<strong style=\"color:red\">condition not fullfiled</strong>";
+    String notFulfilled = "<span style=\"color:green\">condition fulfilled</span>";
     pageContext.setAttribute("isEnabled", isEnabled);
-    pageContext.setAttribute("isCluster", SettingsBean.getInstance().isClusterActivated() ? "" : "strikethrough");
-    pageContext.setAttribute("isDevelopmentMode", SettingsBean.getInstance().isDevelopmentMode() ? "strikethrough" : "");
+    pageContext.setAttribute("clusterStatus", !clusterActivated ? fulfilled : notFulfilled);
+    pageContext.setAttribute("developmentModeStatus", developmentMode ? fulfilled : notFulfilled);
+
+
 
 %>
 <c:set var="description">
     <c:if test="${!isEnabled}">
-        <p>
-            The Reload definition button is disabled because:
-        <ul>
-                <li class="${isCluster}">- The environment is in cluster</li>
-                <li class="${isDevelopmentMode}">- Not in development mode</li>
+        <p>To reload the content node definitions (CND) of this Jahia instance, the following conditions must be respected:</p>
+
+        <ul class="list">
+            <li>The server is in development mode: ${clusterStatus}</li>
+            <li>The server is not in cluster: ${developmentModeStatus}</li>
         </ul>
-        </p>
+
+        <p>Some conditions are not respected, the feature is disabled to prevent an undefined behavior.</p>
     </c:if>
 </c:set>
 <c:set var="headerActions">

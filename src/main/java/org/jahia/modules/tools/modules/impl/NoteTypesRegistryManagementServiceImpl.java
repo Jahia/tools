@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2025 Jahia Solutions Group SA. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl.DEFINITIONS_PROPERTIES;
 
@@ -73,7 +71,7 @@ public class NoteTypesRegistryManagementServiceImpl implements NoteTypesRegistry
     }
 
     @Override
-    public Map<String, List<String>> reloadNodeTypesFromJahiaModules() {
+    public void reloadNodeTypesFromJahiaModules() {
         if (!serviceEnabled) {
             logger.warn("NoteTypesRegistryManagementService is not enabled");
             throw new IllegalStateException("Service is not enabled - development mode required");
@@ -82,33 +80,21 @@ public class NoteTypesRegistryManagementServiceImpl implements NoteTypesRegistry
 
         cleanNodeTypesTable();
 
-        Map<String, List<String>> result = new HashMap<>();
-        List<String> successfulBundles = new ArrayList<>();
-        List<String> failedBundles = new ArrayList<>();
-
         try {
             List<JahiaTemplatesPackage> packages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getAvailablePackages();
 
             for (JahiaTemplatesPackage templatesPackage : packages) {
                 if (templatesPackage.getBundle().getState() == Bundle.ACTIVE) {
                     try {
-                        if (reloadNodeTypesFromJahiaModule(templatesPackage)) {
-                            successfulBundles.add(templatesPackage.getName());
-                        }
+                        reloadNodeTypesFromJahiaModule(templatesPackage);
                     } catch (Exception e) {
                         logger.error("Failed to reload CND definitions for bundle: " + templatesPackage.getName(), e);
-                        failedBundles.add(templatesPackage.getName() + " (" + e.getMessage() + ")");
                     }
                 }
             }
         } catch (Exception e) {
             logger.error("Failed to reload all CND definitions", e);
-            failedBundles.add("Global failure: " + e.getMessage());
         }
-
-        result.put("successfulBundles", successfulBundles);
-        result.put("failedBundles", failedBundles);
-        return result;
     }
 
     private void cleanNodeTypesTable() {
@@ -124,7 +110,8 @@ public class NoteTypesRegistryManagementServiceImpl implements NoteTypesRegistry
         }
     }
 
-    public boolean reloadNodeTypesFromJahiaModule(JahiaTemplatesPackage jahiaTemplatesPackage) throws IOException, RepositoryException, ParseException {
+    @Override
+    public void reloadNodeTypesFromJahiaModule(JahiaTemplatesPackage jahiaTemplatesPackage) throws IOException, RepositoryException, ParseException {
 
         if (!serviceEnabled) {
             logger.warn("NoteTypesRegistryManagementService is not enabled");
@@ -136,7 +123,6 @@ public class NoteTypesRegistryManagementServiceImpl implements NoteTypesRegistry
         List<URL> urls = CND_SCANNER.scan(bundle);
         if (urls.isEmpty()) {
             logger.info("No CND definitions found for bundle: {}", systemId);
-            return false;
         }
 
         NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
@@ -154,7 +140,6 @@ public class NoteTypesRegistryManagementServiceImpl implements NoteTypesRegistry
         jcrStoreService.deployDefinitions(systemId, moduleVersion.toString(), lastModified);
 
         logger.info("Successfully registered definitions for bundle: {}", BundleUtils.getDisplayName(bundle));
-        return true;
     }
 
     private List<Resource> createBundleResources(List<URL> urls, Bundle bundle) {

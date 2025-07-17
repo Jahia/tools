@@ -26,7 +26,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#reloadDefinitions', function () {
         // eslint-disable-next-line no-alert
-        if (confirm('You are about to refresh all definitions . Continue?')) {
+        if (confirm('You are about to refresh all definitions. Continue?')) {
             $('#action').val('reloadDefinitions');
             $('#navigateForm').submit();
         }
