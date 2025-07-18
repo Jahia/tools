@@ -169,7 +169,3 @@ body.home td:nth-child(even) fieldset {
 body.home td:nth-child(odd) fieldset {
     margin: 12px 12px 12px 0;
 }
-
-.strikethrough {
-    text-decoration: line-through;
-}
