@@ -125,6 +125,12 @@ a:has(.material-symbols-outlined) {
     gap: 16px;
 }
 
+.page-header ul.list {
+    padding-left: 30px;
+    list-style: disc;
+    display: block;
+}
+
 .page-header_bar, .page-footer_bar {
     display: flex;
     justify-content: space-between;

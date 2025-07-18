@@ -4,3 +4,11 @@ cd tools-test-with-definitions-cnd
 mvn package
 cp target/*.jar ../tools-test-with-definitions-cnd.jar
 ```
+
+### Version
+version 0.0.1 has the following definition
+```
+[toolstestwithdefinitionscnd:testComponentToRemove] > jnt:content
+ - someProp (string)
+```
+version 0.0.2 `toolstestwithdefinitionscnd:testComponentToRemove` is removed.
