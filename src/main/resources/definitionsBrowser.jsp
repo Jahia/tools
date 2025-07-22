@@ -173,7 +173,8 @@
         Do not delete definitions in production. Deleting definitions will also delete the content created with these
         types. Instead please <a
             href="https://academy.jahia.com/documentation/jahia-cms/developer/creating-and-managing-content-types/managing-definitions/modifying-existing-content-definitions">consider
-        migrating your definitions</a>.
+        migrating your definitions</a>.<br>
+        In a cluster, note that any changes made on a node have to be performed on the other nodes as well.
     </div>
     <table id="moduleTable" class="table table-striped compact" data-table="dataTableDefinitionsBrowser">
         <thead>
