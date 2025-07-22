@@ -140,8 +140,8 @@
     boolean clusterActivated = settingsBean.isClusterActivated();
     boolean developmentMode = settingsBean.isDevelopmentMode();
     boolean isEnabled = developmentMode && !clusterActivated;
-    String fulfilled = "<strong style=\"color:red\">condition not fullfiled</strong>";
-    String notFulfilled = "<span style=\"color:green\">condition fulfilled</span>";
+    String fulfilled = "<span style=\"color:green\">condition fulfilled</span>";
+    String notFulfilled = "<strong style=\"color:red\">condition not fulfilled</strong>";
     pageContext.setAttribute("isEnabled", isEnabled);
     pageContext.setAttribute("clusterStatus", !clusterActivated ? fulfilled : notFulfilled);
     pageContext.setAttribute("developmentModeStatus", developmentMode ? fulfilled : notFulfilled);
@@ -154,8 +154,8 @@
         <p>To reload the content node definitions (CND) of this Jahia instance, the following conditions must be respected:</p>
 
         <ul class="list">
-            <li>The server is in development mode: ${clusterStatus}</li>
-            <li>The server is not in cluster: ${developmentModeStatus}</li>
+            <li>The server is in development mode: ${developmentModeStatus}</li>
+            <li>The server is not in cluster: ${clusterStatus}</li>
         </ul>
 
         <p>Some conditions are not respected, the feature is disabled to prevent an undefined behavior.</p>
