@@ -8,10 +8,12 @@
 <%@page import="org.jahia.osgi.BundleUtils" %>
 <%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.Date" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <% pageContext.setAttribute("currentDate", new java.util.Date()); %>
 <c:set var="title">Support Tools</c:set>
+<% String jahiaEnv = SettingsBean.getInstance().getString("jahia.environment", ""); %>
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>
@@ -25,7 +27,7 @@
         </a>
         </div>
         <div>
-            <span><%= Jahia.getFullProductVersion() %></span>
+            <span><%= Jahia.getFullProductVersion() %><strong><%= jahiaEnv.isBlank() ? "" : (" - " + jahiaEnv) %></strong></span>
         <ul class="page-header_toolbar">
             <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
                 if (Boolean.getBoolean("cluster.activated")) {
@@ -67,7 +69,7 @@
             <fieldset>
                 <legend>Administration and Guidance</legend>
                 <ul>
-                    <li><a href="<c:url value='/tools/osgi/console/'/>">OSGi console</a></li>
+                    <li><a href="<c:url value='/tools/osgi/console'/>">OSGi console</a></li>
                     <li><a href="importPackageChecker.jsp">OSGi Import-Package checker</a></li>
                     <li><a href="modules.jsp">Modules list</a></li>
                     <li><a href="jobadmin.jsp">Background job administration</a></li>

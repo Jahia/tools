@@ -1,3 +1,5 @@
+<%@ page import="org.jahia.settings.SettingsBean" %>
+<% String jahiaEnv = SettingsBean.getInstance().getString("jahia.environment", ""); %>
 <header class="page-header">
     <ul class="page-header_bar">
         <li><a href="<c:url value='/modules/tools/index.jsp'/>"><span class="material-symbols-outlined">home</span>Home</a>
@@ -8,7 +10,7 @@
     </ul>
     <hgroup>
         <h1>${title}</h1>
-        ${description}
+        ${description} <strong><%= jahiaEnv.isBlank() ? "" : " " + jahiaEnv %></strong>
     </hgroup>
     <c:if test="${! empty headerActions}">
         <ul class="page-header_toolbar">
