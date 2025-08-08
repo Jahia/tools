@@ -19,6 +19,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.modules.tools.csrf.ToolsAccessTokenFilter;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.NoOutputResponseWrapper;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -120,6 +121,7 @@ public class JspPrecompileServlet extends HttpServlet {
                 out.print(foundJsps.size());
                 out.println("</strong> JSPs</span>");
             }
+            out.println("<span><strong>" + SettingsBean.getInstance().getString("jahia.environment", "") + "</strong></span>");
             out.println("    </hgroup>");
             out.println("</header>");
 
