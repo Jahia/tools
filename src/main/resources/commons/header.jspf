@@ -10,7 +10,7 @@
     </ul>
     <hgroup>
         <h1>${title}</h1>
-        ${description} <strong><%= jahiaEnv.isBlank() ? "" : " " + jahiaEnv %></strong>
+        ${description} <%= jahiaEnv.isBlank() ? "" : (" jahia.environment:  <strong>" + jahiaEnv + "</strong>") %>
     </hgroup>
     <c:if test="${! empty headerActions}">
         <ul class="page-header_toolbar">

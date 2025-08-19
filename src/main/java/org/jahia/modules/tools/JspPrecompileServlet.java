@@ -116,12 +116,17 @@ public class JspPrecompileServlet extends HttpServlet {
             out.println("    </ul>");
             out.println("    <hgroup>");
             out.println("        <h1>JSP Compilation</h1>");
+            out.println("    <ul class=\"page-header_toolbar\">");
+            String jahiaEnv = SettingsBean.getInstance().getString("jahia.environment", "");
+            if (!jahiaEnv.isEmpty()) {
+                out.println("<li>jahia.environment: <strong>" + jahiaEnv + "</strong></li>");
+            }
+            out.println("    </ul>");
             if (!foundJsps.isEmpty()) {
                 out.print("<span>Found <strong>");
                 out.print(foundJsps.size());
                 out.println("</strong> JSPs</span>");
             }
-            out.println("<span><strong>" + SettingsBean.getInstance().getString("jahia.environment", "") + "</strong></span>");
             out.println("    </hgroup>");
             out.println("</header>");
 

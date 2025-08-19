@@ -27,7 +27,7 @@
         </a>
         </div>
         <div>
-            <span><%= Jahia.getFullProductVersion() %><strong><%= jahiaEnv.isBlank() ? "" : (" - " + jahiaEnv) %></strong></span>
+            <span><%= Jahia.getFullProductVersion() %></span>
         <ul class="page-header_toolbar">
             <% if (Jahia.isEnterpriseEdition() && BundleUtils.getBundleBySymbolicName("tools-ee", null) != null) {
                 if (Boolean.getBoolean("cluster.activated")) {
@@ -38,6 +38,7 @@
                 } %>
             <li>Uptime: <strong><%= DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime(), true, true) %></strong></li>
             <li>Since: <strong><%= new java.util.Date(JahiaContextLoaderListener.getStartupTime()) %></strong></li>
+           <%= jahiaEnv.isBlank() ? "" : (" <li> - jahia.environment: <strong>" + jahiaEnv + "</strong></li>") %>
         </ul>
     </div>
 </header>
