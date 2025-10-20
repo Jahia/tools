@@ -1,0 +1,13 @@
+# global default configuration
+# TODO: move to jahia core, to make deprecated packages provided by jahia core diretcly
+patterns:
+  - "org\\.springframework(\\..*)?"
+  - "org\\.apache\\.camel(\\..*)?"
+  - "org\\.drools(\\..*)?"
+  - "org\\.jbpm(\\..*)?"
+  - "org\\.kie(\\..*)?"
+  - "org\\.jgroups(\\..*)?"
+  - "org\\.velocity(\\..*)?"
+  - "com\\.extjs(\\..*)?"
+  - "com\\.google\\.gwt(\\..*)?"
+  - "com\\.jahia\\.ajax(\\..*)?"

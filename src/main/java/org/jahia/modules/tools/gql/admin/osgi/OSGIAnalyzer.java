@@ -19,11 +19,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.jahia.modules.graphql.provider.dxm.node.GqlJcrWrongInputException;
+import org.jahia.modules.tools.config.DeprecationConfig;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
+import org.osgi.framework.namespace.PackageNamespace;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -31,11 +35,11 @@ import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
- * Utility class for the OSGI Import-Package, Export-Package, Jahia-Depends checker
+ * Utility class for the OSGI Import-Package, Export-Package, Jahia-Depends checker, wire analyzer, etc.
  *
  * @author jkevan
  */
-public class OSGIPackageHeaderChecker {
+public class OSGIAnalyzer {
 
     /**
      * Perform the OSGI Import-Package checker. This method will check all bundles in the OSGI
@@ -163,5 +167,106 @@ public class OSGIPackageHeaderChecker {
                 .map(BundleWithDependencies::new)
                 .filter(entry -> !withUnsupportedDependenciesOnly || entry.hasUnsupportedDependencies())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Analyze bundle wires to find Jahia modules using packages matching the given patterns.
+     * Only analyzes started Jahia module bundles.
+     *
+     * @param patterns Collection of regular expression patterns to match against package names.
+     * @param providerBundleSymbolicName Optional symbolic name of the provider bundle to filter results.
+     *                                   If specified, only wires from this provider bundle are returned.
+     *                                   If null or empty, all matching wires are returned regardless of provider.
+     * @return The result of the bundle wire analysis.
+     */
+    public static FindWires findWires(Collection<String> patterns, String providerBundleSymbolicName) {
+        FindWires results = new FindWires();
+
+        List<Pattern> compiledPatterns = new ArrayList<>();
+        for (String patternStr : patterns) {
+            compiledPatterns.add(Pattern.compile(patternStr));
+        }
+
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle bundle : bundles) {
+            // Only analyze Jahia modules that are started
+            if (!BundleUtils.isJahiaModuleBundle(bundle)) {
+                continue;
+            }
+            if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.STARTING) {
+                continue;
+            }
+
+            BundleWithWires entry = new BundleWithWires(bundle);
+
+            // Get bundle wiring
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+            if (bundleWiring != null) {
+                // Get required package wires (including dynamic imports)
+                List<BundleWire> packageWires = bundleWiring.getRequiredWires(PackageNamespace.PACKAGE_NAMESPACE);
+
+                if (packageWires != null) {
+                    for (BundleWire wire : packageWires) {
+                        // Get the package name from the wire capability
+                        String packageName = (String) wire.getCapability().getAttributes().get(PackageNamespace.PACKAGE_NAMESPACE);
+
+                        if (packageName != null) {
+                            // Check if package matches any pattern
+                            for (Pattern pattern : compiledPatterns) {
+                                if (pattern.matcher(packageName).matches()) {
+                                    // Get provider bundle info
+                                    Bundle providerBundle = wire.getProvider().getBundle();
+
+                                    // Filter by provider bundle symbolic name if specified
+                                    if (StringUtils.isNotEmpty(providerBundleSymbolicName) &&
+                                            !providerBundleSymbolicName.equals(providerBundle.getSymbolicName())) {
+                                        break; // Skip this wire as it doesn't match the provider filter
+                                    }
+
+                                    String wireInfo = packageName + " (from " + providerBundle.getSymbolicName() + " [" + providerBundle.getBundleId() + "])";
+                                    entry.addMatchingWire(wireInfo);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Only add bundles that have matching wires
+            if (!entry.getMatchingWires().isEmpty()) {
+                results.add(entry);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Analyze bundle wires to find Jahia modules using deprecated packages.
+     * This method uses patterns configured via the DeprecationConfig OSGI service.
+     * If no configuration is available or no patterns are defined, it returns an empty result.
+     * Only analyzes started Jahia module bundles.
+     * For Jahia deprecated packages, only wires from org.apache.felix.framework are returned.
+     *
+     * @return The result of the bundle wire analysis for deprecated packages.
+     */
+    public static FindWires findDeprecatedWires() {
+        DeprecationConfig deprecationConfig = BundleUtils.getOsgiService(DeprecationConfig.class, null);
+
+        if (deprecationConfig == null) {
+            // No configuration service available, return empty result
+            return new FindWires();
+        }
+
+        Collection<String> patterns = deprecationConfig.getDeprecatedPatterns();
+
+        if (patterns.isEmpty()) {
+            // No patterns configured, return empty result
+            return new FindWires();
+        }
+
+        // Filter by org.apache.felix.framework for Jahia deprecated packages
+        return findWires(patterns, "org.apache.felix.framework");
     }
 }
