@@ -1145,10 +1145,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.51.0.tgz#6d419c240cfb2b66da37df230f7e7eef801c32fa"
   integrity sha512-HxjQ8Qn+4SI3/AFv6sOrDB+g6PpUTDwSJiQqOrnneEk8L71161srI9gjzzZvYVbzHiVg/BvcH95+cK/zfIt4pg==
 
-"@fancyapps/ui@^5.0.36":
-  version "5.0.36"
-  resolved "https://registry.yarnpkg.com/@fancyapps/ui/-/ui-5.0.36.tgz#dd5117cb579e9fc85c06dc32c947be6105724fb2"
-  integrity sha512-GMygQzp1MBTFNTT6AzpbL6pXTD6bTxwjmmpI1fe8Ozmmiseu8/g82Sudl1YhcbZmS4bJgaBOF5THDFGpXQ1fDw==
+"@fancyapps/ui@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@fancyapps/ui/-/ui-6.1.0.tgz#45ff7919b0a693e636b8cdf2de167b00dcd24fe0"
+  integrity sha512-CPBr2wo+XL1Jb179sgZucBdI5NTthwdaHH23xcnwjxt3ZhOMU4UaE7b9qohisZYT5hdwIhfJedJri9RdBWb7jg==
 
 "@humanwhocodes/config-array@^0.11.11":
   version "0.11.11"
