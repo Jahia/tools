@@ -9,6 +9,7 @@
 <%@ page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@ page import="org.jahia.services.content.JCRTemplate" %>
 <%@ page import="org.jahia.services.modulemanager.persistence.BundlePersister" %>
+<%@ page import="org.jahia.services.modulemanager.ModuleManagementException" %> <!-- needed as it is a checked exception of BundlePersister#delete(...) -->
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="javax.jcr.NodeIterator" %>
