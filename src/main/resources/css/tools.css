@@ -169,3 +169,8 @@ body.home td:nth-child(even) fieldset {
 body.home td:nth-child(odd) fieldset {
     margin: 12px 12px 12px 0;
 }
+
+.section-separator {
+    margin: 20px 0;
+    border-top: 2px solid #ddd;
+}
