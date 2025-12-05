@@ -20,6 +20,7 @@ import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
+import org.jahia.modules.tools.gql.admin.jcr.JcrBrowserGraphQL;
 import org.jahia.modules.tools.gql.admin.osgi.BundleWithDependencies;
 import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
 import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
@@ -58,6 +59,12 @@ public class ToolsGraphQL {
             @GraphQLName("withUnsupportedDependenciesOnly") @GraphQLDescription("When set to 'true', only return bundles that have at least one dependency with an unsupported version range (to be considered supported, a version range should be open to minor upgrade based on SemVer)") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean withUnsupportedDependenciesOnly
     ) {
         return OSGIPackageHeaderChecker.findBundles(nameRegExp, areModules, withUnsupportedDependenciesOnly);
+    }
+
+    @GraphQLField
+    @GraphQLDescription("JCR Browser operations")
+    public JcrBrowserGraphQL jcrBrowser() {
+        return new JcrBrowserGraphQL();
     }
 
 }

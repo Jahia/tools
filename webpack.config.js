@@ -20,7 +20,8 @@ module.exports = (env, argv) => {
             session: [path.resolve(__dirname, 'src/javascript/session.js')],
             datatable: [path.resolve(__dirname, 'src/javascript/datatable.js')],
             definitions: [path.resolve(__dirname, 'src/javascript/definitions.js')],
-            provisioning: [path.resolve(__dirname, 'src/javascript/provisioning.js')]
+            provisioning: [path.resolve(__dirname, 'src/javascript/provisioning.js')],
+            jcrBrowser: [path.resolve(__dirname, 'src/javascript/jcr-browser/index.jsx')]
         },
         output: {
             path: path.resolve(__dirname, 'src/main/resources/javascript/apps/'),
