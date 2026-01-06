@@ -15,16 +15,15 @@
  */
 package org.jahia.modules.tools.gql.admin;
 
-import graphql.annotations.annotationTypes.GraphQLDefaultValue;
-import graphql.annotations.annotationTypes.GraphQLDescription;
-import graphql.annotations.annotationTypes.GraphQLField;
-import graphql.annotations.annotationTypes.GraphQLName;
+import graphql.annotations.annotationTypes.*;
 import org.jahia.modules.graphql.provider.dxm.util.GqlUtils;
 import org.jahia.modules.tools.gql.admin.osgi.BundleWithDependencies;
 import org.jahia.modules.tools.gql.admin.osgi.FindExportPackage;
 import org.jahia.modules.tools.gql.admin.osgi.FindImportPackage;
-import org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker;
+import org.jahia.modules.tools.gql.admin.osgi.FindWires;
+import org.jahia.modules.tools.gql.admin.osgi.OSGIAnalyzer;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -38,7 +37,7 @@ public class ToolsGraphQL {
             @GraphQLName("version") @GraphQLDescription("Version for the import package. When specified, only import packages of an exact version or a version range matching this version are retrieved. Note that this parameter does not apply on the versions of the bundles, but on the versions of the import packages") String version,
             @GraphQLName("versionMissing") @GraphQLDescription("Filter the import packages on whether their version is missing (when the flag is set to 'true') or is set (when the flag is set to 'false'). If not specified, import packages with and without version are retrieved") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean versionMissing
     ) {
-        return OSGIPackageHeaderChecker.findImportPackages(regExp, version, versionMissing);
+        return OSGIAnalyzer.findImportPackages(regExp, version, versionMissing);
     }
 
     @GraphQLField
@@ -47,7 +46,7 @@ public class ToolsGraphQL {
             @GraphQLName("RegExp") @GraphQLDescription("Regular expression for the export packages. When specified, only export packages matching this regular expression are retrieved.") String regExp,
             @GraphQLName("duplicates") @GraphQLDescription("When set to 'true', only return export packages found multiple times for the same package name. By default (or when set to 'false'), all export packages are retrieved, regardless of how many times they are exported.") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean duplicates
     ) {
-        return OSGIPackageHeaderChecker.findExportPackages(regExp, duplicates);
+        return OSGIAnalyzer.findExportPackages(regExp, duplicates);
     }
 
     @GraphQLField
@@ -57,7 +56,21 @@ public class ToolsGraphQL {
             @GraphQLName("areModules") @GraphQLDescription("Allows to filter on whether the bundles are Jahia modules or not. If the parameter is set to 'true', only bundles that are also Jahia modules are returned. If set to 'false', only bundles that are not Jahia modules are returned. By default, both Jahia modules and non Jahia modules are returned.") Boolean areModules,
             @GraphQLName("withUnsupportedDependenciesOnly") @GraphQLDescription("When set to 'true', only return bundles that have at least one dependency with an unsupported version range (to be considered supported, a version range should be open to minor upgrade based on SemVer)") @GraphQLDefaultValue(GqlUtils.SupplierFalse.class) boolean withUnsupportedDependenciesOnly
     ) {
-        return OSGIPackageHeaderChecker.findBundles(nameRegExp, areModules, withUnsupportedDependenciesOnly);
+        return OSGIAnalyzer.findBundles(nameRegExp, areModules, withUnsupportedDependenciesOnly);
     }
 
+    @GraphQLField
+    @GraphQLDescription("Will return all bundle wires matching the given package patterns. Only analyzes started Jahia modules.")
+    public FindWires findWires(
+            @GraphQLName("patterns") @GraphQLDescription("Array of regular expression patterns to match against package names. For example: ['org\\\\.springframework\\\\..*', 'javax\\\\..*']") Collection<@GraphQLNonNull String> patterns,
+            @GraphQLName("providerBundleSymbolicName") @GraphQLDescription("Optional symbolic name of the provider bundle to filter results. If specified, only wires from this provider bundle are returned. Example: 'org.apache.felix.framework'") String providerBundleSymbolicName
+    ) {
+        return OSGIAnalyzer.findWires(patterns, providerBundleSymbolicName);
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Will return all bundle wires using deprecated packages as configured via the DeprecationConfig OSGI service. Only analyzes started Jahia modules and filters by org.apache.felix.framework provider. If no deprecation patterns are configured, returns an empty result.")
+    public FindWires findDeprecatedWires() {
+        return OSGIAnalyzer.findDeprecatedWires();
+    }
 }

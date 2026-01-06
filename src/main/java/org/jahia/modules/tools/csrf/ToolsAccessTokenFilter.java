@@ -18,6 +18,8 @@ package org.jahia.modules.tools.csrf;
 import org.apache.commons.lang3.StringUtils;
 import org.jahia.bin.filters.AbstractServletFilter;
 import org.jahia.settings.SettingsBean;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -31,16 +33,23 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Component(immediate = true, service = AbstractServletFilter.class)
 public class ToolsAccessTokenFilter extends AbstractServletFilter {
     private static final String CSRF_TOKENS_ATTR = "toolAccessTokens";
     public static final String CSRF_TOKEN_ATTR = "toolAccessToken";
     private static final int MAX_TOKENS = 5000;
-    private int tokenExpiration = 20;
+    private long tokenExpiration;
 
     private static final Pattern TOOLS_REGEXP = Pattern.compile("^(/[^/]+|)/tools/.*");
     private static final String TOKEN_URI = "/token";
     private static final String TOKEN_METHOD = "POST";
     private static final String TOKEN_CONTENT_TYPE = "application/json";
+
+    @Activate
+    public void activate() {
+        setUrlPatterns(new String[]{"/modules/*"});
+        this.tokenExpiration = SettingsBean.getInstance().getLong("toolsTokenExpiration", 20L);
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -134,9 +143,5 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     @Override
     public void destroy() {
         // Nothing to destroy
-    }
-
-    public void setTokenExpiration(int tokenExpiration) {
-        this.tokenExpiration = tokenExpiration;
     }
 }
