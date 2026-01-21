@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <%@ page import="org.jahia.modules.tools.gql.admin.osgi.FindImportPackage" %>
-<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %>
+<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIAnalyzer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="title" value="OSGI Import-Package checker"/>
 <head>
@@ -50,7 +50,7 @@
 
     <c:if test="${not empty param.do}">
         <%
-            FindImportPackage result = OSGIPackageHeaderChecker.findImportPackages(request.getParameter("regexp"), request.getParameter("version"), request.getParameter("matchVersionRangeMissing") != null);
+            FindImportPackage result = OSGIAnalyzer.findImportPackages(request.getParameter("regexp"), request.getParameter("version"), request.getParameter("matchVersionRangeMissing") != null);
             pageContext.setAttribute("result", result);
         %>
 
