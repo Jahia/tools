@@ -141,7 +141,7 @@
                 <legend>Miscellaneous Tools</legend>
                 <ul>
                     <li><a href="pwdEncrypt.jsp">Password encryption</a></li>
-                    <li><a href="docConverter.jsp">Document converter</a></li>
+                    <li><a href="docConverter.jsp">Document converter</a> <i>Deprecated since Jahia 8.2.4.0</i></li>
                     <li><a href="textExtractor.jsp">Document text extractor</a></li>
                     <li><a href="wcagChecker.jsp">WCAG checker</a></li>
                     <li><a href="rewrite-status">URL rewriting rules</a></li>

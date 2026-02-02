@@ -6,6 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="title" value="Jahia Document Conversion Service"/>
+<c:set var="description" value="DEPRECATED since Jahia 8.2.4.0 - This tool will be removed in a future version"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>
 </head>
