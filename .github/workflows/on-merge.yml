@@ -77,5 +77,6 @@ jobs:
       jahia_image: jahia/jahia-ee:8
       provisioning_manifest: provisioning-manifest-build.yml
       artifact_prefix: toolse
+      testrail_project: Tools
       timeout_job: 30
       timeout_step: 20

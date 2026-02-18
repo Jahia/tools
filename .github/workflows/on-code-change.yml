@@ -56,6 +56,7 @@ jobs:
       artifact_prefix: toolse
       timeout_job: 30
       timeout_step: 20
+      testrail_project: Tools
 
   sonar-analysis:
     name: Sonar Analysis

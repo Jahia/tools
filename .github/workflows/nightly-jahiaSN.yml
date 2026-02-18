@@ -18,3 +18,4 @@ jobs:
       timeout_job: 30
       timeout_step: 20
       should_use_build_artifacts: true
+      testrail_project: Tools

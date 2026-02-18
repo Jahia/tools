@@ -30,4 +30,5 @@ jobs:
       provisioning_manifest: ${{ github.event.inputs.manifest }}
       tests_profile: ${{ github.event.inputs.config_file }}
       artifact_prefix: tools-standalone-artifacts
+      testrail_project: Tools
       should_skip_testrail: true
