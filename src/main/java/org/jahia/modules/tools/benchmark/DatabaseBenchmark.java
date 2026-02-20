@@ -27,10 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utility for benchmarking database connection latency. When a benchmark is performed by the {@link #perform()} method, it reads the list
@@ -75,6 +72,9 @@ public final class DatabaseBenchmark {
 
     private static DecimalFormat NANOS_FORMATTER = new DecimalFormat("#.##");
 
+    private static final List<String> BENCHMARK_QUERIES = Arrays.asList("ping",
+            "select count(*) from jahia_db_test");
+
     private static void appendStatValue(String label, StatValue v, StringBuilder out) {
         out.append("\t\t- ").append(label).append(": ").append(v.getMillis()).append(" ms (").append(v.getNanos())
                 .append(" ns)\n");
@@ -82,7 +82,12 @@ public final class DatabaseBenchmark {
 
     @SuppressWarnings("unchecked")
     private static List<String> getBenchmarkQueries() {
-        return (List<String>) SpringContextSingleton.getBean("jahiaToolsBenchmarkDatabaseQueries");
+        try {
+            return (List<String>) SpringContextSingleton.getBean("jahiaToolsBenchmarkDatabaseQueries");
+        } catch (Exception e) {
+            // ignore, no such bean probably
+            return BENCHMARK_QUERIES;
+        }
     }
 
     private static int getQueryExecutionCount() {

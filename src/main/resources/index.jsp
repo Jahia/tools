@@ -72,6 +72,7 @@
                 <ul>
                     <li><a href="<c:url value='/tools/osgi/console'/>">OSGi console</a></li>
                     <li><a href="importPackageChecker.jsp">OSGi Import-Package checker</a></li>
+                    <li><a href="osgiWiresAnalyzer.jsp">OSGI Java packages wires analyzer</a></li>
                     <li><a href="modules.jsp">Modules list</a></li>
                     <li><a href="jobadmin.jsp">Background job administration</a></li>
                     <li><a href="search.jsp">Search engine management</a></li>

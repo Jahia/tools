@@ -1,0 +1,16 @@
+# global default configuration
+# TODO: 1: move to jahia core, to make deprecated packages provided by jahia core diretcly
+# TODO: 2: improve syntax:
+# TODO:         - add support for provider, for example: org.eclipse.gemini is not provided by: org.apache.felix.framework, but: org.eclipse.gemini.blueprint.core
+patterns:
+  - "org\\.springframework(\\..*)?"
+  - "org\\.eclipse\\.gemini(\\..*)?"
+  - "org\\.apache\\.camel(\\..*)?"
+  - "org\\.drools(\\..*)?"
+  - "org\\.jbpm(\\..*)?"
+  - "org\\.kie(\\..*)?"
+  - "org\\.jgroups(\\..*)?"
+  - "org\\.velocity(\\..*)?"
+  - "com\\.extjs(\\..*)?"
+  - "com\\.google\\.gwt(\\..*)?"
+  - "com\\.jahia\\.ajax(\\..*)?"
