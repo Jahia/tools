@@ -57,6 +57,8 @@ jobs:
       timeout_job: 30
       timeout_step: 20
       testrail_project: Tools
+      should_use_build_artifacts: true
+      should_skip_testrail: true
 
   sonar-analysis:
     name: Sonar Analysis
