@@ -7,7 +7,6 @@
   password: ${env:NEXUS_PASSWORD}
 
 - installBundle:
-  - 'mvn:org.jahia.test/tools-test-module'
   - 'mvn:org.jahia.modules/tools'
   autoStart: true
   uninstallPreviousVersion: true
