@@ -45,28 +45,28 @@ import java.util.regex.Pattern;
 public class AssetsUsageServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(AssetsUsageServlet.class);
     private static final long serialVersionUID = 1L;
-    
+
     private static final String SEARCH_PATTERN_PARAM = "searchPattern";
     private static final String TARGET_BUNDLE_PARAM = "targetBundle";
     private static final String DEFAULT_SEARCH_PATTERN = "/assets/";
     private static final String DEFAULT_TARGET_BUNDLE = "assets";
-    
+
     private static final Pattern ADD_RESOURCES_PATTERN = Pattern.compile("<template:addResources[^>]*>.*?</template:addResources>|<template:addResources[^>]*/>");
     private static final Pattern RESOURCES_ATTR_PATTERN = Pattern.compile("resources\\s*=\\s*[\"']([^\"']*)[\"']");
     private static final Pattern TYPE_ATTR_PATTERN = Pattern.compile("type\\s*=\\s*[\"']([^\"']*)[\"']");
-    
+
     private static class ResourceUsage {
         String resourcePath;
         String type;
         List<String> usedInFiles = new ArrayList<>();
         Set<String> usedInModules = new TreeSet<>();
         boolean existsInTarget = false;
-        
+
         ResourceUsage(String resourcePath, String type) {
             this.resourcePath = resourcePath;
             this.type = type;
         }
-        
+
         void addUsage(String filePath, String moduleName) {
             if (!usedInFiles.contains(filePath)) {
                 usedInFiles.add(filePath);
@@ -75,55 +75,55 @@ public class AssetsUsageServlet extends HttpServlet {
                 usedInModules.add(moduleName);
             }
         }
-        
+
         int getUsageCount() {
             return usedInFiles.size();
         }
-        
+
         int getModuleCount() {
             return usedInModules.size();
         }
-        
+
         String getModuleNames() {
             return String.join(", ", usedInModules);
         }
-        
+
         void setExistsInTarget(boolean exists) {
             this.existsInTarget = exists;
         }
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doWork(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doWork(request, response);
     }
-    
+
     private void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession(true);
-        
+
         String searchPattern = request.getParameter(SEARCH_PATTERN_PARAM);
         if (searchPattern == null || searchPattern.trim().isEmpty()) {
             searchPattern = DEFAULT_SEARCH_PATTERN;
         }
-        
+
         String targetBundleName = request.getParameter(TARGET_BUNDLE_PARAM);
         if (targetBundleName == null || targetBundleName.trim().isEmpty()) {
             targetBundleName = DEFAULT_TARGET_BUNDLE;
         }
-        
+
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         generateHtmlOutput(out, request, response, searchPattern, targetBundleName);
     }
-    
-    private void generateHtmlOutput(PrintWriter out, HttpServletRequest request, 
-                                    HttpServletResponse response, String searchPattern, 
+
+    private void generateHtmlOutput(PrintWriter out, HttpServletRequest request,
+                                    HttpServletResponse response, String searchPattern,
                                     String targetBundleName) {
         out.println("<!DOCTYPE html>");
         out.println("<html lang=\"en\">");
@@ -172,7 +172,7 @@ public class AssetsUsageServlet extends HttpServlet {
         out.println("    </ul>");
         out.println("    </hgroup>");
         out.println("</header>");
-        
+
         // Configuration form
         out.println("<div class=\"config-form\">");
         out.println("<form method=\"GET\">");
@@ -183,9 +183,9 @@ public class AssetsUsageServlet extends HttpServlet {
         out.println("</form>");
         out.println("<p><strong>Current Settings:</strong> Searching for \"" + escapeHtml(searchPattern) + "\" in target bundle \"" + escapeHtml(targetBundleName) + "\"</p>");
         out.println("</div>");
-        
+
         displayResourceUsageStatistics(out, searchPattern, targetBundleName);
-        
+
         out.println("<footer class=\"page-footer\">");
         out.println("    <ul class=\"page-footer_bar\">");
         out.println("        <li><a href=\"" + request.getContextPath() + "/tools/index.jsp\"><span class=\"material-symbols-outlined\">home</span>Home</a></li>");
@@ -195,15 +195,15 @@ public class AssetsUsageServlet extends HttpServlet {
         out.println("</body>");
         out.println("</html>");
     }
-    
+
     private void displayResourceUsageStatistics(PrintWriter out, String searchPattern, String targetBundleName) {
         Map<String, Map<String, ResourceUsage>> moduleResources = new TreeMap<>();
         Map<String, ResourceUsage> globalResources = new TreeMap<>();
-        
+
         // Create pattern for searching - escape special regex chars but make it flexible
         String patternStr = "[\"'`]([^\"'`]*" + Pattern.quote(searchPattern) + "[^\"'`]*)[\"'`]";
         Pattern assetsReferencePattern = Pattern.compile(patternStr);
-        
+
         // Find the target bundle
         Bundle targetBundle = null;
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
@@ -212,34 +212,35 @@ public class AssetsUsageServlet extends HttpServlet {
                 break;
             }
         }
-        
+
         out.println("<h2>Scanning bundles for pattern: \"" + escapeHtml(searchPattern) + "\"</h2>");
-        
+
         // Scan all bundles for the search pattern
         for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() == Bundle.ACTIVE) {
-                scanBundleResourcesForPattern(bundle, bundle.getSymbolicName(), 
-                                             moduleResources, globalResources, 
+            if (BundleUtils.isJahiaModuleBundle(bundle)) {
+                logger.info("processing bundle " + bundle.getSymbolicName());
+                scanBundleResourcesForPattern(bundle, bundle.getSymbolicName(),
+                                             moduleResources, globalResources,
                                              assetsReferencePattern, searchPattern);
                 // Also scan for template:addResources tags
-                scanBundleForTemplateResources(bundle, bundle.getSymbolicName(), 
+                scanBundleForTemplateResources(bundle, bundle.getSymbolicName(),
                                               moduleResources, globalResources);
             }
         }
-        
+
         // Remove modules without resources
         moduleResources.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-        
+
         if (globalResources.isEmpty()) {
             out.println("<p>No resources found matching pattern \"" + escapeHtml(searchPattern) + "\".</p>");
             return;
         }
-        
+
         // Check which resources exist in target bundle - keep only those
         if (targetBundle != null) {
             Map<String, ResourceUsage> filteredGlobal = new TreeMap<>();
             Map<String, Map<String, ResourceUsage>> filteredModule = new TreeMap<>();
-            
+
             for (Map.Entry<String, ResourceUsage> entry : globalResources.entrySet()) {
                 ResourceUsage resource = entry.getValue();
                 String[] pathsToCheck = {
@@ -251,12 +252,12 @@ public class AssetsUsageServlet extends HttpServlet {
                     "/images/" + resource.resourcePath,
                     "/icons/" + resource.resourcePath
                 };
-                
+
                 for (String path : pathsToCheck) {
                     if (targetBundle.getEntry(path) != null) {
                         resource.setExistsInTarget(true);
                         filteredGlobal.put(entry.getKey(), resource);
-                        
+
                         // Keep module entries for this resource
                         for (Map.Entry<String, Map<String, ResourceUsage>> moduleEntry : moduleResources.entrySet()) {
                             if (moduleEntry.getValue().containsKey(entry.getKey())) {
@@ -268,21 +269,21 @@ public class AssetsUsageServlet extends HttpServlet {
                     }
                 }
             }
-            
+
             globalResources = filteredGlobal;
             moduleResources = filteredModule;
         }
-        
+
         if (globalResources.isEmpty()) {
             out.println("<p>No resources found in target bundle \"" + escapeHtml(targetBundleName) + "\".</p>");
             return;
         }
-        
+
         int totalResources = globalResources.size();
         int totalUsages = globalResources.values().stream().mapToInt(ResourceUsage::getUsageCount).sum();
-        
+
         out.println("<p>Found <strong>" + totalResources + "</strong> unique resources in \"" + escapeHtml(targetBundleName) + "\" bundle with <strong>" + totalUsages + "</strong> total usages across <strong>" + moduleResources.size() + "</strong> modules</p>");
-        
+
         // Global summary
         out.println("<h2>Global Resources Summary (Bundle: " + escapeHtml(targetBundleName) + ")</h2>");
         out.println("<div class=\"module-section\">");
@@ -291,10 +292,10 @@ public class AssetsUsageServlet extends HttpServlet {
         out.println("<tr><th>Type</th><th>Resource Path</th><th>Total Usage Count</th><th>Modules Using</th></tr>");
         out.println("</thead>");
         out.println("<tbody>");
-        
+
         List<ResourceUsage> sortedGlobal = new ArrayList<>(globalResources.values());
         sortedGlobal.sort((a, b) -> Integer.compare(b.getUsageCount(), a.getUsageCount()));
-        
+
         for (ResourceUsage resource : sortedGlobal) {
             out.println("<tr>");
             out.println("<td>" + resource.type + "</td>");
@@ -303,16 +304,16 @@ public class AssetsUsageServlet extends HttpServlet {
             out.println("<td class=\"module-list\">" + resource.getModuleCount() + " modules: " + escapeHtml(resource.getModuleNames()) + "</td>");
             out.println("</tr>");
         }
-        
+
         out.println("</tbody></table></div>");
-        
+
         // Per-module breakdown
         out.println("<h2>Per-Module Breakdown</h2>");
-        
+
         for (Map.Entry<String, Map<String, ResourceUsage>> moduleEntry : moduleResources.entrySet()) {
             String moduleName = moduleEntry.getKey();
             Map<String, ResourceUsage> resources = moduleEntry.getValue();
-            
+
             out.println("<div class=\"module-section\">");
             out.println("<div class=\"module-name\">" + moduleName + "</div>");
             out.println("<table class=\"resource-table\">");
@@ -320,10 +321,10 @@ public class AssetsUsageServlet extends HttpServlet {
             out.println("<tr><th>Type</th><th>Resource Path</th><th>Usage Count</th><th>Used in Files</th></tr>");
             out.println("</thead>");
             out.println("<tbody>");
-            
+
             List<ResourceUsage> sortedResources = new ArrayList<>(resources.values());
             sortedResources.sort((a, b) -> Integer.compare(b.getUsageCount(), a.getUsageCount()));
-            
+
             for (ResourceUsage resource : sortedResources) {
                 out.println("<tr>");
                 out.println("<td>" + resource.type + "</td>");
@@ -337,11 +338,11 @@ public class AssetsUsageServlet extends HttpServlet {
                 out.println("</td>");
                 out.println("</tr>");
             }
-            
+
             out.println("</tbody></table></div>");
         }
     }
-    
+
     private void scanBundleResourcesForPattern(Bundle bundle, String moduleName,
                                               Map<String, Map<String, ResourceUsage>> moduleResources,
                                               Map<String, ResourceUsage> globalResources,
@@ -350,16 +351,16 @@ public class AssetsUsageServlet extends HttpServlet {
         if (entries == null) {
             return;
         }
-        
+
         while (entries.hasMoreElements()) {
             URL url = (URL) entries.nextElement();
             String path = url.getPath();
-            
+
             // Skip directories and binary files
             if (path.endsWith("/") || path.matches(".*\\.(class|jar|zip|png|jpg|jpeg|gif|ico|webp|woff|woff2|ttf|eot|pdf|mp4|mp3)$")) {
                 continue;
             }
-            
+
             // Read file and look for pattern
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 String line;
@@ -369,7 +370,7 @@ public class AssetsUsageServlet extends HttpServlet {
                     Matcher matcher = searchPattern.matcher(line);
                     while (matcher.find()) {
                         String assetUrl = matcher.group(1);
-                        
+
                         // Extract the resource path after the search pattern
                         String resourcePath = assetUrl;
                         if (resourcePath.contains("/modules" + patternStr)) {
@@ -379,29 +380,29 @@ public class AssetsUsageServlet extends HttpServlet {
                         } else {
                             continue;
                         }
-                        
+
                         // Clean up query params and fragments
                         int queryIdx = resourcePath.indexOf('?');
                         if (queryIdx != -1) resourcePath = resourcePath.substring(0, queryIdx);
                         int hashIdx = resourcePath.indexOf('#');
                         if (hashIdx != -1) resourcePath = resourcePath.substring(0, hashIdx);
-                        
+
                         if (resourcePath.isEmpty()) continue;
-                        
+
                         // Determine type from extension
                         String type = "asset";
                         if (resourcePath.endsWith(".css")) type = "css";
                         else if (resourcePath.endsWith(".js")) type = "javascript";
                         else if (resourcePath.matches(".*\\.(png|jpg|jpeg|gif|svg|ico|webp)$")) type = "image";
-                        
+
                         String key = type + ":" + resourcePath;
                         String filePath = path + ":" + lineNum;
-                        
+
                         // Module-specific tracking
                         moduleResources.putIfAbsent(moduleName, new TreeMap<>());
                         moduleResources.get(moduleName).putIfAbsent(key, new ResourceUsage(resourcePath, type));
                         moduleResources.get(moduleName).get(key).addUsage(filePath, moduleName);
-                        
+
                         // Global tracking
                         globalResources.putIfAbsent(key, new ResourceUsage(resourcePath, type));
                         globalResources.get(key).addUsage(filePath, moduleName);
@@ -413,7 +414,7 @@ public class AssetsUsageServlet extends HttpServlet {
             }
         }
     }
-    
+
     private void scanBundleForTemplateResources(Bundle bundle, String moduleName,
                                                Map<String, Map<String, ResourceUsage>> moduleResources,
                                                Map<String, ResourceUsage> globalResources) {
@@ -421,11 +422,11 @@ public class AssetsUsageServlet extends HttpServlet {
         if (entries == null) {
             return;
         }
-        
+
         while (entries.hasMoreElements()) {
             URL url = (URL) entries.nextElement();
             String path = url.getPath();
-            
+
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
                 StringBuilder content = new StringBuilder();
                 String line;
@@ -434,34 +435,34 @@ public class AssetsUsageServlet extends HttpServlet {
                     lineNum++;
                     content.append(line).append("\n");
                 }
-                
+
                 String contentStr = content.toString();
                 Matcher tagMatcher = ADD_RESOURCES_PATTERN.matcher(contentStr);
-                
+
                 while (tagMatcher.find()) {
                     String tag = tagMatcher.group();
-                    
+
                     // Extract type attribute
                     Matcher typeMatcher = TYPE_ATTR_PATTERN.matcher(tag);
                     String type = typeMatcher.find() ? typeMatcher.group(1) : "unknown";
-                    
+
                     // Extract resources attribute
                     Matcher resourcesMatcher = RESOURCES_ATTR_PATTERN.matcher(tag);
                     if (resourcesMatcher.find()) {
                         String resourcesAttr = resourcesMatcher.group(1);
                         String[] resourceList = resourcesAttr.split("[,;]");
-                        
+
                         for (String resource : resourceList) {
                             resource = resource.trim();
                             if (!resource.isEmpty()) {
                                 String key = type + ":" + resource;
                                 String filePath = path + ":" + lineNum;
-                                
+
                                 // Module-specific tracking
                                 moduleResources.putIfAbsent(moduleName, new TreeMap<>());
                                 moduleResources.get(moduleName).putIfAbsent(key, new ResourceUsage(resource, type));
                                 moduleResources.get(moduleName).get(key).addUsage(filePath, moduleName);
-                                
+
                                 // Global tracking
                                 globalResources.putIfAbsent(key, new ResourceUsage(resource, type));
                                 globalResources.get(key).addUsage(filePath, moduleName);
@@ -474,7 +475,7 @@ public class AssetsUsageServlet extends HttpServlet {
             }
         }
     }
-    
+
     private String escapeHtml(String text) {
         if (text == null) return "";
         return text.replace("&", "&amp;")
