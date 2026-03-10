@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Service tracker for the HttpService to register the {@link JspPrecompileServlet}.
+ * Service tracker for the HttpService to register servlets.
  * 
  * @author Sergiy Shyrkov
  */
@@ -43,6 +43,7 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
 
         try {
             httpService.registerServlet("/tools/precompileServlet", new JspPrecompileServlet(), null, null);
+            httpService.registerServlet("/tools/assetsUsage", new AssetsUsageServlet(), null, null);
         } catch (Exception e) {
             logger.error("Cannot register Servlet",e);
         }
@@ -53,6 +54,7 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
     @Override
     public void removedService(ServiceReference<HttpService> reference, HttpService service) {
         service.unregister("/tools/precompileServlet");
+        service.unregister("/tools/assetsUsage");
 
         super.removedService(reference, service);
     }

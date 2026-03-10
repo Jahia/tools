@@ -55,6 +55,7 @@
                     <li><a href="jcrSessions.jsp">JCR sessions information</a></li>
                     <li><a href="maintenance.jsp">System maintenance</a></li>
                     <li><a href="precompileServlet">JSP pre-compilation</a></li>
+                    <li><a href="assetsUsage">Assets usage tracker</a></li>
                     <li><a href="benchmarks.jsp">System benchmarks</a></li>
                     <li><a href="karaf.jsp">Karaf command line</a></li>
                     <li><a href="support.jsp">Export support information</a></li>
