@@ -1,9 +1,9 @@
-/target/
+**/target/
 /.classpath
 /.project
 /.settings
 /.idea
 *.iml
-node
-node_modules
-/src/main/resources/javascript/apps/
+impl/node/
+impl/node_modules/
+impl/src/main/resources/javascript/apps/
