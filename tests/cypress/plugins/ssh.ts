@@ -10,9 +10,10 @@ interface connection {
 const sshCommand = (commands: Array<string>, connection: connection) => {
     return new Promise((resolve, reject) => {
         const ssh = new NodeSSH();
-        console.info('[SSH] connection to:', connection.hostname);
-        console.info('[SSH] commands:', commands);
-        console.info('[SSH] ', connection);
+        console.log('[SSH] connection to:', connection.hostname);
+        console.log('[SSH] connection username:', connection.username);
+        console.log('[SSH] commands:', commands);
+        console.log('[SSH] ', connection);
         ssh.connect({
             host: connection.hostname,
             port: connection.port,
@@ -26,11 +27,13 @@ const sshCommand = (commands: Array<string>, connection: connection) => {
                     })
                     .catch(reason => {
                         console.error('[SSH] Failed to execute commands: ', commands);
+                        console.error('[SSH] Reason: ', reason);
                         reject(reason);
                     });
             })
             .catch(reason => {
                 console.error('[SSH] Failed to execute commands: ', commands);
+                console.error('[SSH] Reason: ', reason);
                 reject(reason);
             });
     });

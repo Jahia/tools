@@ -1,0 +1,19 @@
+query($providerBundleSymbolicName: String, $packageRegexes: [String!]) {
+    admin {
+        tools {
+            packageWires(providerBundleSymbolicName: $providerBundleSymbolicName, packageRegexes: $packageRegexes) {
+                requirerBundle {
+                    id
+                    symbolicName
+                    name
+                }
+                providerBundle {
+                    id
+                    symbolicName
+                    name
+                }
+                packageName
+            }
+        }
+    }
+}
