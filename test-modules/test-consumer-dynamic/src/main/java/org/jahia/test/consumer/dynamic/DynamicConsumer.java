@@ -28,7 +28,7 @@ public class DynamicConsumer {
             Class.forName("org.jahia.test.core.util.CoreUtils");
             Class.forName("org.jahia.test.util.DateUtils");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Dynamic class not available: " + e.getMessage(), e);
+            throw new IllegalStateException("Dynamic class not available: " + e.getMessage(), e);
         }
         logger.info("Dynamic consumer activated with dynamic imports");
     }

@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class IOUtils {
+    private IOUtils() {
+        // utility class
+    }
+
     public static void closeQuietly(InputStream is) {
         if (is != null) {
             try {
@@ -14,4 +18,3 @@ public class IOUtils {
         }
     }
 }
-
