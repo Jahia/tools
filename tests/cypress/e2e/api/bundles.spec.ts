@@ -97,7 +97,6 @@ describe('Dependencies tool test', () => {
 
         it('Test finding module that prevent minor upgrades', () => {
             getBundles({nameRegExp: 'module-dep.*'}).should(result => {
-                console.log('result', result);
                 expect(result).to.have.property('data');
                 expect(result.data).to.have.property('admin');
                 expect(result.data.admin).to.have.property('tools');
