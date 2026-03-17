@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2002-2022 Jahia Solutions Group SA. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jahia.modules</groupId>
+        <artifactId>tools-root</artifactId>
+        <version>5.3.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tools</artifactId>
+    <packaging>bundle</packaging>
+    <name>Support Tools</name>
+    <description>Digital Experience Manager Support Tools</description>
+
+    <properties>
+        <jahia-depends />
+        <jahia-module-type>system</jahia-module-type>
+        <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
+        <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
+        <jahia-module-signature>MC0CFBvEKG88XGh93PXR6yfgEw0B+/efAhUAh95OyMJCPR3UgEA0TFIE4DHpYIs=</jahia-module-signature>
+        <jahia.plugin.version>6.10</jahia.plugin.version>
+        <yarn.arguments>build:production</yarn.arguments>
+        <sonar.sources>src/javascript</sonar.sources>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${jahia-bom.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- prevent transitive dependencies to be used in lieu of the declared dependencies -->
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+       <dependency>
+            <groupId>org.apache.karaf.bundle</groupId>
+            <artifactId>org.apache.karaf.bundle.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.annotation</artifactId>
+            <version>${osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.config</groupId>
+            <artifactId>org.apache.karaf.config.core</artifactId>
+            <version>${karaf.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>${osgi.compendium.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>graphql-dxm-provider</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Embed dependencies -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.utils</artifactId>
+            <version>${felix.utils.version}</version>
+        </dependency>
+
+        <!-- dependencies provided by jahia core -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>${felix.framework.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-core</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-data</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-jackrabbit-api</artifactId>
+            <version>${oak-jackrabbit-api.version.implemented}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>${drools.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- dependencies provided by jahia core with version matching jahia parent version-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.25.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2-jahia</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.14.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-extender</artifactId>
+            <version>${pax.swissbox.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoredUnusedDeclaredDependencies>
+                                <!-- declared in the parent pom, hence inherited, but not used: -->
+                                <ignoredUnusedDeclaredDependency>org.springframework:spring-webmvc</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>javax.servlet:jstl</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.jahia.server:jahia-taglib</ignoredUnusedDeclaredDependency>
+                                <!-- declared in project and required: -->
+                                <ignoredUnusedDeclaredDependency>org.osgi:osgi.annotation</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.felix:org.apache.felix.utils</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.commons:commons-text</ignoredUnusedDeclaredDependency>
+                            </ignoredUnusedDeclaredDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.jahia.modules.tools.Activator</Bundle-Activator>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <Import-Package>
+                            javax.jcr,
+                            javax.jcr.lock,
+                            javax.jcr.security,
+                            javax.management,
+                            net.sf.ehcache.statistics,
+                            net.sf.ehcache.store,
+                            net.sf.ehcache.terracotta,
+                            org.apache.commons.io.file,
+                            org.apache.commons.lang;version="[2.6,3)",
+                            org.apache.commons.lang.math;version="[2.6,3)",
+                            org.apache.commons.lang.reflect;version="[2.6,3)",
+                            org.apache.commons.lang.time;version="[2.6,3)",
+                            org.apache.jackrabbit.api,
+                            org.apache.jackrabbit.commons,
+                            org.apache.jackrabbit.core.stats,
+                            org.apache.jackrabbit.stats,
+                            org.apache.logging.log4j,
+                            org.jahia.tools,
+                            org.quartz.utils,
+                            org.springframework.beans,
+                            org.springframework.beans.factory,
+                            org.springframework.context,
+                            org.springframework.core,
+                            org.springframework.core.env,
+                            org.springframework.core.io,
+                            org.springframework.core.io.support,
+                            org.springframework.web.context,
+                            graphql.annotations.annotationTypes;version="[7.2,99)";resolution:=optional,
+                            graphql.schema;version="[13.0,22)";resolution:=optional,
+                            ${jahia.plugin.projectPackageImport},
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.jahia.modules.tools.probe
+                        </Export-Package>
+                        <_dsannotations>
+                            org.jahia.modules.tools.HttpTestFilter,
+                            org.jahia.modules.tools.clustering.*,
+                            org.jahia.modules.tools.probe.impl.*,
+                            org.jahia.modules.tools.probe.jcr.impl.*,
+                            org.jahia.modules.tools.probe.properties.impl.*,
+                            org.jahia.modules.tools.probe.runtime.impl.*,
+                            org.jahia.modules.tools.probe.statistics.impl.*,
+                            org.jahia.modules.tools.modules.*,
+                            org.jahia.modules.tools.karaf.*,
+                            org.jahia.modules.tools.gql.*
+                        </_dsannotations>
+                        <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.13.4</version>
+                <executions>
+                    <execution>
+                        <id>npm install node and yarn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v18.18.0</nodeVersion>
+                            <yarnVersion>v1.22.19</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>yarn post-install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>${yarn.arguments}</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>sync-pom</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>sync-pom</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.7.9</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <projectType>library</projectType>
+                    <schemaVersion>1.4</schemaVersion>
+                    <includeBomSerialNumber>true</includeBomSerialNumber>
+                    <includeCompileScope>true</includeCompileScope>
+                    <includeProvidedScope>false</includeProvidedScope>
+                    <includeRuntimeScope>true</includeRuntimeScope>
+                    <includeSystemScope>false</includeSystemScope>
+                    <includeTestScope>false</includeTestScope>
+                    <includeLicenseText>false</includeLicenseText>
+                    <outputReactorProjects>true</outputReactorProjects>
+                    <outputFormat>json</outputFormat>
+                    <outputName>java-bom.cdx</outputName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <yarn.arguments>build</yarn.arguments>
+                <cyclonedx.skip>true</cyclonedx.skip>
+            </properties>
+        </profile>
+    </profiles>
+</project>

@@ -1,14 +1,16 @@
-version: '3.6'
 services:
     jahia:
         image: '${JAHIA_IMAGE}'
         container_name: jahia
         environment:
-            - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}        
+            - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}
             - MAX_RAM_PERCENTAGE=95
             - OPERATING_MODE=${OPERATING_MODE}
+            - JPDA=true
         ports:
+            - '8000:8000'
             - '8080:8080'
+            - '8101:8101'
         extra_hosts:
             - jahia:127.0.0.1
         networks:
