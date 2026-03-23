@@ -80,6 +80,7 @@
                     <li><a href="workflows.jsp">Workflow monitoring</a></li>
                     <li><a href="rules.jsp">Business rules</a></li>
                     <li><a href="provisioning.jsp">Run provisioning script</a></li>
+                    <li><a href="/cms/adminframe/default/en/settings.manageModules.html">Module management UI</a></li>
                 </ul>
             </fieldset>
             <% pageContext.setAttribute("moduleTools", ModuleToolsHelper.getInstance().getTools()); %>
