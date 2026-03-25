@@ -99,6 +99,12 @@
             <version>${graphql-java-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>${graphql-java.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Embed dependencies -->
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -107,6 +113,18 @@
         </dependency>
 
         <!-- dependencies provided by jahia core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.osgi.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
@@ -231,6 +249,9 @@
                                 <ignoredUnusedDeclaredDependency>org.osgi:osgi.annotation</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.apache.felix:org.apache.felix.utils</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.apache.commons:commons-text</ignoredUnusedDeclaredDependency>
+                                <!-- used only in JSPs: -->
+                                <ignoredUnusedDeclaredDependency>com.fasterxml.jackson.core:jackson-core</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>com.fasterxml.jackson.core:jackson-databind</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
@@ -290,7 +311,8 @@
                             org.jahia.modules.tools.probe.statistics.impl.*,
                             org.jahia.modules.tools.modules.*,
                             org.jahia.modules.tools.karaf.*,
-                            org.jahia.modules.tools.gql.*
+                            org.jahia.modules.tools.gql.*,
+                            org.jahia.modules.tools.config.*
                         </_dsannotations>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                     </instructions>

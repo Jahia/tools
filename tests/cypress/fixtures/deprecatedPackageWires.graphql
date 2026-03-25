@@ -1,0 +1,19 @@
+query {
+    admin {
+        tools {
+            deprecatedPackageWires {
+                requirerBundle {
+                    id
+                    symbolicName
+                    name
+                }
+                providerBundle {
+                    id
+                    symbolicName
+                    name
+                }
+                packageName
+            }
+        }
+    }
+}
