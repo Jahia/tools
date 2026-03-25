@@ -44,6 +44,7 @@
 
     <modules>
         <module>impl</module>
+        <module>test-modules</module>
     </modules>
 
     <repositories>
