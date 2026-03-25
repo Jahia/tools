@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public final class DatabaseBenchmark {
      * Holds the query execution statistics.
      */
     public static class StatValue {
-        private double value;
+        private final double value;
 
         StatValue(double value) {
             this.value = value;
@@ -71,9 +72,12 @@ public final class DatabaseBenchmark {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseBenchmark.class);
 
-    private static DecimalFormat MILLIS_FORMATTER = new DecimalFormat("#.###");
+    private static final DecimalFormat MILLIS_FORMATTER = new DecimalFormat("#.###");
 
-    private static DecimalFormat NANOS_FORMATTER = new DecimalFormat("#.##");
+    private static final DecimalFormat NANOS_FORMATTER = new DecimalFormat("#.##");
+
+    private static final List<String> BENCHMARK_QUERIES = Arrays.asList("ping",
+            "select count(*) from jahia_db_test");
 
     private static void appendStatValue(String label, StatValue v, StringBuilder out) {
         out.append("\t\t- ").append(label).append(": ").append(v.getMillis()).append(" ms (").append(v.getNanos())
@@ -82,11 +86,16 @@ public final class DatabaseBenchmark {
 
     @SuppressWarnings("unchecked")
     private static List<String> getBenchmarkQueries() {
-        return (List<String>) SpringContextSingleton.getBean("jahiaToolsBenchmarkDatabaseQueries");
+        try {
+            return (List<String>) SpringContextSingleton.getBean("jahiaToolsBenchmarkDatabaseQueries");
+        } catch (Exception e) {
+            // ignore, no such bean probably
+            return BENCHMARK_QUERIES;
+        }
     }
 
     private static int getQueryExecutionCount() {
-        return Integer.valueOf(SettingsBean.getInstance().getPropertiesFile()
+        return Integer.parseInt(SettingsBean.getInstance().getPropertiesFile()
                 .getProperty("jahiaTools.benchmarkDatabase.queryExecutionCount", "100"));
     }
 
