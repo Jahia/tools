@@ -144,9 +144,4 @@ public class ToolsAccessTokenFilter extends AbstractServletFilter {
     public void destroy() {
         // Nothing to destroy
     }
-
-    @Deprecated(since = "5.3.0", forRemoval = true)
-    public void setTokenExpiration(int tokenExpiration) {
-        // kept for backward compatibility, was used for Spring injection
-    }
 }
