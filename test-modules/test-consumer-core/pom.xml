@@ -48,7 +48,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.jahia.test.consumer.core</Bundle-SymbolicName>
-                        <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Import-Package>
                             org.jahia.test.core,
                             org.jahia.test.core.api

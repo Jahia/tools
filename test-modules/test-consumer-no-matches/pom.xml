@@ -48,7 +48,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.jahia.test.consumer.nomatches</Bundle-SymbolicName>
-                        <Jahia-Module-Type>module</Jahia-Module-Type>
                         <Import-Package>
                             org.jahia.test.other
                         </Import-Package>

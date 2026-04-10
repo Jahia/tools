@@ -7,6 +7,16 @@
   password: ${env:NEXUS_PASSWORD}
 
 - installBundle:
-  - 'mvn:org.jahia.modules/tools'
+    - 'mvn:org.jahia.modules/tools'
+    - 'mvn:org.jahia.test/test-core-lib'
+    - 'mvn:org.jahia.test/test-util-lib'
+    - 'mvn:org.jahia.test/test-other-lib'
+    - 'mvn:org.jahia.test/test-consumer-core'
+    - 'mvn:org.jahia.test/test-consumer-util'
+    - 'mvn:org.jahia.test/test-consumer-mixed'
+    - 'mvn:org.jahia.test/test-consumer-dynamic'
+    - 'mvn:org.jahia.test/test-consumer-optional'
+    - 'mvn:org.jahia.test/test-consumer-no-matches'
+    - 'mvn:org.jahia.test/test-consumer-stopped'
   autoStart: true
   uninstallPreviousVersion: true
