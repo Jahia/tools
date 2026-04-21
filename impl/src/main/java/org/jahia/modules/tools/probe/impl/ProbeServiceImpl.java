@@ -16,7 +16,7 @@
 package org.jahia.modules.tools.probe.impl;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.modules.tools.probe.Probe;
 import org.jahia.modules.tools.probe.ProbeService;
