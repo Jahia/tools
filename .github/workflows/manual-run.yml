@@ -26,6 +26,7 @@ jobs:
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-integration-tests.yml@v2
     with:
       module_id: tools
+      module_branch: ${{ github.ref }}
       jahia_image: ${{ github.event.inputs.jahia_image }}
       provisioning_manifest: ${{ github.event.inputs.manifest }}
       tests_profile: ${{ github.event.inputs.config_file }}
