@@ -77,6 +77,7 @@
                     <li><a href="jobadmin.jsp">Background job administration</a></li>
                     <li><a href="search.jsp">Search engine management</a></li>
                     <li><a href="dbQuery.jsp">DB query tool</a></li>
+                    <li><a href="userPermissions.jsp">User permissions inspector</a></li>
                     <li><a href="groovyConsole.jsp">Groovy console</a></li>
                     <li><a href="workflows.jsp">Workflow monitoring</a></li>
                     <li><a href="rules.jsp">Business rules</a></li>
