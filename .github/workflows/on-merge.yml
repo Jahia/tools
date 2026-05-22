@@ -74,6 +74,7 @@ jobs:
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-integration-tests.yml@v2
     with:
       module_id: tools
+      module_branch: ${{ github.ref }}
       jahia_image: jahia/jahia-ee:8
       provisioning_manifest: provisioning-manifest-build.yml
       incident_service: tools-JahiaRL
