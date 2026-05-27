@@ -65,7 +65,6 @@
         <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
                onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
                title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
-        <li><a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">preview</span>${param.viewContent ? 'Hide content preview' : 'Preview content'}</a></li>
     </c:set>
     <%@ include file="../commons/header.jspf" %>
 
