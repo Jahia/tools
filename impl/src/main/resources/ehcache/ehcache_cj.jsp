@@ -65,7 +65,6 @@
         <li><a href="?flush=true&toolAccessToken=${toolAccessToken}"
                onclick="return confirm('This will flush the content of the cache. Would you like to continue?')"
                title="flush the content of the module output cache"><span class="material-symbols-outlined">recycling</span>Flush</a></li>
-        <li><a href="?viewContent=${param.viewContent ? 'false' : 'true'}&toolAccessToken=${toolAccessToken}"><span class="material-symbols-outlined">preview</span>${param.viewContent ? 'Hide content preview' : 'Preview content'}</a></li>
     </c:set>
     <%@ include file="../commons/header.jspf" %>
 
@@ -109,25 +108,20 @@
                         cacheSize += content != null ? content.length() : 0;
                     %>
                     <td>
-                        <c:if test="${param.viewContent}" var="viewContent">
-                            <%= content %>
-                        </c:if>
-                        <c:if test="${not viewContent}">
-                            <div style="text-align: center;">
-                                <c:url var="detailsUrl" value="ehcache_cj.jsp">
-                                    <c:param name="key" value="${key}"/>
-                                    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
-                                </c:url>
-                                <c:url var="flushUrl" value="ehcache_cj.jsp">
-                                    <c:param name="flushkey" value="${key}"/>
-                                    <c:param name="toolAccessToken" value="${toolAccessToken}"/>
-                                </c:url>
-                                <a href="${detailsUrl}" target="_blank">view</a>
-                                <a href="${flushUrl}">flush</a>
-                                <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ", "&nbsp;") %>
-                                ]<br/>
-                            </div>
-                        </c:if>
+                        <div style="text-align: center;">
+                            <c:url var="detailsUrl" value="ehcache_cj.jsp">
+                                <c:param name="key" value="${key}"/>
+                                <c:param name="toolAccessToken" value="${toolAccessToken}"/>
+                            </c:url>
+                            <c:url var="flushUrl" value="ehcache_cj.jsp">
+                                <c:param name="flushkey" value="${key}"/>
+                                <c:param name="toolAccessToken" value="${toolAccessToken}"/>
+                            </c:url>
+                            <a href="${detailsUrl}" target="_blank">view</a>
+                            <a href="${flushUrl}">flush</a>
+                            <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ", "&nbsp;") %>
+                            ]<br/>
+                        </div>
                     </td>
                     <%} else { %>
                     <td>empty</td>
