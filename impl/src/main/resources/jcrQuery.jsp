@@ -361,8 +361,8 @@
                             <li>
                                 <a title="Open in JCR Browser"
                                    href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true&toolAccessToken=${toolAccessToken}'/>"
-                                   target="_blank"><strong>${node.name}</strong></a>
-                                <strong>${node.name}</strong>
+                                   target="_blank"><strong>${fn:escapeXml(node.name)}</strong></a>
+                                <strong>${fn:escapeXml(node.name)}</strong>
                                 <c:forEach items="${node.mixinNodeTypes}" var="mixin">
                                     ${mixin.name}
                                 </c:forEach>
@@ -382,7 +382,7 @@
                                     %>
                                     <a title="Open in JCR Browser"
                                        href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&showJCRNodes=true&toolAccessToken=${toolAccessToken}'/>"
-                                       target="_blank"><strong>${node.name}</strong></a>
+                                       target="_blank"><strong>${fn:escapeXml(node.name)}</strong></a>
                                     <c:forEach items="${node.mixinNodeTypes}" var="mixin">
                                         ${mixin.name}
                                     </c:forEach>
@@ -409,7 +409,7 @@
                                    target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16"
                                                         height="16" alt="open" title="Open in Repository Explorer"></a>
                                 <c:if test="${showActions}">
-                                    &nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url
+                                    &nbsp;<a href="#delete" onclick='var nodeName="${fn:escapeXml(functions:escapeJavaScript(node.name))}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url
                                         value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
                                 </c:if>
                                 <br/>
@@ -453,7 +453,7 @@
                                        target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16"
                                                             height="16" alt="open" title="Open in Repository Explorer"></a>
                                     <c:if test="${showActions}">
-                                        &nbsp;<a href="#delete" onclick='var nodeName="${node.name}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url
+                                        &nbsp;<a href="#delete" onclick='var nodeName="${fn:escapeXml(functions:escapeJavaScript(node.name))}"; if (!confirm("You are about to delete the node \"" + nodeName + "\" with all child nodes. Continue?")) return false; go("action", "delete", "target", "${node.identifier}"); return false;' title="Delete"><img src="<c:url
                                             value='/icons/delete.png'/>" height="16" width="16" title="Delete" border="0"/></a>
                                     </c:if>
                                     <br/>
