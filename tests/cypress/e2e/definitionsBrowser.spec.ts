@@ -137,20 +137,14 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
         checkNodeDoesNotExist(`/sites/${SITE_KEY}/testNode`);
         checkNodeExists(`/sites/${SITE_KEY}/otherNode`);
     });
-    it('a node type deleted from the browser can no longer be instantiated at JCR level (issue #233)', () => {
+    it('a node type deleted from the browser can no longer be instantiated (issue #233)', () => {
         // GIVEN:
+        // The beforeEach() above already created a node of toolstestwithdefinitionscnd:testComponent,
+        // so the type is instantiable at this point.
         // Going to the list of definitions:
         cy.login();
         cy.visit('/modules/tools/definitionsBrowser.jsp');
         cy.get(testComponentSelector).should('be.visible');
-        // While the node type exists, it can be instantiated through a JCR session:
-        cy.executeGroovy('groovy/createNodeOfType.groovy', {
-            SITE_KEY,
-            NODE_NAME: 'issue233Before',
-            NODE_TYPE: 'toolstestwithdefinitionscnd:testComponent'
-        }).then(result => {
-            expect(result).to.eq('CREATED');
-        });
 
         // WHEN:
         // deleting the component (node type):
@@ -158,14 +152,18 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
         cy.get(testComponentSelector).should('not.exist');
 
         // THEN:
-        // instantiating the deleted node type through a JCR session now fails,
-        // instead of silently creating an orphan node:
-        cy.executeGroovy('groovy/createNodeOfType.groovy', {
-            SITE_KEY,
-            NODE_NAME: 'issue233After',
-            NODE_TYPE: 'toolstestwithdefinitionscnd:testComponent'
-        }).then(result => {
-            expect(result).to.contain('NoSuchNodeTypeException');
+        // creating a node of the deleted type now fails instead of silently creating an orphan node:
+        addNode(
+            {
+                parentPathOrId: `/sites/${SITE_KEY}`,
+                name: 'issue233Node',
+                primaryNodeType: 'toolstestwithdefinitionscnd:testComponent',
+                properties: [{name: 'testProp', value: 'sample'}]
+            },
+            {errorPolicy: 'all'}
+        ).should(response => {
+            expect(response.errors).to.exist;
+            expect(response.errors[0].message).to.contain('NoSuchNodeTypeException');
         });
     });
     it('Should remove nodetypes when definitions are reloaded', () => {
