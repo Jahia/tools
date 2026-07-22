@@ -137,6 +137,37 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
         checkNodeDoesNotExist(`/sites/${SITE_KEY}/testNode`);
         checkNodeExists(`/sites/${SITE_KEY}/otherNode`);
     });
+    it('a node type deleted from the browser can no longer be instantiated at JCR level (issue #233)', () => {
+        // GIVEN:
+        // Going to the list of definitions:
+        cy.login();
+        cy.visit('/modules/tools/definitionsBrowser.jsp');
+        cy.get(testComponentSelector).should('be.visible');
+        // While the node type exists, it can be instantiated through a JCR session:
+        cy.executeGroovy('groovy/createNodeOfType.groovy', {
+            SITE_KEY,
+            NODE_NAME: 'issue233Before',
+            NODE_TYPE: 'toolstestwithdefinitionscnd:testComponent'
+        }).then(result => {
+            expect(result).to.eq('CREATED');
+        });
+
+        // WHEN:
+        // deleting the component (node type):
+        cy.get(testComponentSelector).siblings('a[href="#delete"][class="delete-nodetype"]').click();
+        cy.get(testComponentSelector).should('not.exist');
+
+        // THEN:
+        // instantiating the deleted node type through a JCR session now fails,
+        // instead of silently creating an orphan node:
+        cy.executeGroovy('groovy/createNodeOfType.groovy', {
+            SITE_KEY,
+            NODE_NAME: 'issue233After',
+            NODE_TYPE: 'toolstestwithdefinitionscnd:testComponent'
+        }).then(result => {
+            expect(result).to.contain('NoSuchNodeTypeException');
+        });
+    });
     it('Should remove nodetypes when definitions are reloaded', () => {
         // GIVEN
         // Going to the list of definitions:
