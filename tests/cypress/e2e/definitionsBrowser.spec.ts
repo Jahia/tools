@@ -7,6 +7,7 @@ const SITE_KEY = 'testSite';
 const testComponentSelector = 'a[id="toolstestwithdefinitionscnd_testComponent"]';
 const otherComponentSelector = 'a[id="toolstestwithdefinitionscnd_otherComponent"]';
 const testComponentToRemove = 'a[id="toolstestwithdefinitionscnd_testComponentToRemove"]';
+const issue233ComponentSelector = 'a[id="toolstestwithdefinitionscnd_issue233Component"]';
 
 function checkNodeDoesNotExist(path: string) {
     cy.apollo({
@@ -139,26 +140,34 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
     });
     it('a node type deleted from the browser can no longer be instantiated (issue #233)', () => {
         // GIVEN:
-        // The beforeEach() above already created a node of toolstestwithdefinitionscnd:testComponent,
-        // so the type is instantiable at this point.
+        // A dedicated, throwaway node type is used here so that deleting it does not
+        // affect the other tests in this suite.
+        // While the type exists, a node of that type can be created:
+        addNode({
+            parentPathOrId: `/sites/${SITE_KEY}`,
+            name: 'issue233Node',
+            primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
+            properties: [{name: 'issue233Prop', value: 'sample'}]
+        });
+        checkNodeExists(`/sites/${SITE_KEY}/issue233Node`, 'issue233Prop');
         // Going to the list of definitions:
         cy.login();
         cy.visit('/modules/tools/definitionsBrowser.jsp');
-        cy.get(testComponentSelector).should('be.visible');
+        cy.get(issue233ComponentSelector).should('be.visible');
 
         // WHEN:
         // deleting the component (node type):
-        cy.get(testComponentSelector).siblings('a[href="#delete"][class="delete-nodetype"]').click();
-        cy.get(testComponentSelector).should('not.exist');
+        cy.get(issue233ComponentSelector).siblings('a[href="#delete"][class="delete-nodetype"]').click();
+        cy.get(issue233ComponentSelector).should('not.exist');
 
         // THEN:
         // creating a node of the deleted type now fails instead of silently creating an orphan node:
         addNode(
             {
                 parentPathOrId: `/sites/${SITE_KEY}`,
-                name: 'issue233Node',
-                primaryNodeType: 'toolstestwithdefinitionscnd:testComponent',
-                properties: [{name: 'testProp', value: 'sample'}]
+                name: 'issue233NodeAfter',
+                primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
+                properties: [{name: 'issue233Prop', value: 'sample'}]
             },
             {errorPolicy: 'all'}
         ).should(response => {
