@@ -162,17 +162,16 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
 
         // THEN:
         // creating a node of the deleted type now fails instead of silently creating an orphan node:
-        addNode(
-            {
-                parentPathOrId: `/sites/${SITE_KEY}`,
-                name: 'issue233NodeAfter',
-                primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
-                properties: [{name: 'issue233Prop', value: 'sample'}]
-            },
-            {errorPolicy: 'all'}
-        ).should(response => {
-            expect(response.errors).to.exist;
-            expect(response.errors[0].message).to.contain('NoSuchNodeTypeException');
+        addNode({
+            parentPathOrId: `/sites/${SITE_KEY}`,
+            name: 'issue233NodeAfter',
+            primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
+            properties: [{name: 'issue233Prop', value: 'sample'}]
+        }).should(response => {
+            // On a mutation error, @jahia/cypress catches the ApolloError and yields it,
+            // so the GraphQL errors live under graphQLErrors (not errors).
+            expect(response.graphQLErrors).to.exist;
+            expect(response.graphQLErrors[0].message).to.contain('NoSuchNodeTypeException');
         });
     });
     it('Should remove nodetypes when definitions are reloaded', () => {
