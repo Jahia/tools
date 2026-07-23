@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <!DOCTYPE html>
 <html>
 <%@ page import="org.jahia.bin.listeners.LoggingConfigListener" %>
