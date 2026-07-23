@@ -12,6 +12,8 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+const fs = require('fs');
+const path = require('path');
 const sshCommand = require('./ssh')
 const env = require('./env');
 
@@ -33,6 +35,11 @@ module.exports = (on, config) => {
                 username: config.env.JAHIA_USERNAME_TOOLS,
                 password: config.env.JAHIA_PASSWORD_TOOLS,
             })
+        },
+        listToolJsps() {
+            // Enumerate the module's tool JSPs from source so the security sweep cannot drift.
+            const jspDir = path.resolve(__dirname, '../../../impl/src/main/resources');
+            return fs.readdirSync(jspDir).filter(name => name.endsWith('.jsp'));
         },
     });
   
