@@ -85,12 +85,20 @@ Each JSP gets:
   page/taglib directives (which are translation-time, not executable) but ahead
   of every top-of-page scriptlet and any JCR work.
 
-### 5. Guard-presence test
-A JUnit test that scans `impl/src/main/resources/*.jsp` and asserts each file
-contains `<tools:requireToolsAccess/>`. This makes "someone forgot to guard a
-new tool JSP" a build failure rather than a silent hole — the mitigation for the
-inherent weakness of per-resource enforcement. Introduces `impl/src/test`
-(no test directory exists today); build/test wiring (surefire) may need adding.
+### 5. Guard-presence guarantee (Cypress, data-driven)
+The module has no Java test infrastructure (no junit dependency, no surefire, no
+`src/test`); it tests exclusively through Cypress e2e. Rather than stand up a
+JUnit harness to statically string-scan JSPs, the presence guarantee is folded
+into the existing `toolsAccessSecurity.spec.ts`: a `cy.task` enumerates
+`impl/src/main/resources/*.jsp` at test time (so the list cannot drift) and the
+spec asserts **403 for an unauthenticated request to every enumerated JSP**.
+
+This is stronger than a static string match: it proves the guard is both present
+*and* enforcing *before any tool side effect runs* (denial aborts the page
+before its body). The authenticated **200** assertion is deliberately limited to
+a couple of representative safe pages (`index.jsp`, `jcrBrowser.jsp`) — sweeping
+authenticated GETs across all 49 JSPs would trigger real side effects (GC, thread
+dumps, entering maintenance mode, etc.).
 
 ### 6. Delete `ToolsAuthorizationFilter.java`
 Remove `impl/src/main/java/org/jahia/modules/tools/security/ToolsAuthorizationFilter.java`.
@@ -128,14 +136,17 @@ Request
 
 ## Testing & honest limitations
 
-- **Presence-scanner (new JUnit):** static invariant — every tool JSP carries
-  the guard.
-- **`tests/cypress/e2e/toolsAccessSecurity.spec.ts` (existing on branch):**
-  runtime behavior — an unauthorized request to a tool JSP returns 403.
+- **`tests/cypress/e2e/toolsAccessSecurity.spec.ts` (existing on branch,
+  expanded):** the behavioral gate. A `cy.task` enumerates all tool JSPs and the
+  spec asserts 403 unauthenticated for every one of them (presence + enforcement
+  in a single invariant), plus 200 authenticated on two safe representative
+  pages.
 - **`ToolsAccessGuard` unit test:** deliberately not written as a hollow mock.
   The guard depends on Jahia's static singletons (`JCRSessionFactory`,
   `JCRTemplate`), so meaningful behavioral coverage comes from the Cypress e2e,
   not a mock. This is a conscious choice, not an omission.
+- **No new JUnit harness:** consistent with a module that has no Java tests; the
+  Cypress enumeration replaces the originally-considered static scanner.
 
 ## Files touched
 
@@ -144,5 +155,6 @@ Request
 - **Add:** `impl/src/main/java/org/jahia/modules/tools/taglibs/RequireToolsAccessTag.java`
 - **Edit:** `impl/src/main/resources/META-INF/tools.tld`
 - **Edit:** all 49 `impl/src/main/resources/*.jsp`
-- **Add:** JUnit guard-presence test under `impl/src/test/...` (+ test wiring if needed)
-- **Keep:** `tests/cypress/e2e/toolsAccessSecurity.spec.ts`
+- **Edit:** `tests/cypress/e2e/toolsAccessSecurity.spec.ts` (enumerate all JSPs;
+  drop the reference to the deleted filter)
+- **Edit:** `tests/cypress/plugins/index.js` (add a `listToolJsps` task)
