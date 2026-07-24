@@ -17,6 +17,7 @@ package org.jahia.modules.tools;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.modules.tools.csrf.ToolsAccessTokenFilter;
+import org.jahia.modules.tools.security.ToolsAccessGuard;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.settings.SettingsBean;
@@ -65,6 +66,10 @@ public class JspPrecompileServlet extends HttpServlet {
      */
     private void doWork(HttpServletRequest aRequest,
                         HttpServletResponse aResponse) throws IOException {
+        if (!ToolsAccessGuard.isGranted()) {
+            aResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         aRequest.getSession(true);
 
         String jspName = aRequest.getParameter(JSP_NAME_PARAM);

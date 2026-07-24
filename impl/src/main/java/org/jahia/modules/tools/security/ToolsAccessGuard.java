@@ -54,7 +54,7 @@ public final class ToolsAccessGuard {
             return JCRTemplate.getInstance().doExecute(currentUser, null, null,
                     session -> session.getNode(TOOLS_PERMISSION_NODE).hasPermission(TOOLS_PERMISSION));
         } catch (Exception e) {
-            LOGGER.debug("Unable to evaluate tools access for user {}, denying access", currentUser.getName(), e);
+            LOGGER.warn("Unable to evaluate tools access for user {}, denying access", currentUser.getName(), e);
             return false;
         }
     }
