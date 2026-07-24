@@ -38,7 +38,7 @@ module.exports = (on, config) => {
         },
         listToolJsps() {
             // Recursively enumerate the module's tool JSPs from source (including subdirectories such as ehcache/)
-            // so the security sweep covers every endpoint and cannot drift.
+            // so the access-authorization sweep covers every page and cannot drift.
             const root = path.resolve(__dirname, '../../../impl/src/main/resources');
             const walk = dir => fs.readdirSync(dir, {withFileTypes: true}).flatMap(entry => {
                 const full = path.join(dir, entry.name);

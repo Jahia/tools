@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * Enforces, at the very top of every tool JSP, that the connected user is authorized to use the support tools. On
- * denial it returns {@code 403 Forbidden} and aborts the page, so the JSP never reaches its root JCR escalation.
+ * denial it returns {@code 403 Forbidden} and aborts the page, so none of the page's privileged operations run.
  *
  * @see ToolsAccessGuard
  */
