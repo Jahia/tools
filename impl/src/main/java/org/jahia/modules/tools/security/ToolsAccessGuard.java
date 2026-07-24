@@ -51,10 +51,19 @@ public final class ToolsAccessGuard {
             return false;
         }
         try {
-            return JCRTemplate.getInstance().doExecute(currentUser, null, null,
-                    session -> session.getNode(TOOLS_PERMISSION_NODE).hasPermission(TOOLS_PERMISSION));
+            return JCRTemplate.getInstance().doExecute(currentUser, null, null, session -> {
+                // An unauthorized caller (the guest user, or a logged-in user without the privilege) cannot even
+                // read /tools. Probe visibility first: calling getNode() on an invisible node throws
+                // PathNotFoundException, which would turn every ordinary anonymous request into a noisy WARN with a
+                // stack trace. A missing or invisible node simply means "not granted".
+                if (!session.nodeExists(TOOLS_PERMISSION_NODE)) {
+                    return false;
+                }
+                return session.getNode(TOOLS_PERMISSION_NODE).hasPermission(TOOLS_PERMISSION);
+            });
         } catch (Exception e) {
-            LOGGER.warn("Unable to evaluate tools access for user {}, denying access", currentUser.getName(), e);
+            // Reaching here now means an unexpected failure (not the ordinary unauthorized case), so WARN is warranted.
+            LOGGER.warn("Unexpected error while evaluating tools access for user {}, denying access", currentUser.getName(), e);
             return false;
         }
     }
