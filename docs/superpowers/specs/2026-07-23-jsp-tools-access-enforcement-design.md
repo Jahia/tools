@@ -76,11 +76,18 @@ Add a `<tag>` entry to the existing taglib (uri
 </tag>
 ```
 
-### 4. All 49 tool JSPs (`impl/src/main/resources/*.jsp`)
+### 4. All 54 tool JSPs (`impl/src/main/resources/**/*.jsp`)
 Each JSP gets:
 
-- `<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>` (48 of
-  them; `groovyConsole.jsp` already declares it).
+> **Count correction (post-implementation):** the module has **54** tool JSPs, not
+> 49 — 49 at the top level plus 5 under `impl/src/main/resources/ehcache/`
+> (`ehcache_cj.jsp`, `ehcache_cj_dep.jsp`, `ehcache_details.jsp`,
+> `ehcache_dump.jsp`, `ehcache_stats.jsp`). The original enumeration used a
+> non-recursive glob and missed the subdirectory; all 54 are guarded, and the
+> Cypress enumeration walks the tree recursively.
+
+- `<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>` (all but
+  `groovyConsole.jsp`, which already declares it).
 - `<tools:requireToolsAccess/>` as the **first executable line** — after the
   page/taglib directives (which are translation-time, not executable) but ahead
   of every top-of-page scriptlet and any JCR work.
@@ -97,7 +104,7 @@ This is stronger than a static string match: it proves the guard is both present
 *and* enforcing *before any tool side effect runs* (denial aborts the page
 before its body). The authenticated **200** assertion is deliberately limited to
 a couple of representative safe pages (`index.jsp`, `jcrBrowser.jsp`) — sweeping
-authenticated GETs across all 49 JSPs would trigger real side effects (GC, thread
+authenticated GETs across all 54 JSPs would trigger real side effects (GC, thread
 dumps, entering maintenance mode, etc.).
 
 ### 6. Delete `ToolsAuthorizationFilter.java`
@@ -154,7 +161,8 @@ Request
 - **Add:** `impl/src/main/java/org/jahia/modules/tools/security/ToolsAccessGuard.java`
 - **Add:** `impl/src/main/java/org/jahia/modules/tools/taglibs/RequireToolsAccessTag.java`
 - **Edit:** `impl/src/main/resources/META-INF/tools.tld`
-- **Edit:** all 49 `impl/src/main/resources/*.jsp`
+- **Edit:** all 54 `impl/src/main/resources/**/*.jsp` (49 top-level + 5 under `ehcache/`)
+- **Edit:** `impl/src/main/java/org/jahia/modules/tools/JspPrecompileServlet.java` (non-JSP `/tools/precompileServlet` entrypoint — guard `doWork()` with `ToolsAccessGuard.isGranted()`)
 - **Edit:** `tests/cypress/e2e/toolsAccessSecurity.spec.ts` (enumerate all JSPs;
   drop the reference to the deleted filter)
 - **Edit:** `tests/cypress/plugins/index.js` (add a `listToolJsps` task)
