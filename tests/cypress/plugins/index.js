@@ -37,9 +37,17 @@ module.exports = (on, config) => {
             })
         },
         listToolJsps() {
-            // Enumerate the module's tool JSPs from source so the security sweep cannot drift.
-            const jspDir = path.resolve(__dirname, '../../../impl/src/main/resources');
-            return fs.readdirSync(jspDir).filter(name => name.endsWith('.jsp'));
+            // Recursively enumerate the module's tool JSPs from source (including subdirectories such as ehcache/)
+            // so the security sweep covers every endpoint and cannot drift.
+            const root = path.resolve(__dirname, '../../../impl/src/main/resources');
+            const walk = dir => fs.readdirSync(dir, {withFileTypes: true}).flatMap(entry => {
+                const full = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    return walk(full);
+                }
+                return entry.name.endsWith('.jsp') ? [path.relative(root, full).split(path.sep).join('/')] : [];
+            });
+            return walk(root);
         },
     });
   

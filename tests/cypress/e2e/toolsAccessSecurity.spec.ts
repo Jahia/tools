@@ -3,7 +3,7 @@
  * perimeter Shiro filter chain and of any URL-pattern matching). The check lives in the resource itself, so a request
  * that slips past upstream filters still cannot reach a JSP's root escalation.
  *
- * This spec enumerates every tool JSP from source and asserts an unauthenticated request is denied with 403 on each.
+ * This spec enumerates every tool JSP from source (recursively, including subdirectories such as ehcache/) and asserts an unauthenticated request is denied with 403 on each.
  * Denial aborts the page before its body runs, so the sweep triggers no tool side effects.
  */
 describe('SEC-245 - tools access authorization is enforced by every tool JSP', () => {
@@ -25,9 +25,9 @@ describe('SEC-245 - tools access authorization is enforced by every tool JSP', (
     it('denies an unauthenticated user with 403 on every tool JSP', () => {
         cy.clearCookies();
         cy.wrap(null).then(() => {
-            jsps.forEach(name => {
-                cy.request({url: `/modules/tools/${name}`, failOnStatusCode: false}).then(response => {
-                    expect(response.status, `unauthenticated GET /modules/tools/${name}`).to.eq(403);
+            jsps.forEach(jspPath => {
+                cy.request({url: `/modules/tools/${jspPath}`, failOnStatusCode: false}).then(response => {
+                    expect(response.status, `unauthenticated GET /modules/tools/${jspPath}`).to.eq(403);
                 });
             });
         });
