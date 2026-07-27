@@ -7,8 +7,9 @@
  * perimeter answers with a 302 redirect to the login page, the in-JSP check answers with a 403. Either way the page
  * body never runs, so this sweep triggers no tool side effects.
  *
- * This spec enumerates every tool JSP from source (recursively, including subdirectories such as ehcache/) so the
- * check cannot drift as pages are added, and asserts that an unauthorized request is denied on each.
+ * The list of tool JSPs comes from the TOOL_JSPS configuration variable (see cypress.config.ts): the tests run from a
+ * docker image built out of the tests/ folder alone, so the module sources cannot be enumerated at runtime. Adding a
+ * tool page therefore means adding it to that list.
  */
 describe('tools access authorization is enforced on every tool JSP', () => {
     // A representative tool page and the JCR browser (a representative privileged tool page), used for the
@@ -23,22 +24,14 @@ describe('tools access authorization is enforced on every tool JSP', () => {
     // followed, otherwise the observed status would be that of the login page rather than the denial itself.
     const DENIED_STATUSES = [302, 403];
 
-    let jsps: string[] = [];
-
-    before(() => {
-        cy.task('listToolJsps').then((names: string[]) => {
-            jsps = names;
-            expect(jsps.length, 'tool JSPs discovered').to.be.greaterThan(0);
-        });
-    });
+    const jsps: string[] = Cypress.env('TOOL_JSPS') as string[];
 
     it('denies an unauthorized request on every tool JSP', () => {
+        expect(jsps, 'TOOL_JSPS configuration').to.be.an('array').and.not.to.be.empty;
         cy.clearCookies();
-        cy.wrap(null).then(() => {
-            jsps.forEach(jspPath => {
-                cy.request({url: `/modules/tools/${jspPath}`, failOnStatusCode: false, followRedirect: false}).then(response => {
-                    expect(response.status, `unauthorized GET /modules/tools/${jspPath}`).to.be.oneOf(DENIED_STATUSES);
-                });
+        jsps.forEach(jspPath => {
+            cy.request({url: `/modules/tools/${jspPath}`, failOnStatusCode: false, followRedirect: false}).then(response => {
+                expect(response.status, `unauthorized GET /modules/tools/${jspPath}`).to.be.oneOf(DENIED_STATUSES);
             });
         });
         cy.request({url: DOUBLE_ENCODED_TOOL_URL, failOnStatusCode: false}).then(response => {
