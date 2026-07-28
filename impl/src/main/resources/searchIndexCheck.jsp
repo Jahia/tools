@@ -1,4 +1,6 @@
 <%@page import="org.apache.commons.io.FileUtils"%>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>
 <%@page import="org.jahia.settings.SettingsBean"%>
 <%@page import="org.jahia.utils.SearchIndexUtils"%>

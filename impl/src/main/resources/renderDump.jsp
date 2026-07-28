@@ -1,4 +1,6 @@
 <%@ page import="org.jahia.services.render.RenderInfo" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <%@ page import="java.lang.String" %>
 <%
     response.setContentType("application/json");

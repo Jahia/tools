@@ -1,4 +1,6 @@
 <%@ page import="org.osgi.framework.Version" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.FileOutputStream" %>
 <%@ page import="java.io.IOException" %>

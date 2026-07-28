@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@ page import="org.jahia.modules.tools.SupportInfoHelper, java.io.File" %><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
+%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %><%@ page import="org.jahia.modules.tools.SupportInfoHelper, java.io.File" %><tools:requireToolsAccess/><% File targetDir = new File(System.getProperty("jahia.log.dir"), "jahia-support").getCanonicalFile();
 %><c:if test="${param.action == 'download' || param.action == 'server'}"><% SupportInfoHelper.exportInfo(targetDir, request, response); %></c:if><c:if test="${param.action != 'download'}">
     <%@ page contentType="text/html; charset=UTF-8" language="java" %>
     <!DOCTYPE html>

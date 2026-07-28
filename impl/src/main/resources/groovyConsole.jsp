@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <!DOCTYPE html>
 <html>
 <%@ page import="org.apache.commons.io.FileUtils" %>
@@ -22,7 +24,6 @@
 <%@ page import="java.nio.charset.Charset" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
 <c:set var="title" value="Groovy Console"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>

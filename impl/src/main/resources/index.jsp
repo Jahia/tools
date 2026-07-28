@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <?xml version="1.0" encoding="UTF-8" ?>
 <html>
 <%@page import="org.apache.commons.lang3.time.DurationFormatUtils" %>

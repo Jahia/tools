@@ -7,3 +7,16 @@
 impl/node/
 impl/node_modules/
 impl/src/main/resources/javascript/apps/
+/node_modules
+/node/yarn/dist/bin/yarn
+/node/yarn/dist/bin/yarn.cmd
+/node/yarn/dist/bin/yarn.js
+/node/yarn/dist/bin/yarnpkg
+/node/yarn/dist/bin/yarnpkg.cmd
+/node/yarn/dist/lib/cli.js
+/node/yarn/dist/lib/v8-compile-cache.js
+/node/yarn/dist/LICENSE
+/node/yarn/dist/package.json
+/node/yarn/dist/preinstall.js
+/node/yarn/dist/README.md
+/node/node

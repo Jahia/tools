@@ -1,5 +1,6 @@
-<%@ page import="org.jahia.registries.ServicesRegistry, org.jahia.services.scheduler.SchedulerService, org.quartz.*, java.text.SimpleDateFormat, java.util.Date"
-%>
+<%@ page import="org.jahia.registries.ServicesRegistry, org.jahia.services.scheduler.SchedulerService, org.quartz.*, java.text.SimpleDateFormat, java.util.Date" %>
+<%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
+<tools:requireToolsAccess/>
 <%@ page import="java.util.LinkedList" %>
 <%@ page import="java.util.List" %>
 <%
