@@ -420,7 +420,7 @@
                                    target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a>
                                 (${fn:escapeXml(node.nodeTypes)})
                                 <a title="Open in Repository Explorer"
-                                   href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}'/>"
+                                   href="<c:url value='/engines/manager.jsp?selectedPaths=${fn:escapeXml(functions:escapePath(node.path))}&workspace=${workspace}'/>"
                                    target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16"
                                                         height="16" alt="open" title="Open in Repository Explorer"></a>
                                 <c:if test="${showActions}">
@@ -464,7 +464,7 @@
                                        href="<c:url value='jcrBrowser.jsp?uuid=${node.identifier}&workspace=${workspace}&showProperties=true&toolAccessToken=${toolAccessToken}'/>"
                                        target="_blank"><strong>${fn:escapeXml(not empty node.displayableName ? node.name : '<root>')}</strong></a> (${fn:escapeXml(node.nodeTypes)})
                                     <a title="Open in Repository Explorer"
-                                       href="<c:url value='/engines/manager.jsp?selectedPaths=${node.path}&workspace=${workspace}&toolAccessToken=${toolAccessToken}'/>"
+                                       href="<c:url value='/engines/manager.jsp?selectedPaths=${fn:escapeXml(functions:escapePath(node.path))}&workspace=${workspace}&toolAccessToken=${toolAccessToken}'/>"
                                        target="_blank"><img src="<c:url value='/icons/fileManager.png'/>" width="16"
                                                             height="16" alt="open" title="Open in Repository Explorer"></a>
                                     <c:if test="${showActions}">
