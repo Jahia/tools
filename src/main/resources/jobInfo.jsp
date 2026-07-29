@@ -1,5 +1,6 @@
 <%@ page import="org.jahia.registries.ServicesRegistry, org.jahia.services.scheduler.*, java.text.*, java.util.*, org.quartz.*"
-%><%
+%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/><%
 SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
 Scheduler scheduler = service.getScheduler();
 pageContext.setAttribute("service", service);

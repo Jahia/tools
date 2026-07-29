@@ -1,4 +1,5 @@
-<%@page import="org.jahia.exceptions.JahiaBadRequestException"%>
+<%@page import="org.jahia.exceptions.JahiaBadRequestException"%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
 %><% response.setContentType("json".equals(request.getParameter("output")) ? "application/json; charset=UTF-8" : "text/plain; charset=UTF-8"); 
 %><%@page import="org.jahia.utils.*"

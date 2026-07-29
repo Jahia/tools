@@ -1,4 +1,5 @@
-<%@ page import="org.jahia.services.render.RenderInfo" %><%
+<%@ page import="org.jahia.services.render.RenderInfo" %><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/><%
     response.setContentType("application/json");
     response.setHeader("Content-Disposition","attachment; filename=\"dump.json\"");
     String s = RenderInfo.dump();

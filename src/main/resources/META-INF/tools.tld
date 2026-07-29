@@ -10,6 +10,13 @@
     <tlib-version>1.0</tlib-version>
     <short-name>tools</short-name>
     <uri>http://www.jahia.org/tags/tools</uri>
+    <tag>
+        <description>Enforces that the connected user holds systemToolsAccess on /tools; sends 403 and aborts the page
+            otherwise. Must be the first executable statement of every tool JSP.</description>
+        <name>requireToolsAccess</name>
+        <tag-class>org.jahia.modules.tools.taglibs.RequireToolsAccessTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
     <function>
         <description>Returns a collection of BundleResource, representing scripts, which are found in all active module bundles.</description>
         <name>getGroovyConsoleScripts</name>

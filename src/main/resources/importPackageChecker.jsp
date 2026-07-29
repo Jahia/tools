@@ -1,4 +1,5 @@
-<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %>
+<%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGIPackageHeaderChecker" %><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@ page import="org.jahia.modules.tools.gql.admin.osgi.FindImportPackage" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
