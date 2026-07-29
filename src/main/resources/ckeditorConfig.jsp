@@ -1,5 +1,6 @@
 <%@page import="org.apache.commons.io.Charsets,org.apache.commons.io.FileUtils,org.jahia.osgi.BundleUtils,org.jahia.settings.SettingsBean"
-%>
+%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@ page import="org.osgi.framework.Bundle" %>
 <%@ page import="org.osgi.framework.Version" %>
 <%@ page import="java.io.File" %>

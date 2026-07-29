@@ -1,4 +1,5 @@
-<%@page import="java.io.PrintWriter,java.util.Date,java.text.SimpleDateFormat,org.jahia.bin.errors.ErrorFileDumper"%> 
+<%@page import="java.io.PrintWriter,java.util.Date,java.text.SimpleDateFormat,org.jahia.bin.errors.ErrorFileDumper"%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" 
 %><c:if test="${param.file}"><%
 response.setContentType("text/plain; charset=ISO-8859-1");

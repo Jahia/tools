@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>

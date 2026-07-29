@@ -1,4 +1,5 @@
-<%@page import="java.io.File"%>
+<%@page import="java.io.File"%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@page import="java.io.FileFilter"%>
 <%@page import="org.apache.commons.io.FileUtils"%>
 <%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>

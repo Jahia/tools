@@ -1,4 +1,5 @@
-<%@ page import="java.io.IOException" %>
+<%@ page import="java.io.IOException" %><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.text.MessageFormat" %>
 <%@ page import="java.util.ArrayList" %>

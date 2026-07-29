@@ -1,4 +1,5 @@
-<%@page import="org.drools.core.base.EnabledBoolean"%>
+<%@page import="org.drools.core.base.EnabledBoolean"%><%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools"
+%><tools:requireToolsAccess/>
 <%@page import="org.drools.core.spi.Enabled"%>
 <%@page import="org.drools.core.rule.Rule"%>
 <%@page import="java.lang.reflect.Field"%>
