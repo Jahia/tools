@@ -34,7 +34,7 @@
         <jahia-depends />
         <jahia-module-type>system</jahia-module-type>
         <jahia-static-resources>/css,/images,/javascript,/swf</jahia-static-resources>
-        <jahia-module-signature>MCwCFDDPkjbC87FN6lX7c9Pb+H/Jw8VaAhQuhf07nchTg7Bv/tuOC62eMI2dIQ==</jahia-module-signature>
+        <jahia-module-signature>MCwCFEPod5iwL1evKlp9z3QaaHNTdrI7AhQDZu2yJ+bI+ZwGvq2yxqPEvBPehA==</jahia-module-signature>
         <jahia.plugin.version>6.10</jahia.plugin.version>
         <yarn.arguments>build:production</yarn.arguments>
         <sonar.sources>src/javascript</sonar.sources>
