@@ -22,18 +22,18 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>8.2.0.0</version>
+        <version>8.2.1.0</version>
         <relativePath />
     </parent>
 
     <artifactId>tools-root</artifactId>
-    <version>5.5.0-SNAPSHOT</version>
+    <version>5.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Support Tools (root)</name>
     <description>Digital Experience Manager Support Tools - root</description>
 
     <properties>
-        <jahia-bom.version>8.2.0.0</jahia-bom.version>
+        <jahia-bom.version>8.2.1.0</jahia-bom.version>
     </properties>
     <scm>
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
