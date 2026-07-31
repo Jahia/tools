@@ -7,6 +7,7 @@ const SITE_KEY = 'testSite';
 const testComponentSelector = 'a[id="toolstestwithdefinitionscnd_testComponent"]';
 const otherComponentSelector = 'a[id="toolstestwithdefinitionscnd_otherComponent"]';
 const testComponentToRemove = 'a[id="toolstestwithdefinitionscnd_testComponentToRemove"]';
+const issue233ComponentSelector = 'a[id="toolstestwithdefinitionscnd_issue233Component"]';
 
 function checkNodeDoesNotExist(path: string) {
     cy.apollo({
@@ -136,6 +137,42 @@ describe('definitions browser tests (/modules/tools/definitionsBrowser.jsp)', ()
         cy.get(otherComponentSelector).should('exist');
         checkNodeDoesNotExist(`/sites/${SITE_KEY}/testNode`);
         checkNodeExists(`/sites/${SITE_KEY}/otherNode`);
+    });
+    it('a node type deleted from the browser can no longer be instantiated (issue #233)', () => {
+        // GIVEN:
+        // A dedicated, throwaway node type is used here so that deleting it does not
+        // affect the other tests in this suite.
+        // While the type exists, a node of that type can be created:
+        addNode({
+            parentPathOrId: `/sites/${SITE_KEY}`,
+            name: 'issue233Node',
+            primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
+            properties: [{name: 'issue233Prop', value: 'sample'}]
+        });
+        checkNodeExists(`/sites/${SITE_KEY}/issue233Node`, 'issue233Prop');
+        // Going to the list of definitions:
+        cy.login();
+        cy.visit('/modules/tools/definitionsBrowser.jsp');
+        cy.get(issue233ComponentSelector).should('be.visible');
+
+        // WHEN:
+        // deleting the component (node type):
+        cy.get(issue233ComponentSelector).siblings('a[href="#delete"][class="delete-nodetype"]').click();
+        cy.get(issue233ComponentSelector).should('not.exist');
+
+        // THEN:
+        // creating a node of the deleted type now fails instead of silently creating an orphan node:
+        addNode({
+            parentPathOrId: `/sites/${SITE_KEY}`,
+            name: 'issue233NodeAfter',
+            primaryNodeType: 'toolstestwithdefinitionscnd:issue233Component',
+            properties: [{name: 'issue233Prop', value: 'sample'}]
+        }).should(response => {
+            // On a mutation error, @jahia/cypress catches the ApolloError and yields it,
+            // so the GraphQL errors live under graphQLErrors (not errors).
+            expect(response.graphQLErrors).to.exist;
+            expect(response.graphQLErrors[0].message).to.contain('NoSuchNodeTypeException');
+        });
     });
     it('Should remove nodetypes when definitions are reloaded', () => {
         // GIVEN

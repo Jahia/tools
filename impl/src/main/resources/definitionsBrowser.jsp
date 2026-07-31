@@ -131,10 +131,16 @@
 
         final List<ExtendedNodeType> nodeType = new java.util.ArrayList<ExtendedNodeType>();
         nodeType.add(NodeTypeRegistry.getInstance().getNodeType(request.getParameter("nodetype")));
+        final List<String> nodeTypeNames = new java.util.ArrayList<String>();
+        for (ExtendedNodeType nt : nodeType) {
+            nodeTypeNames.add(nt.getName());
+        }
         deleteNodeTypes(nodeType.iterator(), true, out);
 
         JCRStoreService.getInstance().deployDefinitions(moduleName);
-        // todo : unregister node type from jackrabbit. See https://github.com/Jahia/tools/issues/233
+        // Also purge the node type from the underlying repository (Jackrabbit); otherwise it could still
+        // be instantiated even though it is gone from the definitions browser. See https://github.com/Jahia/tools/issues/233
+        JCRStoreService.getInstance().unregisterNodeTypes(nodeTypeNames);
         response.sendRedirect(request.getRequestURI());
         return;
     }

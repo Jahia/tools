@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.jahia.modules</groupId>
         <artifactId>jahia-modules</artifactId>
-        <version>8.2.0.0</version>
+        <version>8.2.4.0-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -33,7 +33,7 @@
     <description>Digital Experience Manager Support Tools - root</description>
 
     <properties>
-        <jahia-bom.version>8.2.0.0</jahia-bom.version>
+        <jahia-bom.version>8.2.4.0-SNAPSHOT</jahia-bom.version>
     </properties>
     <scm>
         <connection>scm:git:git@github.com:Jahia/tools.git</connection>
