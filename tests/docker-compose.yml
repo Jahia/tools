@@ -7,6 +7,8 @@ services:
             - MAX_RAM_PERCENTAGE=95
             - OPERATING_MODE=${OPERATING_MODE}
             - JPDA=true
+            - NEXUS_USERNAME=${NEXUS_USERNAME}
+            - NEXUS_PASSWORD=${NEXUS_PASSWORD}
         ports:
             - '8000:8000'
             - '8080:8080'
