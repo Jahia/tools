@@ -1,5 +1,11 @@
 # tools Changelog
 
+## 5.5.0
+
+### Bug Fixes
+
+* Restricted the Groovy console `scriptURI` parameter to the scripts packaged in active module bundles. It used to be opened as a URL, so `file://` and `http://` values turned it into an arbitrary file read, a server-side request forgery and a remote code execution vector, since whatever it returned was executed by the Groovy engine. Unknown values are now rejected with a `400`, and the script content shown in the preview is HTML-escaped.
+
 ## 5.4.0
 
 ### New Features

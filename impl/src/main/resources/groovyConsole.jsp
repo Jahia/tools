@@ -1,12 +1,23 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
+<%@ page import="org.jahia.osgi.BundleResource" %>
 <%@ taglib prefix="tools" uri="http://www.jahia.org/tags/tools" %>
 <tools:requireToolsAccess/>
+<%
+    // A script URI only ever designates a script packaged in an active module bundle, so resolve it against that
+    // registry and read it through the resolved resource. Opening the requested URI itself would let file://,
+    // http:// or classpath: content be fetched and executed by the Groovy engine below.
+    final String scriptURI = request.getParameter("scriptURI");
+    final BundleResource selectedScript = GroovyConsoleHelper.resolveScript(scriptURI);
+    if (selectedScript == null && !GroovyConsoleHelper.isCustomScript(scriptURI)) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown script");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <%@ page import="org.apache.commons.io.FileUtils" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.jahia.bin.listeners.LoggingConfigListener" %>
-<%@ page import="org.jahia.modules.tools.taglibs.GroovyConsoleHelper" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.services.scheduler.BackgroundJob" %>
 <%@ page import="org.jahia.services.scheduler.JSR223ScriptJob" %>
@@ -16,7 +27,6 @@
 <%@ page import="org.quartz.SchedulerException" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
-<%@ page import="org.springframework.core.io.UrlResource" %>
 <%@ page import="javax.script.*" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.PrintWriter" %>
@@ -36,12 +46,10 @@
     ScriptEngine engine = null;
     try {
         engine = ScriptEngineUtils.getInstance().scriptEngine("groovy");
+        if (selectedScript != null) {
+            pageContext.setAttribute("scriptContent", org.jahia.utils.FileUtils.getContent(selectedScript));
+        }
 %>
-<c:if test="${not empty param.scriptURI && param.scriptURI != 'custom'}">
-    <%
-        pageContext.setAttribute("scriptContent", org.jahia.utils.FileUtils.getContent(new UrlResource(request.getParameter("scriptURI"))));
-    %>
-</c:if>
 <c:if test="${not empty param.runScript and param.runScript eq 'true'}">
     <%
         final StringBuilder code = GroovyConsoleHelper.generateScriptSkeleton();
@@ -54,13 +62,11 @@
             code.append("\n");
         }
 
-        final String scriptURL = request.getParameter("scriptURI");
-        boolean isPredefinedScript = false;
-        if (StringUtils.isBlank(scriptURL) || "custom".equals(scriptURL)) {
-            code.append(request.getParameter("script"));
-        } else {
+        final boolean isPredefinedScript = selectedScript != null;
+        if (isPredefinedScript) {
             code.append((String) pageContext.getAttribute("scriptContent"));
-            isPredefinedScript = true;
+        } else {
+            code.append(request.getParameter("script"));
         }
         if (executeInBackground) {
             File groovyConsole = File.createTempFile("groovyConsole", ".groovy");
@@ -86,7 +92,7 @@
                 bindings.put("log", lw);
                 bindings.put("logger", lw);
                 if (isPredefinedScript) {
-                    final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(scriptURL);
+                    final String[] paramNames = GroovyConsoleHelper.getScriptParamNames(selectedScript);
                     if (paramNames != null) {
                         for (String paramName : paramNames) {
                             bindings.put(paramName, request.getParameter("scriptParam_" + paramName));
@@ -245,7 +251,7 @@
 <c:if test="${not empty scriptContent}">
     <div style="display: none;">
         <div id="viewArea">
-            <pre>${scriptContent}</pre>
+            <pre>${fn:escapeXml(scriptContent)}</pre>
         </div>
     </div>
 </c:if>

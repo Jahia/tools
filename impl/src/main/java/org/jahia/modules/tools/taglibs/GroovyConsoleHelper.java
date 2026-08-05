@@ -26,6 +26,7 @@ import org.springframework.core.io.UrlResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
@@ -38,6 +39,11 @@ public class GroovyConsoleHelper {
 
     public static final String WARN_MSG = "WARNING: You are about to execute a script, which can manipulate the repository data or execute services in Jahia. Are you sure, you want to continue?";
     public static final String GROOVY_CONSOLE_FQCN = "org.jahia.tools.groovyConsole";
+
+    /** Value the console's script selector uses to mean "run the code typed in the textarea". */
+    public static final String CUSTOM_SCRIPT = "custom";
+
+    private static final int MAX_LOGGED_URI_LENGTH = 200;
 
     private static void generateCbFormElement(String paramName, StringBuilder sb, Properties confs,
             HttpServletRequest request) {
@@ -367,33 +373,101 @@ public class GroovyConsoleHelper {
     }
 
     /**
+     * Tells whether the requested script URI designates the custom script, i.e. the code typed into the console's
+     * textarea, rather than one of the predefined scripts.
+     *
+     * @param scriptURI the requested script URI
+     * @return <code>true</code> if the console has to run the code coming from the textarea
+     */
+    public static boolean isCustomScript(String scriptURI) {
+        return StringUtils.isBlank(scriptURI) || CUSTOM_SCRIPT.equals(scriptURI);
+    }
+
+    /**
+     * Resolves a requested script URI into the corresponding script registered by an active module bundle.
+     * <p>
+     * The console's selector offers nothing but those scripts, so any other value is a forged request. Callers must
+     * read the script through the returned resource instead of opening the requested URI: that is what keeps
+     * <code>file://</code>, <code>http://</code> and <code>classpath:</code> URIs from being fetched and handed over
+     * to the Groovy engine.
+     *
+     * @param scriptURI the requested script URI
+     * @return the registered script matching the URI, or <code>null</code> if no active module bundle registers it,
+     *         which includes the custom script case
+     */
+    public static BundleResource resolveScript(String scriptURI) {
+        if (isCustomScript(scriptURI)) {
+            return null;
+        }
+        for (final BundleResource script : getGroovyConsoleScripts()) {
+            if (scriptURI.equals(getURI(script))) {
+                return script;
+            }
+        }
+        logger.warn("Rejected the Groovy console script URI {}: no active module bundle registers it",
+                sanitizeForLog(scriptURI));
+        return null;
+    }
+
+    private static String getURI(BundleResource script) {
+        try {
+            return script.getURI().toString();
+        } catch (IOException e) {
+            logger.error("Unable to get the URI of the Groovy console script " + script.getFilename(), e);
+            return null;
+        }
+    }
+
+    private static String sanitizeForLog(String value) {
+        return StringUtils.abbreviate(value.replaceAll("[\\r\\n]", " "), MAX_LOGGED_URI_LENGTH);
+    }
+
+    /**
+     * Loads the configuration declared by the sibling <code>.properties</code> file of the requested script, or
+     * <code>null</code> if the script is not registered by any active module bundle or declares no configuration. The
+     * properties file is looked up next to the registered script rather than next to the requested URI.
+     */
+    private static Properties loadScriptConfiguration(BundleResource script) {
+        if (script == null) {
+            return null;
+        }
+        try {
+            final UrlResource resource = new UrlResource(
+                    StringUtils.substringBeforeLast(script.getURL().toExternalForm(), ".groovy") + ".properties");
+            if (!resource.exists()) {
+                return null;
+            }
+            final Properties confs = new Properties();
+            try (InputStream is = resource.getInputStream()) {
+                confs.load(is);
+            }
+            return confs;
+        } catch (IOException e) {
+            logger.error("An error occured while reading the configurations for the script " + script.getFilename(), e);
+            return null;
+        }
+    }
+
+    private static String[] getParamNames(Properties confs) {
+        return StringUtils.split(confs.getProperty("script.parameters.names", "").replaceAll("\\s", ""), ",");
+    }
+
+    /**
      * Returns a generated HTML with form elements for the script parameters.
      *
-     * @param scriptURI
-     * @param request
-     * @return
+     * @param scriptURI the requested script URI
+     * @param request the current request, holding the submitted parameter values
+     * @return the form elements, or an empty string if the script is not registered by any active module bundle or
+     *         declares no parameter
      */
     public static String getScriptCustomFormElements(String scriptURI, HttpServletRequest request) {
-        if (StringUtils.isBlank(scriptURI)) {
+        final Properties confs = loadScriptConfiguration(resolveScript(scriptURI));
+        if (confs == null) {
             return StringUtils.EMPTY;
         }
         final StringBuilder sb = new StringBuilder();
-        try {
-            final UrlResource resource = new UrlResource(
-                    StringUtils.substringBeforeLast(scriptURI, ".groovy") + ".properties");
-            if (resource.exists()) {
-                final Properties confs = new Properties();
-                confs.load(resource.getInputStream());
-                final String[] paramNames = StringUtils
-                        .split(confs.getProperty("script.parameters.names", "").replaceAll("\\s", ""), ",");
-                for (String paramName : paramNames) {
-                    generateFormElement(paramName.trim(), sb, confs, request);
-                }
-
-            }
-        } catch (IOException e) {
-            logger.error("An error occured while reading the configurations for the script " + scriptURI, e);
-            return StringUtils.EMPTY;
+        for (final String paramName : getParamNames(confs)) {
+            generateFormElement(paramName.trim(), sb, confs, request);
         }
         final String formElements = sb.toString();
         if (StringUtils.isBlank(formElements)) {
@@ -406,21 +480,11 @@ public class GroovyConsoleHelper {
     /**
      * Returns an array of parameter names for the specified script or <code>null</code> if the script has no parameters.
      *
-     * @param scriptURI the script URI to get parameter names for
+     * @param script the script, as resolved by {@link #resolveScript(String)}, to get parameter names for
      * @return an array of parameter names for the specified script or <code>null</code> if the script has no parameters
      */
-    public static String[] getScriptParamNames(String scriptURI) {
-        try {
-            final UrlResource resource = new UrlResource(
-                    StringUtils.substringBeforeLast(scriptURI, ".groovy") + ".properties");
-            if (resource.exists()) {
-                final Properties confs = new Properties();
-                confs.load(resource.getInputStream());
-                return StringUtils.split(confs.getProperty("script.parameters.names", "").replaceAll("\\s", ""), ",");
-            }
-        } catch (IOException e) {
-            logger.error("An error occured while reading the configurations for the script " + scriptURI, e);
-        }
-        return null;
+    public static String[] getScriptParamNames(BundleResource script) {
+        final Properties confs = loadScriptConfiguration(script);
+        return confs != null ? getParamNames(confs) : null;
     }
 }
