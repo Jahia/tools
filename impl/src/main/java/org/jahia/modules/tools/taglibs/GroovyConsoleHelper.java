@@ -43,8 +43,6 @@ public class GroovyConsoleHelper {
     /** Value the console's script selector uses to mean "run the code typed in the textarea". */
     public static final String CUSTOM_SCRIPT = "custom";
 
-    private static final int MAX_LOGGED_URI_LENGTH = 200;
-
     private static void generateCbFormElement(String paramName, StringBuilder sb, Properties confs,
             HttpServletRequest request) {
         sb.append("<p><label for=\"scriptParam_").append(paramName).append("\">");
@@ -404,8 +402,9 @@ public class GroovyConsoleHelper {
                 return script;
             }
         }
-        logger.warn("Rejected the Groovy console script URI {}: no active module bundle registers it",
-                sanitizeForLog(scriptURI));
+        // The URI is attacker-controlled, but Jahia core's log4j2 appenders all encode the message with
+        // %encode{...}{CRLF}, so it cannot forge a log line: no module-side sanitizing needed.
+        logger.warn("Rejected the Groovy console script URI {}: no active module bundle registers it", scriptURI);
         return null;
     }
 
@@ -416,10 +415,6 @@ public class GroovyConsoleHelper {
             logger.error("Unable to get the URI of the Groovy console script " + script.getFilename(), e);
             return null;
         }
-    }
-
-    private static String sanitizeForLog(String value) {
-        return StringUtils.abbreviate(value.replaceAll("[\\r\\n]", " "), MAX_LOGGED_URI_LENGTH);
     }
 
     /**
