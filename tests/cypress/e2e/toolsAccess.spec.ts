@@ -24,6 +24,13 @@ describe('tools access authorization is enforced on every tool JSP', () => {
     // followed, otherwise the observed status would be that of the login page rather than the denial itself.
     const DENIED_STATUSES = [302, 403];
 
+    // The obfuscated URL can additionally be refused before it is routed at all: Jahia 8.2.4.0 added a
+    // MalformedRequestFilter at the front of the chain that answers 400 "Invalid request" to an encoded question mark
+    // or a double-encoded path. Cores older than that (the module supports 8.2.1.0 and up, and the released-Jahia
+    // nightly runs one of them) have no such filter, and each of its rules can be switched off in jahia.properties,
+    // so the request reaches the chain or the JSP and is denied there instead. All three statuses mean "not served".
+    const OBFUSCATED_DENIED_STATUSES = [400, ...DENIED_STATUSES];
+
     const jsps: string[] = Cypress.env('TOOL_JSPS') as string[];
 
     it('denies an unauthorized request on every tool JSP', () => {
@@ -34,8 +41,8 @@ describe('tools access authorization is enforced on every tool JSP', () => {
                 expect(response.status, `unauthorized GET /modules/tools/${jspPath}`).to.be.oneOf(DENIED_STATUSES);
             });
         });
-        cy.request({url: DOUBLE_ENCODED_TOOL_URL, failOnStatusCode: false}).then(response => {
-            expect(response.status, `unauthorized GET ${DOUBLE_ENCODED_TOOL_URL}`).to.be.oneOf(DENIED_STATUSES);
+        cy.request({url: DOUBLE_ENCODED_TOOL_URL, failOnStatusCode: false, followRedirect: false}).then(response => {
+            expect(response.status, `unauthorized GET ${DOUBLE_ENCODED_TOOL_URL}`).to.be.oneOf(OBFUSCATED_DENIED_STATUSES);
         });
     });
 
