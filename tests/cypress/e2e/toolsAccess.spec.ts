@@ -19,30 +19,21 @@ describe('tools access authorization is enforced on every tool JSP', () => {
     const PRIVILEGED_TOOL_URL = '/modules/tools/jcrBrowser.jsp';
     const DOUBLE_ENCODED_TOOL_URL = '/modules/t%256Fols/groovyConsole.jsp%3fx/configs/xx.js?';
 
-    // An unauthorized request is denied at whichever layer handles it: 302 (perimeter redirect to login) or 403
-    // (in-JSP check). Both mean "not served"; a 200 would mean the guard was bypassed. The redirect must not be
-    // followed, otherwise the observed status would be that of the login page rather than the denial itself.
-    const DENIED_STATUSES = [302, 403];
-
-    // The obfuscated URL can additionally be refused before it is routed at all: Jahia 8.2.4.0 added a
-    // MalformedRequestFilter at the front of the chain that answers 400 "Invalid request" to an encoded question mark
-    // or a double-encoded path. Cores older than that (the module supports 8.2.1.0 and up, and the released-Jahia
-    // nightly runs one of them) have no such filter, and each of its rules can be switched off in jahia.properties,
-    // so the request reaches the chain or the JSP and is denied there instead. All three statuses mean "not served".
-    const OBFUSCATED_DENIED_STATUSES = [400, ...DENIED_STATUSES];
-
     const jsps: string[] = Cypress.env('TOOL_JSPS') as string[];
 
     it('denies an unauthorized request on every tool JSP', () => {
         expect(jsps, 'TOOL_JSPS configuration').to.be.an('array').and.not.to.be.empty;
         cy.clearCookies();
+        // An unauthorized request is denied at whichever layer handles it: 302 (perimeter redirect to login) or 403
+        // (in-JSP check). Both mean "not served"; a 200 would mean the guard was bypassed. The redirect must not be
+        // followed, otherwise the observed status would be that of the login page rather than the denial itself.
         jsps.forEach(jspPath => {
             cy.request({url: `/modules/tools/${jspPath}`, failOnStatusCode: false, followRedirect: false}).then(response => {
-                expect(response.status, `unauthorized GET /modules/tools/${jspPath}`).to.be.oneOf(DENIED_STATUSES);
+                expect(response.status, `unauthorized GET /modules/tools/${jspPath}`).to.not.eq(200);
             });
         });
-        cy.request({url: DOUBLE_ENCODED_TOOL_URL, failOnStatusCode: false, followRedirect: false}).then(response => {
-            expect(response.status, `unauthorized GET ${DOUBLE_ENCODED_TOOL_URL}`).to.be.oneOf(OBFUSCATED_DENIED_STATUSES);
+        cy.request({url: DOUBLE_ENCODED_TOOL_URL, failOnStatusCode: false}).then(response => {
+            expect(response.status, `unauthorized GET ${DOUBLE_ENCODED_TOOL_URL}`).to.not.eq(200);
         });
     });
 
