@@ -1,0 +1,11 @@
+# Client cache policy for the resources served by this module.
+#
+# Everything under /modules/tools is administration output built from the live state of the
+# server for the calling user, so it is served with the "private" template: each request is
+# answered from the server rather than from a browser, proxy or CDN cache.
+#
+# See the client-cache-control documentation for the ruleset format and the available templates.
+name: "Support Tools ruleset"
+description: "Client cache policy for the Support Tools module"
+rules:
+  - "8.1;GET|HEAD;(?:/[^/]+)?/modules/tools(/.*)?;template:private"
