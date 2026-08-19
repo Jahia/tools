@@ -81,7 +81,7 @@ try {
 <legend style="color: blue">Executed in <strong>${took}</strong> ms</legend>
 <p>${status}</p>
 <c:if test="${not empty error}">
-    <pre style="color: red">${fn:escapeXml(error)}</pre>
+    <pre style="color: red"><c:out value="${error}"/></pre>
 </c:if>
 </fieldset>
 </c:if>
