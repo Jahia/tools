@@ -81,7 +81,7 @@ try {
 <legend style="color: blue">Executed in <strong>${took}</strong> ms</legend>
 <p>${status}</p>
 <c:if test="${not empty error}">
-    <pre style="color: red">${error}</pre>
+    <pre style="color: red">${fn:escapeXml(error)}</pre>
 </c:if>
 </fieldset>
 </c:if>
@@ -121,11 +121,11 @@ try {
             </c:if>
           </c:forEach>
         </select>
-        <label class="left" for="mimeType">Mime type(s):</label><input name="mimeType" id="mimeType" value="${param.mimeType}" size="100"/>
+        <label class="left" for="mimeType">Mime type(s):</label><input name="mimeType" id="mimeType" value="${fn:escapeXml(param.mimeType)}" size="100"/>
         </p>
-        <p><label class="left" for="path">Path:</label><input name="path" id="path" value="${param.path}" size="120"/><input type="checkbox" name="includeSubnodes" id="includeSubnodes" ${param.includeSubnodes != null ? 'checked' : ''}/><label for="includeSubnodes">Include subnodes</label>
+        <p><label class="left" for="path">Path:</label><input name="path" id="path" value="${fn:escapeXml(param.path)}" size="120"/><input type="checkbox" name="includeSubnodes" id="includeSubnodes" ${param.includeSubnodes != null ? 'checked' : ''}/><label for="includeSubnodes">Include subnodes</label>
         </p>
-        <p></p><label class="left" for="filenamePattern">Filename (pattern):</label><input name="filenamePattern" id="filenamePattern" value="${param.filenamePattern}"/> (? is wildcard for single and * for multiple characters)</p>
+        <p></p><label class="left" for="filenamePattern">Filename (pattern):</label><input name="filenamePattern" id="filenamePattern" value="${fn:escapeXml(param.filenamePattern)}"/> (? is wildcard for single and * for multiple characters)</p>
         <p><input type="submit" name="reportExtractionByFilter" onclick="if (confirm('Start checking for extractable documents by filter?')) { go('navigateForm','action', 'reportExtractionByFilter'); } return false;" value="Check matching documents"/> - searches for extractable files matching the chosen filter</p>
         <p><input type="submit" name="redoExtractionByFilter" onclick="if (confirm('Redo text extractions for documents by filter. Do you want to continue?')) { go('navigateForm','action', 'redoExtractionByFilter'); } return false;" value="Redo text extractions"/> - extracts the text of files matching the chosen filter</p>
      </fieldset>
