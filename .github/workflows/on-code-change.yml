@@ -9,9 +9,7 @@ on:
 
 jobs:
   on-code-change:
-    # TEMPORARY: pinned to the branch of Jahia/jahia-modules-action#402 so this PR validates the
-    # containerised Sonar analysis on a real repository. Revert to @v2 before merging.
-    uses: Jahia/jahia-modules-action/.github/workflows/reusable-on-code-change.yml@fix/sonar-analysis-run-in-mvn-cache-container
+    uses: Jahia/jahia-modules-action/.github/workflows/reusable-on-code-change.yml@v2
     secrets: inherit
     with:
       module_id: tools
