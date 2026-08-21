@@ -13,18 +13,6 @@ jobs:
     secrets: inherit
     with:
       module_id: tools
-      module_branch: ${{ github.ref }}
       update_signature_execute: true
-      static_analysis_auditci_level: critical
-      build_container_image: ghcr.io/jahia/jahia-docker-mvn-cache:11-jdk-noble-mvn-loaded
-      sonar_analysis_primary_release_branch: main
-      integration_tests_standalone_execute: true
-      integration_tests_jahia_image: ghcr.io/jahia/jahia-ee-dev:8-snapshot
       integration_tests_provisioning_manifest: provisioning-manifest-build.yml
-      integration_tests_artifact_prefix: toolse
       integration_tests_testrail_project: Tools
-      integration_tests_should_use_build_artifacts: true
-      integration_tests_should_skip_testrail: true
-      integration_tests_pagerduty_skip_notification: false
-      integration_tests_timeout: 30
-      integration_tests_timeout_step: 20
