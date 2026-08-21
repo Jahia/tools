@@ -1,5 +1,15 @@
 # tools Changelog
 
+## 5.4.1
+
+* Restricted caching of Support Tools pages so each request is answered by the server, not from a cache.
+
+* Raised the minimum Jahia version to 8.2.1.0. Jahia 8.2.1.0 or later is now required to install the module.
+
+* Values submitted to the text extractor tool are now escaped before they are written back into the form, so a value containing a quote or an angle bracket is displayed as text instead of altering the page markup.
+
+* Restricted the Groovy console scriptURI parameter to the scripts packaged in active module bundles.
+
 ## 5.5.0
 
 ### Bug Fixes
