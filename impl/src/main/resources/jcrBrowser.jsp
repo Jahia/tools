@@ -295,7 +295,7 @@
                         node.removeMixin(request.getParameter("value"));
                         jcrSession.save();
                     %>
-                    <p style="color: blue">Mixin ${param.value} successfully removed from the node
+                    <p style="color: blue">Mixin ${fn:escapeXml(param.value)} successfully removed from the node
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                 </c:when>
                 <c:when test="${param.action == 'removeProperty' && not empty param.value}">
@@ -307,10 +307,10 @@
                             node.getProperty(request.getParameter("value")).remove();
                             jcrSession.save();
                     %>
-                    <p style="color: blue">Property ${param.value} successfully removed from the node
+                    <p style="color: blue">Property ${fn:escapeXml(param.value)} successfully removed from the node
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                     <% } else { %>
-                    <p style="color: red">Cannot find property ${param.value} on the node
+                    <p style="color: red">Cannot find property ${fn:escapeXml(param.value)} on the node
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                     <% } %>
                 </c:when>
@@ -337,10 +337,10 @@
                             }
                             jcrSession.save();
                     %>
-                    <p style="color: blue">Property ${param.value} successfully set on the node
+                    <p style="color: blue">Property ${fn:escapeXml(param.value)} successfully set on the node
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                     <% } else { %>
-                    <p style="color: red">Cannot find definition for property ${param.value} on the node
+                    <p style="color: red">Cannot find definition for property ${fn:escapeXml(param.value)} on the node
                         <strong>${fn:escapeXml(node.path)} [${node.primaryNodeTypeName}]</strong></p>
                     <% } %>
                 </c:when>
@@ -352,7 +352,7 @@
                         node.addMixin(request.getParameter("value"));
                         jcrSession.save();
                     %>
-                    <p style="color: blue">Mixin ${param.value} successfully added to the node
+                    <p style="color: blue">Mixin ${fn:escapeXml(param.value)} successfully added to the node
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                 </c:when>
                 <c:when test="${param.action == 'lock'}">
@@ -422,7 +422,7 @@
             <c:forTokens items="${node.path}" delims="/" var="pathItem"
                          varStatus="loop"><c:set var="breadcrumbs" value="${breadcrumbs}/${pathItem}"
             />/<c:if test="${!loop.last}"><a href="#breadcrumbs"
-                                             onclick="go('path', '${breadcrumbs}'); return false;">${fn:escapeXml(pathItem)}</a
+                                             onclick="go('path', '${fn:escapeXml(functions:escapeJavaScript(breadcrumbs))}'); return false;">${fn:escapeXml(pathItem)}</a
             ></c:if><c:if test="${loop.last}">${fn:escapeXml(pathItem)}</c:if></c:forTokens>
         </c:if>
         <p>
@@ -693,7 +693,7 @@
     <c:param name="workspace" value="${workspace == 'default' ? 'live' : 'default'}"/>
     <c:param name="toolAccessToken" value="${toolAccessToken}"/>
 </c:url>
-<p>Item with the path <strong>${param.path}</strong> does not exist in the '${workspace}' workspace</p>
+<p>Item with the path <strong>${fn:escapeXml(param.path)}</strong> does not exist in the '${workspace}' workspace</p>
 <p>Actions:
     &nbsp;<a href="${switchWorkspaceUrl}">switch to ${workspace == 'default' ? 'live' : 'default'} workspace</a>
     &nbsp;<a href="javascript:history.back()">go back</a>
