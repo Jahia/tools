@@ -56,7 +56,7 @@
             </c:url>
             <a href="${urlValue}">${fn:escapeXml(reference.name)} (${fn:escapeXml(value.string)})</a>
         </c:if>
-        <c:if test="${not valuePresent}">${value.string}</c:if>
+        <c:if test="${not valuePresent}">${fn:escapeXml(value.string)}</c:if>
     </c:when>
     <c:otherwise> <%-- other types --%>
         <c:if test="${property.name == 'jcr:versionableUuid'}" var="versionableUuid">
