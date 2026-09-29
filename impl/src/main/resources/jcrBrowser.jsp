@@ -5,6 +5,7 @@
 <html>
 <%@page import="org.apache.commons.collections.IteratorUtils" %>
 <%@page import="org.apache.commons.lang3.StringUtils" %>
+<%@page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
 <%@page import="org.jahia.api.Constants" %>
 <%@page import="org.jahia.services.content.JCRContentUtils" %>
@@ -341,7 +342,7 @@
                         <strong>${fn:escapeXml(node.path)}</strong></p>
                     <% } else { %>
                     <p style="color: red">Cannot find definition for property ${fn:escapeXml(param.value)} on the node
-                        <strong>${fn:escapeXml(node.path)} [${node.primaryNodeTypeName}]</strong></p>
+                        <strong>${fn:escapeXml(node.path)} [${fn:escapeXml(node.primaryNodeTypeName)}]</strong></p>
                     <% } %>
                 </c:when>
                 <c:when test="${param.action == 'addMixin' && not empty param.value}">
@@ -557,7 +558,7 @@
                                 <c:set var="refTarget" value="${ref.parent}"/>
                                 <a href="#reference"
                                    onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})
-                                    / ${ref.name}</a>
+                                    / ${fn:escapeXml(ref.name)}</a>
                             </c:if>
                         </li>
                     </c:forEach>
@@ -567,7 +568,7 @@
                                 <c:set var="refTarget" value="${ref.parent}"/>
                                 <a href="#reference"
                                    onclick="go('uuid', '${refTarget.identifier}'); return false;">${fn:escapeXml(refTarget.name)}&nbsp;(${refTarget.identifier})
-                                    / ${ref.name} - weak</a>
+                                    / ${fn:escapeXml(ref.name)} - weak</a>
                             </c:if>
                         </li>
                     </c:forEach>
@@ -701,8 +702,12 @@
     <%} catch (Exception e) {
 %>
 <body>
-<p style="color:red;"><strong>Error: </strong><%=e %>
-<pre style="color:red;"><% e.printStackTrace(new java.io.PrintWriter(out)); %></pre>
+<p style="color:red;"><strong>Error: </strong><%=StringEscapeUtils.escapeHtml4(e.toString()) %>
+<pre style="color:red;"><%
+    java.io.StringWriter stackTrace = new java.io.StringWriter();
+    e.printStackTrace(new java.io.PrintWriter(stackTrace));
+    out.print(StringEscapeUtils.escapeHtml4(stackTrace.toString()));
+%></pre>
 </p>
 <%
     } finally {

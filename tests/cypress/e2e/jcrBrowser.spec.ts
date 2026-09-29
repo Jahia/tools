@@ -72,4 +72,14 @@ describe('JCR browser (/modules/tools/jcrBrowser.jsp)', () => {
                 .to.deep.eq([`Cannot find property ${missingProperty} on the node ${FOLDER_PATH}`]);
         });
     });
+
+    it('displays the requested value exactly as it was sent when an action fails', () => {
+        const missingMixin = 'Q&A <draft>';
+        openJcrBrowser({path: FOLDER_PATH, action: 'addMixin', value: missingMixin}).then(doc => {
+            const error = Array.from(doc.querySelectorAll('p')).find(p => p.textContent.startsWith('Error:'));
+            expect(error?.textContent, 'error message').to.contain(missingMixin);
+            expect(Array.from(doc.querySelectorAll('pre')).map(pre => pre.textContent).join('\n'), 'error details')
+                .to.contain(missingMixin);
+        });
+    });
 });
