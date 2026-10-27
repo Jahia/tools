@@ -76,7 +76,7 @@
         <c:forEach items="${keys}" var="key" varStatus="i">
 
             <tr class="gradeA">
-                <td>${key}</td>
+                <td><c:out value="${key}"/></td>
                 <%
                     final Element element1 = cache.getQuiet(pageContext.getAttribute("key"));
                     final long expirationTime = element1 != null ? element1.getExpirationTime() : 0;
