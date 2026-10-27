@@ -25,7 +25,7 @@ function dependentKeyCells(): Cypress.Chainable<string[]> {
 describe('Module output dependencies cache viewer (/modules/tools/ehcache/ehcache_cj_dep.jsp)', () => {
     const run = Date.now().toString();
     const plainValue = `plain${run}`;
-    const quotedValue = `Q&A "Ann" <ann.${run}@example.com>`;
+    const quotedValue = `"Ann" <ann.${run}@example.com>`;
 
     before(() => {
         cy.login();

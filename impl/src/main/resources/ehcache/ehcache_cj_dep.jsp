@@ -77,8 +77,7 @@
                             out.print("Number of dependencies : " + deps.size());
                         } else {
                             for (String dep : deps) {
-                                // a cache key stores each "&" of its parts as "&amp;"
-                                out.print(StringEscapeUtils.escapeXml10(dep.replace("&amp;", "&")) + "<br/>");
+                                out.print(StringEscapeUtils.escapeXml10(dep) + "<br/>");
                             }
                         }%>
                         <br/>
