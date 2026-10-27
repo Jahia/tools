@@ -2,4 +2,4 @@
 tools: patch
 ---
 
-Fixed the output dependencies cache page so cache keys containing quotes or markup characters are displayed as text.
+Fixed the Dependencies column of the output dependencies cache page so dependent keys containing quotes or markup characters are displayed as text.
