@@ -6,6 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
 <%@ page import="org.jahia.services.render.filter.cache.ModuleCacheProvider" %>
@@ -76,7 +77,7 @@
                             out.print("Number of dependencies : " + deps.size());
                         } else {
                             for (String dep : deps) {
-                                out.print(dep + "<br/>");
+                                out.print(StringEscapeUtils.escapeXml10(dep) + "<br/>");
                             }
                         }%>
                         <br/>
