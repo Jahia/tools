@@ -202,7 +202,7 @@
             <select id="providerSelectTemplate" style="display:none;">
                 <option value="">(any provider)</option>
                 <c:forEach items="${allBundles}" var="b">
-                    <option value="${b.symbolicName}">${bundleLabels[b.bundleId]}</option>
+                    <option value="${fn:escapeXml(b.symbolicName)}"><c:out value="${bundleLabels[b.bundleId]}"/></option>
                 </c:forEach>
             </select>
         </div>
@@ -360,25 +360,25 @@
                         <%-- group.key = requirerBundleId, group.value = List<PackageWire> --%>
                         <c:set var="firstWire" value="${group.value[0]}"/>
                         <tr class="group-header" data-test-id="wires-requirer-group"
-                            data-requirer-symbolic-name="${firstWire.requirerBundle.symbolicName}">
+                            data-requirer-symbolic-name="${fn:escapeXml(firstWire.requirerBundle.symbolicName)}">
                             <td colspan="2">
                                 <a href="<c:url value='/tools/osgi/console/bundles/${firstWire.requirerBundle.id}'/>"
                                    title="Open in OSGi console" target="_blank">[${firstWire.requirerBundle.id}]</a>
-                                ${firstWire.requirerBundle.name}
-                                <span class="symbolic">(${firstWire.requirerBundle.symbolicName})</span>
+                                <c:out value="${firstWire.requirerBundle.name}"/>
+                                <span class="symbolic">(<c:out value="${firstWire.requirerBundle.symbolicName}"/>)</span>
                                 <span class="wire-count">${fn:length(group.value)} wire${fn:length(group.value) > 1 ? 's' : ''}</span>
                             </td>
                         </tr>
                         <c:forEach items="${group.value}" var="wire">
                             <tr class="data-row" data-test-id="wires-row"
-                                data-package-name="${wire.packageName}"
-                                data-provider-symbolic-name="${wire.providerBundle.symbolicName}">
-                                <td><code data-test-id="wires-row-package">${wire.packageName}</code></td>
+                                data-package-name="${fn:escapeXml(wire.packageName)}"
+                                data-provider-symbolic-name="${fn:escapeXml(wire.providerBundle.symbolicName)}">
+                                <td><code data-test-id="wires-row-package"><c:out value="${wire.packageName}"/></code></td>
                                 <td class="provider-cell">
                                     <a href="<c:url value='/tools/osgi/console/bundles/${wire.providerBundle.id}'/>"
                                        title="Open in OSGi console" target="_blank">[${wire.providerBundle.id}]</a>
-                                    ${wire.providerBundle.name}
-                                    <span class="symbolic" data-test-id="wires-row-provider">(${wire.providerBundle.symbolicName})</span>
+                                    <c:out value="${wire.providerBundle.name}"/>
+                                    <span class="symbolic" data-test-id="wires-row-provider">(<c:out value="${wire.providerBundle.symbolicName}"/>)</span>
                                 </td>
                             </tr>
                         </c:forEach>

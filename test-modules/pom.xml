@@ -36,9 +36,11 @@
         <module>test-core-lib</module>
         <module>test-util-lib</module>
         <module>test-other-lib</module>
+        <module>test-names-lib</module>
 
         <!-- Consumers -->
         <module>test-consumer-core</module>
+        <module>test-consumer-names</module>
         <module>test-consumer-util</module>
         <module>test-consumer-mixed</module>
         <module>test-consumer-dynamic</module>
