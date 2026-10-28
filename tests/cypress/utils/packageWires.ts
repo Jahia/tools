@@ -9,6 +9,7 @@ export const PATTERN_CORE_UTIL = 'org\\.jahia\\.test\\.core\\.util(\\..*)?';
 export const PATTERN_UTIL = 'org\\.jahia\\.test\\.util(\\..*)?';
 export const PATTERN_UTIL_IO = 'org\\.jahia\\.test\\.util\\.io(\\..*)?';
 export const PATTERN_UTIL_COLLECTIONS = 'org\\.jahia\\.test\\.util\\.collections(\\..*)?';
+export const PATTERN_NAMES = 'org\\.jahia\\.test\\.names';
 export const PATTERN_ALL = '.*';
 
 export const setDeprecationCustomConfig = (deprecatedPatternsByProvider: Map<string, string[]>): void => {

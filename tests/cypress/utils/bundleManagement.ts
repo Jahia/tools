@@ -7,6 +7,8 @@ export const CONSUMER_MIXED = 'org.jahia.test.consumer.mixed';
 export const CONSUMER_DYNAMIC = 'org.jahia.test.consumer.dynamic';
 export const CONSUMER_OPTIONAL = 'org.jahia.test.consumer.optional';
 export const CONSUMER_STOPPED = 'org.jahia.test.consumer.stopped';
+export const NAMES_LIB = 'org.jahia.test.names.lib';
+export const CONSUMER_NAMES = 'org.jahia.test.consumer.names';
 
 export const stopBundle = (symbolicName: string): void => {
     cy.log(`Stopping bundle: ${symbolicName}`);
