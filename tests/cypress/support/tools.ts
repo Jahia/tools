@@ -29,6 +29,10 @@ export function renderPage(value: string): void {
 
 // Returns the text of every cell of the given column (1-based) of the table of a cache viewer.
 export function cacheTableCells(viewerUrl: string, column: number, qs: Record<string, string> = {}): Cypress.Chainable<string[]> {
-    return openTool(viewerUrl, qs).then(doc => Array.from(doc.querySelectorAll(`#cacheTable tbody tr td:nth-child(${column})`))
-        .map(td => td.textContent));
+    return openTool(viewerUrl, qs).then(doc => elementTexts(doc, `#cacheTable tbody tr td:nth-child(${column})`));
+}
+
+// Returns the text of every element of the page that matches the selector.
+export function elementTexts(doc: Document, selector: string): string[] {
+    return Array.from(doc.querySelectorAll(selector)).map(element => element.textContent);
 }

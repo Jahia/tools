@@ -1,4 +1,4 @@
-import {openTool} from '../support/tools';
+import {elementTexts, openTool} from '../support/tools';
 import {deleteDeprecationCustomConfig, setDeprecationCustomConfig} from '../utils/packageWires';
 
 // The package wires analyzer lists the providers and patterns of the deprecated packages configuration, and the error
@@ -6,14 +6,19 @@ import {deleteDeprecationCustomConfig, setDeprecationCustomConfig} from '../util
 const URL = '/modules/tools/packageWiresAnalyzer.jsp';
 const PROVIDER = 'org.jahia.test."R&amp;D"<lib>';
 const PATTERN = 'org\\.jahia\\.test\\."R&amp;D"<draft>';
+const ANALYZE = {mode: 'deprecated', analyze: 'Analyze'};
 
 function texts(doc: Document, selector: string): string[] {
-    return Array.from(doc.querySelectorAll(selector)).map(element => element.textContent.trim());
+    return elementTexts(doc, selector).map(text => text.trim());
 }
 
 describe('Package wires analyzer configuration (/modules/tools/packageWiresAnalyzer.jsp)', () => {
     before(() => {
         setDeprecationCustomConfig(new Map([[PROVIDER, [PATTERN]]]));
+        // The configuration applies asynchronously: wait until the analysis reports the provider.
+        cy.login();
+        cy.waitUntil(() => openTool(URL, ANALYZE).then(doc => (doc.querySelector('[data-test-id="results-error-message"]')?.textContent || '')
+            .includes('Bundle with symbolic name \'org.jahia.test."R&')), {timeout: 30000, interval: 500});
     });
 
     after(() => {
@@ -34,7 +39,7 @@ describe('Package wires analyzer configuration (/modules/tools/packageWiresAnaly
     });
 
     it('displays the configuration error of the deprecated packages analysis as text', () => {
-        openTool(URL, {mode: 'deprecated', analyze: 'Analyze'}).then(doc => {
+        openTool(URL, ANALYZE).then(doc => {
             const message = doc.querySelector('[data-test-id="results-error-message"]');
             expect(message, 'the error message').not.to.equal(null);
             expect(message.textContent).to.contain(`'${PROVIDER}'`);

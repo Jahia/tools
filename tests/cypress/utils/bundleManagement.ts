@@ -37,10 +37,11 @@ export const refreshBundle = (symbolicName: string): void => {
     });
 };
 
-export const deleteAllConfigurations = (factoryPid: string): void => {
-    const query = `"(service.factoryPid=${factoryPid})"`;
+// Deletes the configurations of the factory that also match the given LDAP filter, if any, and yields their number.
+export const deleteAllConfigurations = (factoryPid: string, filter = ''): Cypress.Chainable<number> => {
+    const query = filter ? `"(&(service.factoryPid=${factoryPid})${filter})"` : `"(service.factoryPid=${factoryPid})"`;
     cy.log(`Deleting all configurations for factoryPid: ${factoryPid}`);
-    cy.task('sshCommand', [`config:list -s ${query}`]).then((listResponse: string) => {
+    return cy.task('sshCommand', [`config:list -s ${query}`]).then((listResponse: string) => {
         const configIds = listResponse
             .split(/\r?\n/)
             .map(line => line.trim())
@@ -55,6 +56,7 @@ export const deleteAllConfigurations = (factoryPid: string): void => {
                 cy.log(`Deleted configuration: ${configId}`);
             });
         });
+        return cy.wrap(configIds.length);
     });
 };
 
