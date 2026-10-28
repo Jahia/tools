@@ -35,7 +35,8 @@
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
         pageContext.setAttribute("entryContent", String.valueOf(obj));
-    %><pre><c:out value="${entryContent}"/></pre>
+    %><pre style="white-space: pre-wrap">
+<c:out value="${entryContent}"/></pre>
     </body>
     </html>
 </c:if>

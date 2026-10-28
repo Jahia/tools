@@ -48,10 +48,6 @@ function displayedContent(url: string, key: string): Cypress.Chainable<string> {
         .then(response => parseHtml(response.body).querySelector('body > pre')?.textContent ?? ''));
 }
 
-function normalize(text: string): string {
-    return text.replace(/\r\n?/g, '\n').trim();
-}
-
 describe('Module output cache viewers (/modules/tools/ehcache/ehcache_cj.jsp, ehcache_cj_dep.jsp)', () => {
     const run = Date.now().toString();
     const plainValue = `plain${run}`;
@@ -83,7 +79,7 @@ describe('Module output cache viewers (/modules/tools/ehcache/ehcache_cj.jsp, eh
     it('displays the content of an entry exactly as it is stored', () => {
         storedEntry(plainValue).then(({key, content}) => {
             displayedContent(VIEWER_URL, key).then(text => {
-                expect(normalize(text)).to.eq(normalize(content));
+                expect(text).to.eq(content);
             });
         });
     });
@@ -91,7 +87,7 @@ describe('Module output cache viewers (/modules/tools/ehcache/ehcache_cj.jsp, eh
     it('displays the content of an entry exactly as it is stored, from the dependencies page', () => {
         storedEntry(plainValue).then(({key, content}) => {
             displayedContent(DEPENDENCIES_VIEWER_URL, key).then(text => {
-                expect(normalize(text)).to.eq(normalize(content));
+                expect(text).to.eq(content);
             });
         });
     });

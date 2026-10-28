@@ -25,7 +25,8 @@
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
         pageContext.setAttribute("entryContent", String.valueOf(obj));
-    %><pre><c:out value="${entryContent}"/></pre>
+    %><pre style="white-space: pre-wrap">
+<c:out value="${entryContent}"/></pre>
 </c:if>
 <c:if test="${empty param.key}">
     <c:set var="title" value="Display content of module cache dependencies"/>
