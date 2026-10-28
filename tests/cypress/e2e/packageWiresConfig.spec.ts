@@ -12,17 +12,24 @@ function texts(doc: Document, selector: string): string[] {
     return elementTexts(doc, selector).map(text => text.trim());
 }
 
+// Whether the configured patterns table lists the test provider, whatever the way its name is displayed.
+function providerListed(): Cypress.Chainable<boolean> {
+    return openTool(URL).then(doc => texts(doc, '[data-test-id="configured-patterns-provider"]')
+        .some(text => text.startsWith('org.jahia.test."R&')));
+}
+
 describe('Package wires analyzer configuration (/modules/tools/packageWiresAnalyzer.jsp)', () => {
     before(() => {
         setDeprecationCustomConfig(new Map([[PROVIDER, [PATTERN]]]));
-        // The configuration applies asynchronously: wait until the analysis reports the provider.
+        // The configuration applies asynchronously: wait until the page lists the provider.
         cy.login();
-        cy.waitUntil(() => openTool(URL, ANALYZE).then(doc => (doc.querySelector('[data-test-id="results-error-message"]')?.textContent || '')
-            .includes('Bundle with symbolic name \'org.jahia.test."R&')), {timeout: 30000, interval: 500});
+        cy.waitUntil(() => providerListed(), {timeout: 30000, interval: 500});
     });
 
     after(() => {
         deleteDeprecationCustomConfig();
+        cy.login();
+        cy.waitUntil(() => providerListed().then(listed => !listed), {timeout: 30000, interval: 500});
     });
 
     beforeEach(() => {

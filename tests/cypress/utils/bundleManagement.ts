@@ -40,7 +40,7 @@ export const refreshBundle = (symbolicName: string): void => {
 // Deletes the configurations of the factory that also match the given LDAP filter, if any, and yields their number.
 export const deleteAllConfigurations = (factoryPid: string, filter = ''): Cypress.Chainable<number> => {
     const query = filter ? `"(&(service.factoryPid=${factoryPid})${filter})"` : `"(service.factoryPid=${factoryPid})"`;
-    cy.log(`Deleting all configurations for factoryPid: ${factoryPid}`);
+    cy.log(`Deleting the configurations matching ${query}`);
     return cy.task('sshCommand', [`config:list -s ${query}`]).then((listResponse: string) => {
         const configIds = listResponse
             .split(/\r?\n/)
