@@ -10,7 +10,7 @@
 
     <artifactId>test-consumer-labels</artifactId>
     <packaging>bundle</packaging>
-    <name>Test Consumer Q&amp;A &lt;draft&gt;</name>
+    <name>Test Consumer R&amp;amp;D &lt;draft&gt;</name>
     <description>Test Jahia module whose name and Import-Package attribute hold special characters</description>
 
     <build>
@@ -23,7 +23,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.jahia.test.consumer.labels</Bundle-SymbolicName>
                         <Import-Package>
-                            org.jahia.test.labels;resolution:=optional;note="Q&amp;A &lt;draft&gt;"
+                            org.jahia.test.labels;resolution:=optional;note="R&amp;amp;D &lt;draft&gt;"
                         </Import-Package>
                     </instructions>
                 </configuration>

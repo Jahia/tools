@@ -4,9 +4,9 @@ import {openTool} from '../support/tools';
 // clauses of each one. The test-consumer-labels test module carries the name and the clause attribute below.
 const URL = '/modules/tools/importPackageChecker.jsp';
 const SYMBOLIC_NAME = 'org.jahia.test.consumer.labels';
-const BUNDLE_NAME = 'Test Consumer Q&A <draft>';
+const BUNDLE_NAME = 'Test Consumer R&amp;D <draft>';
 const PACKAGE_REGEXP = 'org\\.jahia\\.test\\.labels';
-const FORM_VALUE = 'Q&A "draft" <1>';
+const FORM_VALUE = 'R&amp;D "draft" <1>';
 
 // Runs the checker on the package of the test module, and returns the text of the name and of each clause it lists for
 // the test module.
@@ -36,7 +36,7 @@ describe('Import-Package checker (/modules/tools/importPackageChecker.jsp)', () 
     it('displays the matching clauses as text', () => {
         testModuleEntry().then(({clauses}) => {
             expect(clauses).to.have.length(1);
-            expect(clauses[0]).to.match(/^org\.jahia\.test\.labels;/).and.to.contain('note=Q&A <draft>');
+            expect(clauses[0]).to.match(/^org\.jahia\.test\.labels;/).and.to.match(/;note="?R&amp;D <draft>"?$/);
         });
     });
 
