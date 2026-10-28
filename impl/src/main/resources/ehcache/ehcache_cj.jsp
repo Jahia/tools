@@ -7,6 +7,7 @@
 <%@ page import="net.sf.ehcache.Ehcache" %>
 <%@ page import="net.sf.ehcache.Element" %>
 <%@ page import="org.apache.commons.io.FileUtils" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="org.jahia.services.cache.CacheEntry" %>
 <%@ page import="org.jahia.services.cache.ehcache.EhCacheStatisticsWrapper" %>
 <%@ page import="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator" %>
@@ -34,7 +35,7 @@
         System.out.println(request.getParameter("key"));
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
-    %><%= obj %>
+    %><%= StringEscapeUtils.escapeXml10(String.valueOf(obj)) %>
     </body>
     </html>
 </c:if>
@@ -97,7 +98,7 @@
             <c:forEach items="${keys}" var="key" varStatus="i">
 
                 <tr class="gradeA">
-                    <td>${key}</td>
+                    <td><c:out value="${key}"/></td>
                     <% String attribute = (String) pageContext.getAttribute("key");
                         final Element element = cache.getQuiet(attribute);
                         if (element != null && element.getObjectValue() != null) {
