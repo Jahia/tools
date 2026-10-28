@@ -29,6 +29,20 @@ export const setDeprecationCustomConfig = (deprecatedPatternsByProvider: Map<str
     cy.runProvisioningScript({fileContent: JSON.stringify([conf]), type: 'application/json'});
 };
 
+// Deletes the configuration that setDeprecationCustomConfig creates, and keeps the other configurations of the factory.
+export const deleteDeprecationCustomConfig = (): void => {
+    const query = `"(&(service.factoryPid=${DEPRECATION_FACTORY_PID})(felix.fileinstall.filename=*-${DEPRECATION_CONFIG_ID}.cfg))"`;
+    cy.task('sshCommand', [`config:list -s ${query}`]).then((listResponse: string) => {
+        listResponse
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(line => line.startsWith(DEPRECATION_FACTORY_PID))
+            .forEach(configId => {
+                cy.task('sshCommand', [`config:delete ${configId}`]).should('be.empty');
+            });
+    });
+};
+
 export type Bundle = {
     id: number;
     symbolicName: string;
