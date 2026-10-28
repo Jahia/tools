@@ -34,7 +34,9 @@
         System.out.println(request.getParameter("key"));
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
-    %><%= obj %>
+        pageContext.setAttribute("entryContent", String.valueOf(obj));
+    %><pre style="white-space: pre-wrap">
+<c:out value="${entryContent}"/></pre>
     </body>
     </html>
 </c:if>
@@ -97,7 +99,7 @@
             <c:forEach items="${keys}" var="key" varStatus="i">
 
                 <tr class="gradeA">
-                    <td>${key}</td>
+                    <td><c:out value="${key}"/></td>
                     <% String attribute = (String) pageContext.getAttribute("key");
                         final Element element = cache.getQuiet(attribute);
                         if (element != null && element.getObjectValue() != null) {

@@ -24,7 +24,9 @@
         System.out.println(request.getParameter("key"));
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
-    %><%= obj %>
+        pageContext.setAttribute("entryContent", String.valueOf(obj));
+    %><pre style="white-space: pre-wrap">
+<c:out value="${entryContent}"/></pre>
 </c:if>
 <c:if test="${empty param.key}">
     <c:set var="title" value="Display content of module cache dependencies"/>
@@ -70,7 +72,7 @@
                 %>
                 <tr class="gradeA">
 
-                    <td>${key}</td>
+                    <td><c:out value="${key}"/></td>
                     <td><%
                         Set<String> deps = (Set<String>) element.getValue();
                         if (deps.size() > 10) {
