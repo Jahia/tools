@@ -1,4 +1,5 @@
 import Chainable = Cypress.Chainable;
+import {deleteAllConfigurations} from './bundleManagement';
 export const DEPRECATION_FACTORY_PID = 'org.jahia.modules.tools.deprecatedpackagewires';
 // The config instance created will be 'org.jahia.modules.tools.deprecatedpackagewires-custom'
 const DEPRECATION_CONFIG_ID = 'custom';
@@ -27,6 +28,12 @@ export const setDeprecationCustomConfig = (deprecatedPatternsByProvider: Map<str
         properties: properties
     };
     cy.runProvisioningScript({fileContent: JSON.stringify([conf]), type: 'application/json'});
+};
+
+// Deletes the configuration that setDeprecationCustomConfig creates, and keeps the other configurations of the factory.
+export const deleteDeprecationCustomConfig = (): void => {
+    deleteAllConfigurations(DEPRECATION_FACTORY_PID, `(felix.fileinstall.filename=*-${DEPRECATION_CONFIG_ID}.cfg)`)
+        .should('eq', 1);
 };
 
 export type Bundle = {

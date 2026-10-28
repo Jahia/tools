@@ -131,7 +131,7 @@
         <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <%-- Preserve showInternal across form submissions --%>
         <c:if test="${not empty param.showInternal}">
-            <input type="hidden" name="showInternal" value="${param.showInternal}"/>
+            <input type="hidden" name="showInternal" value="${fn:escapeXml(param.showInternal)}"/>
         </c:if>
 
         <div class="radio-group">
@@ -159,7 +159,7 @@
                                             <c:if test="${patternStatus.first}">
                                                 <td data-test-id="configured-patterns-provider"
                                                     style="padding:4px 8px; border:1px solid #ddd; font-weight:bold; background:#f0f0f0; vertical-align:top; white-space:nowrap;">
-                                                    ${entry.key}
+                                                    <c:out value="${entry.key}"/>
                                                 </td>
                                             </c:if>
                                             <c:if test="${not patternStatus.first}">
@@ -167,7 +167,7 @@
                                             </c:if>
                                             <td data-test-id="configured-patterns-pattern"
                                                 style="padding:4px 8px; border:1px solid #ddd; font-family:monospace; font-size:10px;">
-                                                ${pattern}
+                                                <c:out value="${pattern}"/>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -306,7 +306,7 @@
                 <strong>Results</strong>
                 <span class="badge badge-err" data-test-id="results-error-badge">❌ Error</span>
             </div>
-            <p style="color:#900;" data-test-id="results-error-message"><strong>${analysisError}</strong></p>
+            <p style="color:#900;" data-test-id="results-error-message"><strong><c:out value="${analysisError}"/></strong></p>
         </c:when>
 
         <%-- ── Empty results ── --%>
@@ -417,10 +417,10 @@
         <div id="configuredPatternsArea">
             <h3>Configured Jahia deprecated patterns</h3>
             <c:forEach items="${patternsByProvider}" var="entry">
-                <p><strong>${entry.key}</strong></p>
+                <p><strong><c:out value="${entry.key}"/></strong></p>
                 <ul>
                     <c:forEach items="${entry.value}" var="pattern">
-                        <li><code>${pattern}</code></li>
+                        <li><code><c:out value="${pattern}"/></code></li>
                     </c:forEach>
                 </ul>
             </c:forEach>
