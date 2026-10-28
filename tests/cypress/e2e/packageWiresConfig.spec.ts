@@ -45,4 +45,13 @@ describe('Package wires analyzer configuration (/modules/tools/packageWiresAnaly
             expect(message.textContent).to.contain(`'${PROVIDER}'`);
         });
     });
+
+    it('keeps the showInternal parameter of the form as typed', () => {
+        const value = 'x "R&amp;D" <i>';
+        openTool(URL, {showInternal: value}).then(doc => {
+            const input = doc.querySelector<HTMLInputElement>('#wiresForm input[name="showInternal"]');
+            expect(input, 'the showInternal field').not.to.equal(null);
+            expect(input.value).to.eq(value);
+        });
+    });
 });

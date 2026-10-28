@@ -131,7 +131,7 @@
         <input type="hidden" name="toolAccessToken" value="${toolAccessToken}"/>
         <%-- Preserve showInternal across form submissions --%>
         <c:if test="${not empty param.showInternal}">
-            <input type="hidden" name="showInternal" value="${param.showInternal}"/>
+            <input type="hidden" name="showInternal" value="${fn:escapeXml(param.showInternal)}"/>
         </c:if>
 
         <div class="radio-group">
