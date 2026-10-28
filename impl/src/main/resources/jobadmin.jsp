@@ -90,6 +90,7 @@ pageContext.setAttribute("scheduler", scheduler);
         <input type="hidden" id="schedulerType" name="schedulerType" value="${ramScheduler ? 'ram' : ''}"/>
     </form>
 </fieldset>
+<c:set var="jobLabel" value="${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}"/>
 <c:if test="${'removeCompleted' == param.action}">
     <% pageContext.setAttribute("jobsflushed", isRamScheduler ? service.deleteAllCompletedRAMJobs() : service.deleteAllCompletedJobs()); %>
      <p style="color: blue">Removed <strong>${jobsflushed}</strong> completed jobs</p>
@@ -105,37 +106,37 @@ pageContext.setAttribute("scheduler", scheduler);
         }
         scheduler.unscheduleJob(toDelete.getName(), toDelete.getGroup());
     %>
-    <p style="color: blue">Successfully unscheduled <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong> job trigger</p>
+    <p style="color: blue">Successfully unscheduled <strong>${jobLabel}</strong> job trigger</p>
     <% } else { %>
-    <p style="color: red">Unable to find trigger <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong></p>
+    <p style="color: red">Unable to find trigger <strong>${jobLabel}</strong></p>
     <% } %>
 </c:if>
 <c:if test="${'remove' == param.action && not empty param.name && not empty param.group}">
     <%
     if (scheduler.deleteJob(request.getParameter("name"), request.getParameter("group"))) {
     %>
-    <p style="color: blue">Successfully deleted job <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong></p>
+    <p style="color: blue">Successfully deleted job <strong>${jobLabel}</strong></p>
     <% } else { %>
-    <p style="color: red">Unable to delete job <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong></p>
+    <p style="color: red">Unable to delete job <strong>${jobLabel}</strong></p>
     <% } %>
 </c:if>
 <c:if test="${'pause' == param.action && not empty param.name && not empty param.group}">
     <%
     scheduler.pauseJob(request.getParameter("name"), request.getParameter("group"));
     %>
-    <p style="color: blue">Successfully paused <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong> job</p>
+    <p style="color: blue">Successfully paused <strong>${jobLabel}</strong> job</p>
 </c:if>
 <c:if test="${'resume' == param.action && not empty param.name && not empty param.group}">
     <%
     scheduler.resumeJob(request.getParameter("name"), request.getParameter("group"));
     %>
-    <p style="color: blue">Successfully resumed <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong> job</p>
+    <p style="color: blue">Successfully resumed <strong>${jobLabel}</strong> job</p>
 </c:if>
 <c:if test="${'trigger' == param.action && not empty param.name && not empty param.group}">
     <%
     scheduler.triggerJobWithVolatileTrigger(request.getParameter("name"), request.getParameter("group"));
     %>
-    <p style="color: blue">Successfully triggered the immediate execution of the job <strong>${fn:escapeXml(param.group)}.${fn:escapeXml(param.name)}</strong></p>
+    <p style="color: blue">Successfully triggered the immediate execution of the job <strong>${jobLabel}</strong></p>
 </c:if>
 <%
 List<JobDetail> allJobs = isRamScheduler ? service.getAllRAMJobs() : service.getAllJobs();

@@ -28,4 +28,16 @@ describe('Job administration tool (/modules/tools/jobadmin.jsp)', () => {
             expect(resultLine(doc, 'Unable to delete job')).to.equal(`${GROUP}.${NAME}`);
         });
     });
+
+    it('shows the group and name of a paused job as typed', () => {
+        openTool(PAGE, {action: 'pause', group: GROUP, name: NAME}).then(doc => {
+            expect(resultLine(doc, 'Successfully paused')).to.equal(`${GROUP}.${NAME}`);
+        });
+    });
+
+    it('shows the group and name of a resumed job as typed', () => {
+        openTool(PAGE, {action: 'resume', group: GROUP, name: NAME}).then(doc => {
+            expect(resultLine(doc, 'Successfully resumed')).to.equal(`${GROUP}.${NAME}`);
+        });
+    });
 });
