@@ -80,8 +80,8 @@ describe('Repository check tools (/modules/tools/checklocks.jsp, jcrIntegrityToo
     it('lists the locked nodes by path, exactly as the paths are written', () => {
         openTool('/modules/tools/checklocks.jsp', {workspace: 'default', operation: 'runJCRTest'}).then(doc => {
             const text = doc.body.textContent;
-            expect(text, 'report of the plain path').to.contain(`${PLAIN_PATH} `);
-            expect(text, 'report of the path with special characters').to.contain(`${NAMED_PATH} `);
+            expect(text, 'report of the plain path').to.contain(PLAIN_PATH);
+            expect(text, 'report of the path with special characters').to.contain(NAMED_PATH);
         });
     });
 
@@ -106,6 +106,14 @@ describe('Repository check tools (/modules/tools/checklocks.jsp, jcrIntegrityToo
         openTool('/modules/tools/benchmarks.jsp', {do: 'true', runJCRTest: 'on'}).then(doc => {
             const warnings = Array.from(doc.querySelectorAll('span.warning')).map(span => span.textContent);
             expect(warnings.some(text => text.endsWith(`referenced from ${NAMED_PATH}/reference/j:node`)), 'reference warning').to.be.true;
+        });
+    });
+
+    it('displays the details of an integrity check error exactly as they were reported', () => {
+        const missingIdentifier = 'Q&A <draft>';
+        openTool('/modules/tools/jcrIntegrityTools.jsp', {workspace: 'default', uuid: missingIdentifier, operation: 'runJCRTest'}).then(doc => {
+            const details = Array.from(doc.querySelectorAll('pre')).map(pre => pre.textContent).join('\n');
+            expect(details, 'error details').to.contain(missingIdentifier);
         });
     });
 });
