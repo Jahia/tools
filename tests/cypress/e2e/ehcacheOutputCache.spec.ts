@@ -42,10 +42,10 @@ function storedEntry(value: string): Cypress.Chainable<{key: string, content: st
     });
 }
 
-// Returns the text a viewer displays for the entry of the given key.
+// Returns the preformatted text a viewer displays for the entry of the given key.
 function displayedContent(url: string, key: string): Cypress.Chainable<string> {
     return toolAccessToken().then(token => cy.request({url, qs: {key, toolAccessToken: token}})
-        .then(response => parseHtml(response.body).body.textContent));
+        .then(response => parseHtml(response.body).querySelector('body > pre')?.textContent ?? ''));
 }
 
 function normalize(text: string): string {
@@ -83,7 +83,7 @@ describe('Module output cache viewers (/modules/tools/ehcache/ehcache_cj.jsp, eh
     it('displays the content of an entry exactly as it is stored', () => {
         storedEntry(plainValue).then(({key, content}) => {
             displayedContent(VIEWER_URL, key).then(text => {
-                expect(normalize(text)).to.include(normalize(content));
+                expect(normalize(text)).to.eq(normalize(content));
             });
         });
     });
@@ -91,7 +91,7 @@ describe('Module output cache viewers (/modules/tools/ehcache/ehcache_cj.jsp, eh
     it('displays the content of an entry exactly as it is stored, from the dependencies page', () => {
         storedEntry(plainValue).then(({key, content}) => {
             displayedContent(DEPENDENCIES_VIEWER_URL, key).then(text => {
-                expect(normalize(text)).to.include(normalize(content));
+                expect(normalize(text)).to.eq(normalize(content));
             });
         });
     });

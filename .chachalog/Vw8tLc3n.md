@@ -2,5 +2,4 @@
 tools: patch
 ---
 
-Fixed the Key column of the module output cache and output dependencies cache pages to display keys as text.
-Viewing a cache entry from these pages shows its stored HTML as text.
+Fixed the module output cache pages so cache keys and the content of a viewed cache entry are displayed as text.
