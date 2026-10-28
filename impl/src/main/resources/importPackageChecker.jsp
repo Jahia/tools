@@ -6,6 +6,7 @@
 <%@ page import="org.jahia.modules.tools.gql.admin.osgi.FindImportPackage" %>
 <%@ page import="org.jahia.modules.tools.gql.admin.osgi.OSGiAnalyzer" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="title" value="OSGI Import-Package checker"/>
 <head>
     <%@ include file="commons/html_header.jspf" %>
@@ -22,7 +23,7 @@
             <label for="regexp">
                 Return Import-Package clause where package name match regExp:
             </label><br>
-            <input name="regexp" id="regexp" value="${not empty param.regexp ? param.regexp : ''}" size="100"/><br>
+            <input name="regexp" id="regexp" value="${fn:escapeXml(param.regexp)}" size="100"/><br>
             <label for="regexp">
                 (ex: <b>org\.springframework\..*</b> will match <u>org.springframework.jdbc.datasource; version="[3.2, 4)"</u> and <u>org.springframework.jdbc.datasource; "[5.3.29, 5.4)"</u> and <u>org.springframework.jdbc.datasource</u>
             </label>
@@ -32,7 +33,7 @@
             <label for="version">
                 Return Import-Package with version limitations matching given version:
             </label><br>
-            <input name="version" id="version" value="${not empty param.version ? param.version : ''}"/><br>
+            <input name="version" id="version" value="${fn:escapeXml(param.version)}"/><br>
             <label for="version">
                 (ex: <b>3.2.19</b> will only match <u>org.springframework.jdbc.datasource; version="[3.2, 4)"</u> and <u>org.springframework.jdbc.datasource</u>)
             </label>
@@ -71,11 +72,11 @@
                         <a href="<c:url value='/tools/osgi/console/bundles/${entry.id}'/>" title="See details">
                             [${entry.id}]
                         </a>
-                        <strong>${entry.displayName} [${entry.id}]</strong>
+                        <strong><c:out value="${entry.displayName}"/> [${entry.id}]</strong>
 
                         <ul>
                             <c:forEach items="${entry.matchingImportedPackage}" var="importedPackage">
-                                <li>${importedPackage}</li>
+                                <li><c:out value="${importedPackage}"/></li>
                             </c:forEach>
                         </ul>
                     </li>

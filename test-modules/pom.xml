@@ -45,6 +45,7 @@
         <module>test-consumer-optional</module>
         <module>test-consumer-no-matches</module>
         <module>test-consumer-stopped</module>
+        <module>test-consumer-labels</module>
     </modules>
 
 </project>
