@@ -17,7 +17,6 @@
 --%>
 <c:if test="${not empty param.flushkey}">
         <%
-        System.out.println(request.getParameter("flushkey"));
         boolean removed = ModuleCacheProvider.getInstance().getCache().remove(request.getParameter("flushkey"));
         pageContext.setAttribute("removed", removed);
     %>

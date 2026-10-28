@@ -3,6 +3,7 @@
 <tools:requireToolsAccess/>
 <!DOCTYPE html>
 <html>
+<%@page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@page import="org.apache.jackrabbit.core.id.NodeId" %>
 <%@ page import="org.jahia.modules.tools.benchmark.DatabaseBenchmark" %>
 <%@ page import="org.jahia.services.content.*" %>
@@ -452,37 +453,37 @@
 
     private void print(JspWriter out, String message) throws IOException {
         System.out.print(message);
-        out.print(message);
+        out.print(StringEscapeUtils.escapeHtml4(message));
         out.flush();
     }
 
     private void println(JspWriter out, String message) throws IOException {
         System.out.println(message);
-        out.println(message + "<br/>");
+        out.println(StringEscapeUtils.escapeHtml4(message) + "<br/>");
         out.flush();
     }
 
     private void depthPrintln(JspWriter out, int depth, String message) throws IOException {
         System.out.println(generatePadding(depth, false) + message);
-        out.println(generatePadding(depth, true) + message + "<br/>");
+        out.println(generatePadding(depth, true) + StringEscapeUtils.escapeHtml4(message) + "<br/>");
         out.flush();
     }
 
     private void debugPrintln(JspWriter out, String message) throws IOException {
         System.out.println("DEBUG: " + message);
-        out.println("<!--" + message + "-->");
+        out.println("<!--" + StringEscapeUtils.escapeHtml4(message) + "-->");
         out.flush();
     }
 
     private void errorPrintln(JspWriter out, String message) throws IOException {
         System.out.println("ERROR: " + message);
-        out.println("<span class='error'>" + message + "</span><br/>");
+        out.println("<span class='error'>" + StringEscapeUtils.escapeHtml4(message) + "</span><br/>");
         out.flush();
     }
 
     private void depthErrorPrintln(JspWriter out, int depth, String message) throws IOException {
         System.out.println(generatePadding(depth, false) + "ERROR: " + message);
-        out.println(generatePadding(depth, true) + "<span class='error'>" + message + "</span><br/>");
+        out.println(generatePadding(depth, true) + "<span class='error'>" + StringEscapeUtils.escapeHtml4(message) + "</span><br/>");
         out.flush();
     }
 
@@ -490,14 +491,16 @@
         System.out.println(message);
         t.printStackTrace();
         if (warning) {
-            out.println("<span class='warning'>" + message + "</span>");
+            out.println("<span class='warning'>" + StringEscapeUtils.escapeHtml4(message) + "</span>");
         } else {
-            out.println("<span class='error'>" + message + "</span>");
+            out.println("<span class='error'>" + StringEscapeUtils.escapeHtml4(message) + "</span>");
         }
         errorCount++;
         out.println("<a href=\"javascript:toggleLayer('error" + errorCount + "');\" title=\"Click here to view error details\">Show/hide details</a>");
         out.println("<div id='error" + errorCount + "' class='hiddenDetails'><pre>");
-        t.printStackTrace(new PrintWriter(out));
+        StringWriter stackTrace = new StringWriter();
+        t.printStackTrace(new PrintWriter(stackTrace));
+        out.print(StringEscapeUtils.escapeHtml4(stackTrace.toString()));
         out.println("</pre></div>");
         out.println("<br/>");
         out.flush();

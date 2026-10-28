@@ -21,7 +21,6 @@
 <c:if test="${not empty param.key}">
     <body>
     <%
-        System.out.println(request.getParameter("key"));
         Element elem = ModuleCacheProvider.getInstance().getCache().getQuiet(request.getParameter("key"));
         Object obj = elem != null ? ((CacheEntry) elem.getValue()).getObject() : null;
         pageContext.setAttribute("entryContent", String.valueOf(obj));

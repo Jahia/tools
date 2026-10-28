@@ -21,7 +21,6 @@
 --%>
 <c:if test="${not empty param.flushkey}">
     <%
-        System.out.println(request.getParameter("flushkey"));
         Ehcache cache = CacheHelper.getCacheManager(pageContext.getRequest().getParameter("name")).getEhcache(pageContext.getRequest().getParameter("cache"));
         boolean removed = cache.remove(request.getParameter("flushkey"));
         pageContext.setAttribute("removed", removed);

@@ -5,6 +5,7 @@
 <html>
 <%@ page import="org.apache.commons.collections.CollectionUtils" %>
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
 <%@ page import="org.apache.jackrabbit.core.lock.LockInfo" %>
 <%@ page import="org.jahia.ajax.gwt.helper.CacheHelper" %>
@@ -194,7 +195,7 @@
     private void println(JspWriter out, String message) {
         System.out.println(message);
         try {
-            out.println(message + "<br/>");
+            out.println(StringEscapeUtils.escapeHtml4(message) + "<br/>");
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -204,7 +205,7 @@
     private void printlnFix(JspWriter out, String message) {
         System.out.println("FIX: " + message);
         try {
-            out.println("<span class='fix'>" + message + "</span>");
+            out.println("<span class='fix'>" + StringEscapeUtils.escapeHtml4(message) + "</span>");
             out.println("<br/>");
             out.flush();
         } catch (IOException e) {
@@ -227,15 +228,17 @@
         }
         try {
             if (warning) {
-                out.println("<span class='warning'>" + message + "</span>");
+                out.println("<span class='warning'>" + StringEscapeUtils.escapeHtml4(message) + "</span>");
             } else {
-                out.println("<span class='error'>" + message + "</span>");
+                out.println("<span class='error'>" + StringEscapeUtils.escapeHtml4(message) + "</span>");
             }
             errorCount++;
             if (t != null) {
                 out.println("<a href=\"javascript:toggleLayer('error" + errorCount + "');\" title=\"Click here to view error details\">Show/hide details</a>");
                 out.println("<div id='error" + errorCount + "' class='hiddenDetails'><pre>");
-                t.printStackTrace(new PrintWriter(out));
+                StringWriter stackTrace = new StringWriter();
+                t.printStackTrace(new PrintWriter(stackTrace));
+                out.print(StringEscapeUtils.escapeHtml4(stackTrace.toString()));
                 out.println("</pre></div>");
             }
             out.println("<br/>");
