@@ -103,7 +103,8 @@ describe('Repository check tools (/modules/tools/checklocks.jsp, jcrIntegrityToo
     });
 
     it('names the property of a reference that cannot be resolved in the JCR read benchmark, exactly as its path is written', () => {
-        openTool('/modules/tools/benchmarks.jsp', {do: 'true', runJCRTest: 'on'}).then(doc => {
+        openTool('/modules/tools/benchmarks.jsp', {do: 'true', runJCRTest: 'on'}, 300000).then(doc => {
+            expect(doc.body.textContent, 'benchmark read the whole repository').not.to.contain('Reached 10000 nodes');
             const warnings = Array.from(doc.querySelectorAll('span.warning')).map(span => span.textContent);
             expect(warnings.some(text => text.endsWith(`referenced from ${NAMED_PATH}/reference/j:node`)), 'reference warning').to.be.true;
         });

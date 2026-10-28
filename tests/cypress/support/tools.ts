@@ -9,10 +9,11 @@ export function parseHtml(body: string): Document {
     return new DOMParser().parseFromString(body, 'text/html');
 }
 
-// Opens a tool page with the given parameters and a fresh tools access token, and returns the parsed page.
-export function openTool(url: string, qs: Record<string, string> = {}): Cypress.Chainable<Document> {
+// Opens a tool page with the given parameters and a fresh tools access token, and returns the parsed page. A tool
+// that walks the whole repository answers only once the walk ends, so it takes a longer response timeout.
+export function openTool(url: string, qs: Record<string, string> = {}, timeout: number = Cypress.config('responseTimeout')): Cypress.Chainable<Document> {
     return toolAccessToken()
-        .then(token => cy.request({url, qs: {...qs, toolAccessToken: token}}))
+        .then(token => cy.request({url, qs: {...qs, toolAccessToken: token}, timeout}))
         .then(response => parseHtml(response.body));
 }
 
