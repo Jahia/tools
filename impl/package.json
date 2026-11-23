@@ -27,10 +27,10 @@
   "dependencies": {
     "@fancyapps/ui": "^5.0.36",
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.5",
-    "datatables.net-bs5": "^2.3.2",
+    "bootstrap": "^5.3.9",
+    "datatables.net-bs5": "^2.3.8",
     "jquery": "^3.7.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
