@@ -13,3 +13,16 @@ updates:
       interval: "daily"
     allow:
       - dependency-type: "production"
+    # Jahia core provides these libraries at runtime: the module compiles against the version of the Jahia parent.
+    # The Jahia parent and jahia-impl set the minimum Jahia version of the module.
+    ignore:
+      - dependency-name: "org.jahia.modules:jahia-modules"
+      - dependency-name: "org.jahia.server:*"
+      - dependency-name: "org.apache.commons:commons-collections4"
+      - dependency-name: "org.apache.commons:commons-compress"
+      - dependency-name: "org.apache.commons:commons-lang3"
+      - dependency-name: "org.apache.commons:commons-math"
+      - dependency-name: "org.apache.commons:commons-text"
+      - dependency-name: "commons-collections:commons-collections"
+      - dependency-name: "commons-io:commons-io"
+      - dependency-name: "javax.jcr:jcr"
